@@ -4,7 +4,8 @@ import {
   Mic2, Sliders, Play, Info, Home,
   Activity, Volume2, Settings,
   Speaker, Radio, ChevronRight, ArrowLeft, Layers,
-  X, Music, Sparkles, BarChart2, Zap, CornerDownRight, Check, Download, AlertTriangle, Clock, List, Star, HelpCircle, Lightbulb, MoveVertical, Copy, Scissors, Disc, GitMerge
+  X, Music, Sparkles, BarChart2, Zap, CornerDownRight, Check, Download, AlertTriangle, Clock, List, Star, HelpCircle, Lightbulb, MoveVertical, Copy, Scissors, Disc, GitMerge,
+  Move, Headphones
 } from 'lucide-react';
 
 // --- HELPER FUNCTIONS FOR LOG SCALES ---
@@ -67,20 +68,38 @@ const signalPathData = [
       { name: "CDM64", tag: "FOH Rack", info: "Selve mikser-hjernen som tar imot alle linjene." }
     ]
   },
-  {
+{
     id: "preamp",
     label: "Preamp / Gain",
     iconName: "Activity",
     x: 200, y: 100,
     desc: "Forsterkning av signalet.",
-    details: "Gain er det aller viktigste steget. Det bestemmer signalstyrken inn i mikseren. For lite gain gir støy, for mye gir vreng. Riktig gain lar deg mikse med faderen rundt 0dB (Unity) hvor oppløsningen er best.",
-    viz: "gain_structure",
-    deepDiveTitle: "Preamp Innstillinger",
+    details: "Gain er det aller viktigste trinnet i signalkjeden. Det bestemmer arbeidsnivået inn i mikseren. Målet er å løfte signalet godt over støygulvet, men holde god avstand til taket (Headroom).",
+    viz: "gain_structure", // <-- Beholder din favoritt-visualizer!
+    
+    deepDiveTitle: "Teori & Innstillinger",
     deepDive: [
-      { name: "48V Phantom", tag: "Strøm", info: "Må være PÅ for kondensatormikrofoner og aktive DI-bokser." },
-      { name: "Pad", tag: "Demping", info: "-20dB demping. Brukes hvis signalet er for sterkt selv med gain på minimum (f.eks. Kick, Snare)." },
-      { name: "Tube Stage", tag: "Karakter", info: "En alternativ preamp-modell i dLive som legger til harmonisk vreng (varme). Fin på bass og vokal.", usage: "Vokal, Bass" },
-      { name: "Unity Gain", tag: "Mål", info: "Juster Gain til meteret treffer rundt -18dBFS (gult) når artisten spiller høyt." }
+      // --- TEORI (Oppdatert og profesjonell) ---
+      { 
+        name: "Hva gjør Preampen?", 
+        tag: "Signalnivå", 
+        info: "En mikrofon leverer ekstremt svak spenning (mic level). Preampen forsterker dette opp til 'Line Level' slik at kretsene og prosesseringen i mikseren kan jobbe med et sunt signal uten støy." 
+      },
+      { 
+        name: "A/D Konvertering", 
+        tag: "Kritisk", 
+        info: "Rett etter preampen gjøres de analoge strømbølgene om til digitale tall (0 og 1). Denne konverteren har et absolutt tak på 0dBFS. Hvis det analoge signalet er for kraftig når det treffer konverteren, finnes det ingen digitale verdier som kan representere det. Toppen av bølgen blir flat, og lyden er irreversibelt ødelagt." 
+      },
+      { 
+        name: "Konsekvenser av Klipping", 
+        tag: "Advarsel", 
+        info: "Når en lydbølge blir kappet flatt (klipping), endres bølgeformen mot en firkantbølge. Dette introduserer kraftig harmonisk forvrengning og høyfrekvent energi som kan overopphete diskanthøyttalere (tweetere) i PA-anlegget, selv ved moderat volum." 
+      },
+      
+      // --- PRAKTISKE INNSTILLINGER ---
+      { name: "48V Phantom", tag: "Strøm", info: "Leverer 48 volt spenning via XLR-kabelen. Påkrevd for kondensatormikrofoner og aktive DI-bokser." },
+      { name: "Pad (-20dB)", tag: "Demping", info: "En motstand som demper signalet *før* preampen. Brukes hvis kilden (f.eks. Kick eller Snare) er så kraftig at den vrenger selv med Gain på minimum." },
+      { name: "Gain Staging", tag: "Tips", info: "Sikt på at meteret ligger rundt -18dBFS (ofte gult på dLive) i gjennomsnitt. Da har du nok 'Headroom' til plutselige sterke utbrudd uten å klippe." }
     ]
   },
   {
@@ -105,7 +124,7 @@ const signalPathData = [
       }
     ]
   },
-  {
+{
     id: "monitor_branch",
     label: "Aux Send (Monitor)",
     iconName: "CornerDownRight",
@@ -113,7 +132,8 @@ const signalPathData = [
     source: "processing",
     x: 475, y: 180,
     desc: "Lyd til scene (Post-EQ / Pre-Fade).",
-    details: "Lyden tappes her (vanligvis etter EQ/Comp) for å sendes til monitorer. Fader-bevegelser påvirker IKKE monitorlyden."
+    details: "Lyden tappes her (vanligvis etter EQ/Comp) for å sendes til monitorer. Fader-bevegelser påvirker IKKE monitorlyden.",
+    viz: "monitor_map" // <--- VIKTIG: Legg til denne koden!
   },
   {
     id: "fader",
@@ -147,13 +167,32 @@ const signalPathData = [
       { name: "Delay (Stereo Tap)", tag: "Echo", info: "Bruk Tap Tempo til å matche låta. Feedback rundt 20-30%. Legg gjerne litt klang PÅ delayen igjen.", usage: "Ballader, Solo." }
     ]
   },
-  {
+{
     id: "mixbus",
     label: "Mix Bus / Main LR",
     iconName: "Layers",
     x: 900, y: 100,
     desc: "Summen av alle kanaler.",
-    details: "Her møtes alle instrumenter, vokal og FX-returer. Dette er 'master-faderen' din."
+    details: "Her samles alle signalene før de går til høyttalerne. Det er smart å organisere miksen i Grupper og DCA-er.",
+    viz: "mixbus_map",
+    deepDiveTitle: "Pro Tips: Gruppering",
+    deepDive: [
+      { 
+        name: "Audio Groups (Sub-grupper)", 
+        tag: "Audio", 
+        info: "Bruk grupper når du vil behandle flere kanaler som én enhet. \n• Trommer: 'Glue'-kompresjon for å få settet til å låte tett. \n• Vokal: Felles EQ eller De-Esser for å samle koret." 
+      },
+      { 
+        name: "DCA (Control)", 
+        tag: "Styring", 
+        info: "Bruk DCA når du bare vil styre volumet. \n• Band DCA: Skru ned hele bandet når noen snakker. \n• Trommer DCA: Enklere enn å flytte 8 fadere. \nMerk: DCA flytter ikke faderne fysisk, den endrer bare volumet internt." 
+      },
+      { 
+        name: "Mute Groups", 
+        tag: "Praktisk", 
+        info: "Lag en 'All Band Mute' og en 'All Vocal Mute'. Da kan du raskt rense lydbildet mellom sanger eller under taler." 
+      }
+    ]
   },
   {
     id: "matrix",
@@ -201,6 +240,86 @@ const NavButton = ({ active, onClick, Icon, text, isMobile }) => (
 // --- VISUALIZERS ---
 
 // ... (HPF, Gate, PEQ, Compressor, FXInfo, GainStructure, FaderSection must be defined before being used)
+// --- NY HJELPEKOMPONENT FOR PROFF KNOTT-FØLELSE ---
+const RotaryKnob = ({ value, setValue, min = 0, max = 100, label, color = "#38bdf8", size = 64 }) => {
+  // State for å spore draing
+  const [isDragging, setIsDragging] = useState(false);
+  const startY = useRef(0);
+  const startValue = useRef(0);
+
+  // Når du trykker ned
+  const handlePointerDown = (e) => {
+    setIsDragging(true);
+    startY.current = e.clientY;
+    startValue.current = value;
+    e.currentTarget.setPointerCapture(e.pointerId); // Låser fingeren til knotten
+  };
+
+  // Når du beveger fingeren
+  const handlePointerMove = (e) => {
+    if (!isDragging) return;
+    
+    // Beregn forskjell. Vi deler på 2 for å gjøre den litt mindre følsom (mer presis)
+    const deltaY = (startY.current - e.clientY) / 2; 
+    
+    let newValue = startValue.current + deltaY;
+    
+    // Hold verdien innenfor min/max
+    if (newValue < min) newValue = min;
+    if (newValue > max) newValue = max;
+    
+    setValue(Math.round(newValue));
+  };
+
+  const handlePointerUp = (e) => {
+    setIsDragging(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
+  // Beregn rotasjon (-135 til 135 grader er standard for lydutstyr)
+  const percentage = (value - min) / (max - min);
+  const rotation = -135 + (percentage * 270);
+
+  return (
+    <div 
+      className="flex flex-col items-center gap-2 relative touch-none select-none cursor-ns-resize group"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+    >
+      {label && <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-400 transition-colors">{label}</div>}
+      
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-none filter drop-shadow-lg">
+          {/* Bakgrunnssirkel */}
+          <circle cx="50" cy="50" r="45" fill="#1e293b" stroke="#334155" strokeWidth="2" />
+          
+          {/* Prikker rundt */}
+          <circle cx="20" cy="80" r="2" fill="#475569" />
+          <circle cx="80" cy="80" r="2" fill="#475569" />
+          <circle cx="50" cy="10" r="2" fill="#475569" />
+
+          {/* Selve viseren */}
+          <line 
+            x1="50" y1="50" x2="50" y2="10" 
+            stroke={isDragging ? "#ffffff" : color} 
+            strokeWidth={isDragging ? 5 : 4} 
+            strokeLinecap="round" 
+            transform={`rotate(${rotation} 50 50)`} 
+            className="transition-colors duration-200"
+          />
+        </svg>
+      </div>
+      
+      {/* Verdivisning som dukker opp når du drar */}
+      <div className={`text-xs font-mono px-2 py-1 rounded min-w-[40px] text-center transition-all
+        ${isDragging ? 'bg-blue-600 text-white scale-110 shadow-lg' : 'bg-slate-800 text-blue-300'}`}>
+        {value}
+      </div>
+    </div>
+  );
+};
 
 const FaderSectionVisualizer = () => {
   const [activeTab, setActiveTab] = useState('mixer');
@@ -209,8 +328,86 @@ const FaderSectionVisualizer = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isPafl, setIsPafl] = useState(false);
 
+  // --- STEREO VISUALIZER ---
+  const StereoVisualizer = ({ pan, fader, muted, pafl }) => {
+    let leftVol = pan <= 50 ? 1 : (100 - pan) / 50;
+    let rightVol = pan >= 50 ? 1 : pan / 50;
+    const masterVol = fader / 100;
+    
+    leftVol *= masterVol;
+    rightVol *= masterVol;
+
+    if (muted) { leftVol = 0; rightVol = 0; }
+
+    const SoundRipples = ({ intensity }) => {
+        if (intensity < 0.05) return null; 
+        const style = { 
+            '--scale-factor': 1.8 + (intensity * 2.0),
+            opacity: intensity * 0.8 
+        };
+        return (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+               <div className="absolute inset-0 rounded-full bg-cyan-400/30 blur-xl transition-opacity duration-100" style={{ opacity: intensity > 0.7 ? 1 : 0 }}></div>
+               <div className="absolute w-full h-full rounded-full border-[3px] border-cyan-300/60 animate-ping" style={{ animationDuration: '0.8s', ...style }}></div>
+               <div className="absolute w-full h-full rounded-full border-2 border-cyan-400/40 animate-ping" style={{ animationDuration: '1.2s', animationDelay: '0.1s', ...style }}></div>
+               <div className="absolute w-full h-full rounded-full bg-cyan-400/20 animate-pulse" style={{ transform: `scale(${1 + (intensity * 1.2)})` }}></div>
+            </div>
+        );
+    };
+
+    const SpeakerCone = ({ intensity, label }) => (
+       <div className="flex flex-col items-center gap-3 relative transition-opacity duration-300" style={{ opacity: muted ? 0.4 : 1 }}>
+          <div className="relative w-16 h-24 bg-slate-800 rounded-xl border-2 border-slate-700 shadow-2xl flex flex-col items-center justify-center gap-3 z-10">
+             <div className="w-4 h-4 bg-slate-900 rounded-full border border-slate-600 shadow-inner"></div>
+             <div className="relative w-12 h-12 bg-slate-900 rounded-full border-2 border-slate-600 flex items-center justify-center shadow-inner overflow-visible">
+                 <div 
+                    className="w-8 h-8 bg-gradient-to-br from-slate-700 to-slate-800 rounded-full shadow-lg transition-transform duration-75 ease-out border border-slate-600 relative z-10"
+                    style={{ transform: `scale(${1 + (intensity * 0.4)})` }} 
+                 ></div>
+                 <SoundRipples intensity={intensity} />
+             </div>
+          </div>
+          <div className="w-16 h-1 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+             <div className="h-full bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,1)] transition-all duration-75" style={{ width: `${intensity * 100}%` }}></div>
+          </div>
+          <span className="text-[9px] font-bold text-slate-500 tracking-widest">{label}</span>
+       </div>
+    );
+
+    return (
+       <div className="relative flex justify-between items-center w-full px-6 py-4 bg-slate-900/50 rounded-xl border border-slate-800/50 mb-2 h-40">
+          <SpeakerCone intensity={leftVol} label="L" />
+          
+          {/* PAFL HEADPHONES (Statisk, uten animasjon som re-trigger) */}
+          {pafl && (
+             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-20">
+                <div className="relative">
+                   <div className="absolute inset-0 bg-yellow-500/20 blur-xl rounded-full"></div>
+                   <Headphones size={48} className="text-yellow-400 relative z-10 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
+                </div>
+                <div className="text-[10px] font-bold text-yellow-400 mt-2 bg-yellow-900/40 px-2 py-0.5 rounded border border-yellow-500/30">SOLO</div>
+             </div>
+          )}
+
+          <SpeakerCone intensity={rightVol} label="R" />
+       </div>
+    );
+  };
+
+  // Logic
+  const faderRef = useRef(null);
+  const handleFaderDrag = (e) => {
+    const rect = faderRef.current.getBoundingClientRect();
+    const bottomY = rect.bottom;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const height = rect.height;
+    let newPct = ((bottomY - clientY) / height) * 100;
+    if (newPct < 0) newPct = 0; if (newPct > 100) newPct = 100;
+    setFaderPos(Math.round(newPct));
+  };
+
   const getPanText = (val) => {
-    if (val === 50) return "C (Center)";
+    if (val === 50) return "C";
     if (val < 50) return `L${50 - val}`;
     return `R${val - 50}`;
   };
@@ -221,67 +418,75 @@ const FaderSectionVisualizer = () => {
     if (pos >= 25) return Math.round(-10 + ((pos - 50) / 25) * 20);
     return "-∞";
   };
-  
+   
   const renderContent = () => {
     switch(activeTab) {
       case 'mixer':
         return (
-          <div className="flex gap-6 items-end justify-center h-64 animate-fade-in relative z-10">
-            <div className="flex flex-col items-center gap-2 mb-8">
-              <div className="relative w-16 h-16">
-                <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-none">
-                  <circle cx="50" cy="50" r="45" fill="#1e293b" stroke="#334155" strokeWidth="2" />
-                  <line x1="50" y1="50" x2="50" y2="10" stroke="#38bdf8" strokeWidth="4" strokeLinecap="round" 
-                        transform={`rotate(${(panVal - 50) * 2.7} 50 50)`} />
-                  <text x="10" y="90" fill="#64748b" fontSize="20" fontWeight="bold">L</text>
-                  <text x="80" y="90" fill="#64748b" fontSize="20" fontWeight="bold">R</text>
-                </svg>
-                <input 
-                  type="range" min="0" max="100" value={panVal} 
-                  onChange={(e) => setPanVal(parseInt(e.target.value))}
-                  className="absolute -inset-6 w-[calc(100%+3rem)] h-[calc(100%+3rem)] opacity-0 cursor-pointer z-50"
-                  style={{ touchAction: 'none' }}
-                  title="Pan"
-                />
-              </div>
-              <div className="text-xs font-mono text-blue-300 bg-slate-800 px-2 py-1 rounded">{getPanText(panVal)}</div>
-            </div>
+          <div className="animate-fade-in relative z-10 select-none pb-4">
+            
+            <StereoVisualizer pan={panVal} fader={faderPos} muted={isMuted} pafl={isPafl} />
 
-            <div className="flex flex-col items-center gap-3 bg-slate-950 p-3 rounded-lg border border-slate-800 h-full">
-               <button 
-                 onClick={() => setIsMuted(!isMuted)}
-                 className={`w-12 h-8 rounded font-bold text-[10px] transition-all shadow-lg z-20 relative
-                   ${isMuted ? 'bg-red-600 text-white shadow-red-900/50' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}
-               >
-                 MUTE
-               </button>
+            {/* CHANNEL STRIP */}
+            <div className="flex flex-col items-center bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-inner">
+                
+                {/* 1. PAN KNOB */}
+                <div className="mb-6 relative z-20">
+                   <RotaryKnob 
+                      value={panVal} 
+                      setValue={setPanVal} 
+                      label="PAN" 
+                      color="#38bdf8"
+                      size={56} 
+                   />
+                </div>
 
-               <button 
-                 onClick={() => setIsPafl(!isPafl)}
-                 className={`w-12 h-8 rounded font-bold text-[10px] transition-all shadow-lg z-20 relative
-                   ${isPafl ? 'bg-yellow-500 text-black shadow-yellow-500/50' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}
-               >
-                 PAFL
-               </button>
+                {/* 2. KNAPPER */}
+                <div className="flex gap-3 mb-4 w-full justify-center">
+                    <button 
+                      onClick={() => setIsMuted(!isMuted)}
+                      className={`w-12 h-8 rounded font-bold text-[9px] transition-all shadow-lg flex items-center justify-center border
+                        ${isMuted ? 'bg-red-600 text-white border-red-500 shadow-red-900/50' : 'bg-slate-800 text-slate-400 border-slate-700'}`}
+                    >
+                      MUTE
+                    </button>
+                    <button 
+                      onClick={() => setIsPafl(!isPafl)}
+                      className={`w-12 h-8 rounded font-bold text-[9px] transition-all shadow-lg flex items-center justify-center border
+                        ${isPafl ? 'bg-yellow-500 text-black border-yellow-400 shadow-yellow-500/50' : 'bg-slate-800 text-slate-400 border-slate-700'}`}
+                    >
+                      PAFL
+                    </button>
+                </div>
 
-               <div className="relative w-12 flex-1 bg-slate-900 rounded border border-slate-800 flex justify-center">
-                  <div className="absolute top-[25%] w-full h-0.5 bg-white/30"></div>
-                  <div 
-                     className="absolute w-8 h-12 bg-gradient-to-b from-slate-600 to-slate-800 rounded shadow border-t border-slate-500 pointer-events-none z-10 flex items-center justify-center"
-                     style={{ bottom: `${faderPos}%`, marginBottom: '-24px' }}
-                  >
-                    <div className="w-6 h-[1px] bg-black/50"></div>
-                  </div>
-                  
-                  <input 
-                    type="range" min="0" max="100" value={faderPos} 
-                    onChange={(e) => setFaderPos(parseInt(e.target.value))}
-                    className="absolute -inset-x-8 -inset-y-4 w-[calc(100%+4rem)] h-[calc(100%+2rem)] opacity-0 cursor-ns-resize z-50"
-                    style={{appearance: 'slider-vertical', touchAction: 'none'}} 
-                  />
-               </div>
-               
-               <div className="text-[10px] font-mono text-slate-400">{getDb(faderPos)} dB</div>
+                {/* 3. FADER TRACK (Krympet høyde til h-48) */}
+                <div className="flex flex-col items-center w-full">
+                    <div 
+                      className="relative w-16 h-48 bg-slate-900 rounded border border-slate-800 flex justify-center cursor-ns-resize touch-none"
+                      ref={faderRef}
+                      onPointerMove={(e) => e.buttons === 1 && handleFaderDrag(e)}
+                      onPointerDown={handleFaderDrag}
+                    >
+                      <div className="absolute top-[25%] w-full h-0.5 bg-white/30 z-0"></div>
+                      <div className="absolute -right-5 top-[23%] text-[9px] text-white/50 font-mono">0</div>
+                      <div className="absolute -right-5 top-[48%] text-[9px] text-white/30 font-mono">-10</div>
+                      <div className="absolute -right-5 top-[73%] text-[9px] text-white/30 font-mono">-30</div>
+                      
+                      <div className="w-2 h-full bg-black/40 rounded-full shadow-inner"></div>
+
+                      <div 
+                          className={`absolute w-24 h-12 bg-gradient-to-b from-slate-600 to-slate-800 rounded shadow-2xl border-t border-slate-500 z-10 flex items-center justify-center active:scale-105 transition-transform ${isMuted ? 'opacity-50 grayscale' : ''}`}
+                          style={{ bottom: `${faderPos}%`, marginBottom: '-24px' }}
+                      >
+                          <div className="w-20 h-[2px] bg-black/50"></div>
+                          <div className="absolute w-full h-1 bg-white/10 top-1/2 -translate-y-1/2"></div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 text-[12px] font-mono font-bold text-slate-400 min-w-[50px] text-center bg-slate-900 px-2 py-1 rounded border border-slate-800">
+                      {getDb(faderPos)} dB
+                    </div>
+                </div>
             </div>
           </div>
         );
@@ -290,30 +495,29 @@ const FaderSectionVisualizer = () => {
           <div className="space-y-4 animate-fade-in text-xs text-slate-300">
             <div className="bg-yellow-900/20 border border-yellow-600/30 p-3 rounded-lg">
                <h4 className="font-bold text-yellow-400 mb-2 flex items-center gap-2"><Speaker size={14}/> PAFL (Pre/After Fade Listen)</h4>
-               <p className="mb-2">
-                 Dette er "lytte-knappen" på dLive. Når du trykker på den, sendes signalet til dine hodetelefoner (og monitor-høyttaleren ved mikseren).
+               <p className="mb-2 leading-relaxed">
+                 PAFL er dLive sin "Solo"-knapp. Den sender lyden til hodetelefonene dine og Monitor-høyttaleren ved mikseren, uten å påvirke PA-anlegget.
                </p>
-               <div className="grid grid-cols-2 gap-2 mt-3">
-                  <div className="bg-slate-800 p-2 rounded">
-                     <div className="font-bold text-white mb-1">PFL (Pre-Fade)</div>
-                     <p className="text-slate-400 text-[10px]">
-                        Du hører signalet <strong>før</strong> faderen.
-                        <br/>• Volumfaderen påvirker ikke det du hører.
-                        <br/>• Bra for å sjekke om det er lyd i kabelen (Line Check).
+               
+               <div className="space-y-2 mt-4">
+                  <div className="bg-slate-800/50 p-2 rounded border-l-2 border-yellow-500">
+                     <span className="font-bold text-white block mb-1">Lyttepunkter</span>
+                     <p className="text-slate-400">
+                        På skjermen kan du velge *hvor* i rekken du vil lytte. 
+                        Du kan f.eks. lytte på signalet <strong>før</strong> kompressoren for å høre hva som kommer inn, eller <strong>etter</strong> EQ for å høre endringene.
                      </p>
                   </div>
-                  <div className="bg-slate-800 p-2 rounded">
-                     <div className="font-bold text-white mb-1">AFL (After-Fade)</div>
-                     <p className="text-slate-400 text-[10px]">
-                        Du hører signalet <strong>etter</strong> faderen og pan.
-                        <br/>• Du hører "miksen" slik den er i rommet.
-                        <br/>• Bra for å sjekke balanse i stereo.
-                     </p>
+                  <div className="grid grid-cols-2 gap-2">
+                     <div className="bg-slate-800 p-2 rounded text-center">
+                        <div className="font-bold text-white mb-1">PFL</div>
+                        <div className="text-[9px] text-slate-500">Før Fader (Standard)</div>
+                     </div>
+                     <div className="bg-slate-800 p-2 rounded text-center">
+                        <div className="font-bold text-white mb-1">AFL</div>
+                        <div className="text-[9px] text-slate-500">Etter Fader (Stereo)</div>
+                     </div>
                   </div>
                </div>
-               <p className="mt-2 text-[10px] italic text-slate-500">
-                 Tips: dLive kan stilles inn til å velge PFL eller AFL automatisk.
-               </p>
             </div>
           </div>
         );
@@ -322,33 +526,33 @@ const FaderSectionVisualizer = () => {
           <div className="space-y-4 animate-fade-in text-xs text-slate-300">
              <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded-lg">
                 <h4 className="font-bold text-blue-400 mb-2 flex items-center gap-2"><Copy size={14}/> Copy / Paste Workflow</h4>
-                <p className="mb-3">På dLive er det superraskt å kopiere innstillinger. Du bruker de fysiske blå knappene under skjermen.</p>
                 
-                <div className="space-y-3">
-                   <div className="flex items-center gap-3">
-                      <div className="bg-slate-800 w-6 h-6 flex items-center justify-center rounded-full font-bold text-white border border-slate-600">1</div>
-                      <div>Hold inne den fysiske <span className="text-blue-400 font-bold">COPY</span> knappen.</div>
+                <div className="space-y-4">
+                   {/* Hele Kanalen */}
+                   <div className="bg-slate-800/50 p-3 rounded border border-slate-700">
+                      <h5 className="font-bold text-white mb-1 flex items-center gap-2"><Layers size={12}/> Kopiere HELE kanalen</h5>
+                      <p className="text-slate-400 mb-2">Kopierer alt: Preamp, EQ, Comp, Gate, Navn og Farge.</p>
+                      <div className="flex items-center gap-2 text-[10px] bg-slate-900 p-2 rounded">
+                         <span className="bg-slate-700 px-1 rounded text-white">Hold COPY</span>
+                         <span>+</span>
+                         <span className="bg-cyan-600 px-1 rounded text-white">Trykk SEL (Kilde)</span>
+                         <span>-></span>
+                         <span className="bg-slate-700 px-1 rounded text-white">Hold PASTE</span>
+                         <span>+</span>
+                         <span className="bg-cyan-600 px-1 rounded text-white">Trykk SEL (Mål)</span>
+                      </div>
                    </div>
-                   <div className="flex items-center gap-3">
-                      <div className="bg-slate-800 w-6 h-6 flex items-center justify-center rounded-full font-bold text-white border border-slate-600">2</div>
-                      <div>Trykk på den blå <span className="text-cyan-400 font-bold">SEL</span> (Select) knappen på kanalen du vil kopiere FRA.</div>
-                   </div>
-                   <div className="flex items-center gap-3">
-                      <div className="bg-slate-800 w-6 h-6 flex items-center justify-center rounded-full font-bold text-white border border-slate-600">3</div>
-                      <div>Hold inne <span className="text-green-400 font-bold">PASTE</span> knappen.</div>
-                   </div>
-                   <div className="flex items-center gap-3">
-                      <div className="bg-slate-800 w-6 h-6 flex items-center justify-center rounded-full font-bold text-white border border-slate-600">4</div>
-                      <div>Trykk på <span className="text-cyan-400 font-bold">SEL</span> knappen på kanalen(e) du vil lime inn PÅ.</div>
-                   </div>
-                </div>
 
-                <div className="mt-4 pt-3 border-t border-blue-500/20">
-                   <h5 className="font-bold text-white mb-1 flex items-center gap-2"><Scissors size={12}/> Kopiere kun EQ?</h5>
-                   <p>
-                     Gå inn på EQ-visningen på skjermen. Hold inne <strong>COPY</strong> og trykk på EQ-boksen på touch-skjermen. 
-                     Gå til ny kanal, hold <strong>PASTE</strong> og trykk på EQ-boksen. Magisk!
-                   </p>
+                   {/* Deler av Kanalen */}
+                   <div className="bg-slate-800/50 p-3 rounded border border-slate-700">
+                      <h5 className="font-bold text-white mb-1 flex items-center gap-2"><Scissors size={12}/> Kopiere KUN deler (f.eks. EQ)</h5>
+                      <p className="text-slate-400 mb-2">Hvis du likte EQ-en på vokalen, men ikke vil overskrive preampen på neste vokalist.</p>
+                      <ul className="list-disc pl-4 space-y-1 text-slate-400">
+                         <li>Gå til skjermbildet for det du vil kopiere (f.eks. PEQ).</li>
+                         <li>Hold <strong>COPY</strong> og trykk på selve EQ-boksen på <strong>skjermen</strong>.</li>
+                         <li>Gå til ny kanal. Hold <strong>PASTE</strong> og trykk på EQ-boksen på skjermen.</li>
+                      </ul>
+                   </div>
                 </div>
              </div>
           </div>
@@ -357,43 +561,78 @@ const FaderSectionVisualizer = () => {
         return (
           <div className="space-y-4 animate-fade-in text-xs text-slate-300">
             <div className="bg-purple-900/20 border border-purple-500/30 p-3 rounded-lg">
-               <h4 className="font-bold text-purple-400 mb-2 flex items-center gap-2"><GitMerge size={14}/> Input vs Channel & Patching</h4>
-               <p className="mb-4">
-                 Det er viktig å skille mellom den fysiske inngangen og den digitale kanalen.
-               </p>
-
-               <div className="flex justify-between items-center gap-2 mb-4 text-center">
-                  <div className="bg-slate-800 p-2 rounded border border-slate-700 w-1/3">
-                     <div className="text-slate-500 text-[9px] uppercase font-bold mb-1">FYSISK</div>
-                     <div className="text-white font-bold flex flex-col items-center">
-                        <Disc size={20} className="mb-1 text-gray-400"/>
-                        Socket
-                     </div>
-                     <div className="text-[9px] text-slate-400 mt-1">Hullet i stageboksen</div>
-                  </div>
-
-                  <ArrowLeft className="text-purple-500 rotate-180" size={24}/>
-
-                  <div className="bg-slate-800 p-2 rounded border border-slate-700 w-1/3">
-                     <div className="text-slate-500 text-[9px] uppercase font-bold mb-1">DIGITAL</div>
-                     <div className="text-white font-bold flex flex-col items-center">
-                        <Sliders size={20} className="mb-1 text-blue-400"/>
-                        Channel
-                     </div>
-                     <div className="text-[9px] text-slate-400 mt-1">Faderen du mikser på</div>
-                  </div>
+               <h4 className="font-bold text-purple-400 mb-2 flex items-center gap-2"><GitMerge size={14}/> Input Patching (dLive)</h4>
+               
+               <div className="bg-slate-800 p-3 rounded border border-slate-700 mb-3">
+                  <h5 className="font-bold text-white mb-1">Socket vs. Channel</h5>
+                  <p className="leading-relaxed mb-2">
+                     På en analog mikser er "Hull 1" alltid "Kanal 1". På dLive er dette løsrevet.
+                  </p>
+                  <ul className="space-y-2">
+                     <li className="flex gap-2">
+                        <Disc size={16} className="text-slate-500 shrink-0"/>
+                        <span><strong>Socket (Fysisk):</strong> Selve hullet i stageboksen. Dette er kilden.</span>
+                     </li>
+                     <li className="flex gap-2">
+                        <Sliders size={16} className="text-blue-400 shrink-0"/>
+                        <span><strong>Channel (Digital):</strong> Stripen du mikser på. Du velger selv hvilken socket den skal lytte til.</span>
+                     </li>
+                  </ul>
                </div>
 
                <div className="bg-slate-950 p-3 rounded border border-slate-800">
-                  <h5 className="font-bold text-purple-300 mb-1">Hva er Patching?</h5>
-                  <p className="leading-relaxed">
-                    Patching er den "virtuelle kabelen" som kobler en <strong>Socket</strong> til en <strong>Channel</strong>. 
-                    <br/><br/>
-                    På dLive kan du patche én Socket (f.eks. Kick Mic) til <em>flere</em> kanaler samtidig (f.eks. "Kick Main" og "Kick Monitor"). 
-                    Dette kalles "Split".
+                  <h5 className="font-bold text-purple-300 mb-1">Hvorfor er dette smart? (Split)</h5>
+                  <p className="leading-relaxed text-slate-400">
+                     Du kan bruke "Digital Split". Det betyr at du tar <strong>én mikrofon</strong> (f.eks. Forsanger) og sender den til <strong>to kanaler</strong>:
                   </p>
+                  <ul className="list-disc pl-4 mt-2 text-slate-300 space-y-1">
+                     <li><strong>Kanal 1 (FOH):</strong> Mikset for salen med mye klang og kompresjon.</li>
+                     <li><strong>Kanal 33 (Monitor):</strong> Mikset tørt og trygt for sangerens øre.</li>
+                  </ul>
+                  <p className="mt-2 text-[10px] text-slate-500 italic">Dette gjøres i I/O-skjermen på dLive.</p>
                </div>
             </div>
+          </div>
+        );
+      case 'protips': 
+        return (
+          <div className="space-y-4 animate-fade-in text-xs text-slate-300">
+             
+             {/* Panorering */}
+             <div className="bg-slate-800 p-3 rounded border border-slate-700">
+                <h4 className="font-bold text-cyan-400 mb-2 flex items-center gap-2"><Lightbulb size={14}/> Panorering</h4>
+                <p className="mb-2">Gir bredde og rydder plass i midten.</p>
+                <ul className="list-disc pl-4 space-y-1 text-slate-400">
+                   <li><strong className="text-yellow-400">Center:</strong> Kick, Bass, Vokal.</li>
+                   <li><strong className="text-blue-400">Stereo:</strong> Piano, Synth, Overhead.</li>
+                   <li><strong className="text-purple-400">Side:</strong> Gitarer, Koring.</li>
+                </ul>
+             </div>
+
+             {/* DCA vs Groups */}
+             <div className="bg-slate-800 p-3 rounded border border-slate-700">
+                <h4 className="font-bold text-green-400 mb-2 flex items-center gap-2"><Layers size={14}/> DCA vs Audio Group</h4>
+                <p className="mb-2 text-slate-400">Hva skal du bruke for å styre flere kanaler?</p>
+                <div className="space-y-2">
+                   <div className="bg-slate-900 p-2 rounded">
+                      <span className="font-bold text-white block">DCA (Fjernkontroll)</span>
+                      <span className="text-slate-500">Bare en volumkontroll. Ingen lyd går gjennom denne. Bruk denne til Trommer, Vokal, Band for å justere nivået samlet.</span>
+                   </div>
+                   <div className="bg-slate-900 p-2 rounded">
+                      <span className="font-bold text-white block">Group (Samlebuss)</span>
+                      <span className="text-slate-500">Lyden samles her. Her kan du legge kompressor på HELE trommesettet (Bus compression).</span>
+                   </div>
+                </div>
+             </div>
+
+             {/* 48V Sikkerhet */}
+             <div className="bg-red-900/20 border border-red-500/30 p-3 rounded">
+                <h4 className="font-bold text-red-400 mb-1 flex items-center gap-2"><AlertTriangle size={14}/> 48V Phantom Power</h4>
+                <p className="text-slate-300">
+                   Aldri slå på 48V mens kanalen er åpen! Det smeller i anlegget.
+                   <br/>Mute kanalen -> Koble til mikk -> Slå på 48V -> Vent 5 sek -> Unmute.
+                </p>
+             </div>
           </div>
         );
     }
@@ -403,10 +642,11 @@ const FaderSectionVisualizer = () => {
     <div className="bg-slate-900 rounded-xl p-4 border border-slate-600/50 animate-fade-in">
       <div className="flex gap-1 mb-4 overflow-x-auto pb-1 scrollbar-hide">
         {[
-          {id:'mixer', l:'Miks & Pan', i: Sliders}, 
-          {id:'pafl', l:'PAFL/Lytte', i: Speaker}, 
-          {id:'copy', l:'Copy/Paste', i: Copy}, 
-          {id:'patch', l:'Inputs', i: GitMerge}
+          {id:'mixer', l:'Miks', i: Sliders}, 
+          {id:'pafl', l:'PAFL', i: Speaker}, 
+          {id:'protips', l:'Pro Tips', i: Star}, 
+          {id:'copy', l:'Copy', i: Copy}, 
+          {id:'patch', l:'Input', i: GitMerge}
         ].map(tab => {
            const TabIcon = tab.i;
            return (
@@ -422,30 +662,37 @@ const FaderSectionVisualizer = () => {
            );
         })}
       </div>
-
       {renderContent()}
     </div>
   );
 };
-
 const GainStructureVisualizer = () => {
-  const [faderPos, setFaderPos] = useState(75); // 0-100, 75 is roughly 0dB
-  const [gainLevel, setGainLevel] = useState(30); // 0-100
+  const [faderPos, setFaderPos] = useState(75); 
+  const [gainLevel, setGainLevel] = useState(30); 
   const [meterValue, setMeterValue] = useState(0);
 
-  // Simulate signal meter based on gain
+  // Meter simulation
   useEffect(() => {
     const interval = setInterval(() => {
-      // Base signal + some randomness
       const noise = Math.random() * 10;
       const signal = (gainLevel * 1.2) + noise - 20; 
-      // Clamp between 0 and 100
       setMeterValue(Math.max(0, Math.min(100, signal)));
     }, 100);
     return () => clearInterval(interval);
   }, [gainLevel]);
 
-  // Simulate LOGARITHMIC fader taper
+  // Fader Logic (Copy from Section above)
+  const faderRef = useRef(null);
+  const handleFaderDrag = (e) => {
+    const rect = faderRef.current.getBoundingClientRect();
+    const bottomY = rect.bottom;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    const height = rect.height;
+    let newPct = ((bottomY - clientY) / height) * 100;
+    if (newPct < 0) newPct = 0; if (newPct > 100) newPct = 100;
+    setFaderPos(Math.round(newPct));
+  };
+
   const getDb = (pos) => {
     if (pos >= 75) return ((pos - 75) / 25) * 10; 
     if (pos >= 50) return ((pos - 75) / 25) * 10; 
@@ -454,36 +701,22 @@ const GainStructureVisualizer = () => {
   };
 
   const db = Math.round(getDb(faderPos));
-  
-  // Calculate "Resolution" 
-  const getResolution = (pos) => {
-     const step = 5; 
-     const db1 = getDb(Math.min(100, pos + step/2));
-     const db2 = getDb(Math.max(0, pos - step/2));
-     return Math.abs(db1 - db2).toFixed(1);
-  };
-
-  const resolution = parseFloat(getResolution(faderPos));
   const isUnity = Math.abs(db) < 2;
-
-  // FIX: Define isGoodGain based on knob position (stable) not meter (bouncing)
-  const isGoodGain = gainLevel >= 40 && gainLevel <= 75; 
-  
+  const isGoodGain = gainLevel >= 55 && gainLevel <= 78; 
+   
   const getTip = () => {
-    if (gainLevel > 75) return { t: "FARE: CLIPPING!", d: "Rødt lys betyr vreng. Skru ned Gain! Vurder å bruke PAD (-20dB) hvis signalet er for sterkt selv på lav gain.", c: "text-red-400" };
-    if (gainLevel < 20) return { t: "For lavt signal", d: "Du har for lite gain. Dette gir støy (hiss) hvis du må skru faderen langt opp senere.", c: "text-slate-400" };
+    if (gainLevel > 78) return { t: "FARE: CLIPPING!", d: "Rødt lys! Skru ned Gain. Bruk PAD om nødvendig.", c: "text-red-400" };
+    if (gainLevel < 55) return { t: "For lavt signal", d: "For lite gain gir støy (hiss) senere i kjeden.", c: "text-slate-400" };
     
-    // Gain is in acceptable range (Yellow zone approx)
-    // Check fader relation
-    if (db < -15) return { t: "God Gain, men lav Fader?", d: "Gain er perfekt, men faderen må være lavt? Ikke rør Gain! Bruk heller 'Digital Trim' i processing-stripen for å dempe signalet digitalt, slik at faderen kan komme opp til 0dB.", c: "text-orange-300" };
-    if (db > 5) return { t: "Høy Fader?", d: "Gain er bra, men du presser faderen over 0dB? Sjekk om instrumentet kan skrus opp på kilden.", c: "text-orange-300" };
-    if (isUnity) return { t: "PERFEKT STRUKTUR!", d: "Gain treffer gult felt, og faderen ligger på Unity (0dB). Dette gir best lyd og oppløsning.", c: "text-green-400" };
+    if (db < -15) return { t: "God Gain, men lav Fader?", d: "Gain er bra, men faderen er lav? Bruk 'Digital Trim'.", c: "text-orange-300" };
+    if (db > 5) return { t: "Høy Fader?", d: "Du presser faderen over 0dB? Sjekk kilden.", c: "text-orange-300" };
     
-    return { t: "Bra Gain", d: "Juster faderen til ønsket volum. Prøv å sikte mot 0dB.", c: "text-yellow-400" };
+    if (isUnity) return { t: "PERFEKT STRUKTUR!", d: "Gult felt på gain, Unity på fader. Optimal lyd!", c: "text-green-400" };
+    
+    return { t: "Bra Gain", d: "Nå kan du mikse med faderen.", c: "text-yellow-400" };
   };
 
   const tip = getTip();
-  const barHeight = Math.min(100, resolution * 8); 
 
   return (
     <div className="bg-slate-900 rounded-xl p-4 border border-blue-500/50 animate-fade-in space-y-6">
@@ -491,82 +724,69 @@ const GainStructureVisualizer = () => {
       
       <div className="flex justify-between gap-4 md:gap-8">
         
-        {/* SECTION 1: GAIN KNOB & METER */}
+        {/* 1. GAIN KNOB - NY PROFF VERSJON */}
         <div className="flex-1 bg-slate-950 p-3 rounded-lg border border-slate-800 flex flex-col items-center">
             <h4 className="text-[10px] text-slate-500 font-bold uppercase mb-3">1. Input Gain</h4>
-            <div className="flex gap-6 items-center h-full">
-                {/* Knob */}
-                <div className="relative w-20 h-20"> {/* Increased size for touch target */}
-                    <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-none">
-                        <circle cx="50" cy="50" r="45" fill="#1e293b" stroke="#334155" strokeWidth="2" />
-                        <line x1="50" y1="50" x2="50" y2="10" stroke="white" strokeWidth="3" strokeLinecap="round" 
-                              transform={`rotate(${(gainLevel * 2.7) - 135} 50 50)`} />
-                    </svg>
-                    {/* LARGE TOUCH TARGET FOR GAIN */}
-                    <input 
-                        type="range" min="0" max="100" value={gainLevel} 
-                        onChange={(e) => setGainLevel(parseInt(e.target.value))}
-                        className="absolute -inset-6 w-[calc(100%+3rem)] h-[calc(100%+3rem)] opacity-0 cursor-pointer z-50"
-                        style={{ touchAction: 'none' }} // Prevent scrolling while dragging
-                        title="Juster Gain"
-                    />
-                </div>
+            <div className="flex gap-4 items-center h-full">
                 
-                {/* LED Meter */}
-                <div className="w-4 h-32 bg-slate-900 rounded-full border border-slate-800 flex flex-col-reverse overflow-hidden p-0.5 gap-0.5">
+                {/* Her bruker vi RotaryKnob! */}
+                <RotaryKnob 
+                   value={gainLevel} 
+                   setValue={setGainLevel} 
+                   color={gainLevel > 78 ? "#ef4444" : gainLevel > 55 ? "#eab308" : "#22c55e"} 
+                   size={72}
+                />
+                
+                {/* Meter */}
+                <div className="w-3 h-24 bg-slate-900 rounded-full border border-slate-800 flex flex-col-reverse overflow-hidden p-0.5 gap-0.5">
                    {[...Array(20)].map((_, i) => {
                       const level = (i / 20) * 100;
                       const active = meterValue > level;
-                      // Color logic for individual segments
                       let segColor = 'bg-green-600';
-                      if (i > 13) segColor = 'bg-yellow-500'; // Yellow starts at ~70%
-                      if (i > 17) segColor = 'bg-red-500';    // Red starts at ~90%
-                      
-                      return (
-                          <div key={i} className={`flex-1 w-full rounded-[1px] transition-all duration-75 ${active ? segColor : 'bg-slate-800 opacity-20'}`}></div>
-                      );
+                      if (i > 13) segColor = 'bg-yellow-500';
+                      if (i > 17) segColor = 'bg-red-500';
+                      return <div key={i} className={`flex-1 w-full rounded-[1px] transition-all duration-75 ${active ? segColor : 'bg-slate-800 opacity-20'}`}></div>;
                    })}
                 </div>
             </div>
             <div className="mt-2 text-[10px] text-slate-400 text-center">
                Mål: <span className="text-yellow-400 font-bold">GULT</span>
-               {gainLevel > 75 && <div className="text-red-500 font-bold animate-pulse">CLIP!</div>}
+               {gainLevel > 78 && <div className="text-red-500 font-bold animate-pulse">CLIP!</div>}
             </div>
         </div>
 
-        {/* SECTION 2: FADER */}
+        {/* 2. FADER - NY PROFF VERSJON */}
         <div className="flex-1 bg-slate-950 p-3 rounded-lg border border-slate-800 flex flex-col items-center relative">
            <h4 className="text-[10px] text-slate-500 font-bold uppercase mb-3">2. Fader (Unity)</h4>
-           <div className="relative w-16 h-32 bg-slate-900 rounded border border-slate-700 flex justify-center"> {/* Wider container */}
-               <div className="absolute top-[25%] w-full h-0.5 bg-white/30 z-0"></div> {/* Unity Mark */}
+           
+           <div 
+              className="relative w-12 h-32 bg-slate-900 rounded border border-slate-700 flex justify-center cursor-ns-resize touch-none"
+              ref={faderRef}
+              onPointerMove={(e) => e.buttons === 1 && handleFaderDrag(e)}
+              onPointerDown={handleFaderDrag}
+           > 
+               <div className="absolute top-[25%] w-full h-0.5 bg-white/30 z-0"></div>
                <div className="absolute right-1 top-[25%] text-[8px] text-white/50 translate-x-0">0</div>
                
-               {/* Fader Cap */}
+               <div className="w-1 h-full bg-black/40 rounded-full"></div>
+
                <div 
-                   className="absolute w-12 h-8 bg-gradient-to-b from-slate-600 to-slate-800 rounded shadow border-t border-slate-500 pointer-events-none z-10 flex items-center justify-center"
+                   className="absolute w-14 h-8 bg-gradient-to-b from-slate-600 to-slate-800 rounded shadow-xl border-t border-slate-500 z-10 flex items-center justify-center active:bg-slate-500 active:scale-105 transition-transform"
                    style={{ bottom: `${faderPos}%`, marginBottom: '-16px' }}
                >
                  <div className="w-10 h-[1px] bg-black/50"></div>
                </div>
-               
-               {/* LARGE TOUCH TARGET FOR FADER */}
-               <input 
-                 type="range" min="0" max="100" value={faderPos} 
-                 onChange={(e) => setFaderPos(parseInt(e.target.value))}
-                 className="absolute -inset-x-8 -inset-y-4 w-[calc(100%+4rem)] h-[calc(100%+2rem)] opacity-0 cursor-ns-resize z-50"
-                 style={{appearance: 'slider-vertical', touchAction: 'none'}} 
-               />
            </div>
            
            <div className="mt-2 text-center">
               <div className={`text-sm font-bold font-mono ${isUnity ? 'text-green-400' : 'text-slate-400'}`}>
-                 {db > 0 ? `+${db}` : db} dB
+                  {db > 0 ? `+${db}` : db} dB
               </div>
            </div>
         </div>
       </div>
 
-      {/* INFO / TIPS BOX */}
+      {/* INFO BOX */}
       <div className={`p-3 rounded border transition-colors duration-300 ${isGoodGain && isUnity ? 'bg-green-900/20 border-green-500/50' : 'bg-slate-800 border-slate-700'}`}>
          <div className="flex items-start gap-3">
              <div className={`p-2 rounded-full mt-1 ${isGoodGain && isUnity ? 'bg-green-500/20 text-green-400' : 'bg-slate-700 text-blue-400'}`}>
@@ -577,16 +797,6 @@ const GainStructureVisualizer = () => {
                  <p className="text-xs text-slate-300 leading-relaxed">{tip.d}</p>
              </div>
          </div>
-         
-         {/* Resolution Warning Bar */}
-         {resolution > 5 && (
-            <div className="mt-3 pt-2 border-t border-slate-700/50 flex items-center gap-2">
-                <AlertTriangle size={12} className="text-red-400"/>
-                <span className="text-[10px] text-red-300">
-                   <strong>Dårlig fader-oppløsning:</strong> {resolution} dB pr/cm.
-                </span>
-            </div>
-         )}
       </div>
     </div>
   );
@@ -1868,62 +2078,211 @@ const PAVisualizer = () => {
 
 // --- CORE UI COMPONENTS ---
 
-const SignalNodeMobile = ({ node, isFirst, isLast, onClick, isActive }) => {
-  const isBranch = node.type === "branch_out";
-  return (
-    <div className="flex gap-4 relative pb-6"> {/* Use padding instead of margin to allow continuous line */}
-      {/* The Rail Column */}
-      <div className="relative flex flex-col items-center w-12 flex-shrink-0"> {/* Increased width slightly for spacing */}
+const MonitorVisualizer = () => {
+  const [showFuture, setShowFuture] = useState(false);
+
+  // Hjelpekomponent for en monitor på scenen
+  const MonitorIcon = ({ label, subLabel, type, x, y, color }) => (
+    <div 
+      className="absolute flex flex-col items-center transition-all duration-500"
+      style={{ left: x, top: y, transform: 'translate(-50%, -50%)' }}
+    >
+      <div className={`
+        relative flex items-center justify-center rounded-lg border-2 shadow-lg transition-all
+        ${type === 'iem' || showFuture ? 'w-10 h-10 rounded-full bg-blue-900/40 border-blue-400' : 'w-14 h-10 bg-slate-800 border-slate-600 skew-x-[-10deg]'}
+        ${showFuture && type !== 'iem' ? 'translate-y-2 opacity-100' : ''}
+      `}>
+        {/* Ikon: Vis Hodetelefoner hvis IEM eller Fremtidsmodus. Ellers Høyttaler */}
+        {type === 'iem' || showFuture ? (
+          <Disc size={20} className="text-blue-300 animate-pulse" />
+        ) : (
+          <Speaker size={20} className="text-slate-400" />
+        )}
         
-        {/* The Continuous Line */}
-        <div 
-           className="absolute w-0.5 bg-slate-800"
-           style={{
-             top: isFirst ? '1.5rem' : '0', 
-             bottom: '0', 
-             // For the last item, we only want the line to go to the circle, not past it.
-             // However, to fix "split", usually we want it to go all the way if it's NOT last.
-             // If it IS last, we cap height.
-             height: isLast ? '1rem' : 'auto',
-             left: '50%',
-             marginLeft: '-1px' // Center the 2px line
-           }}
-         >
-           {/* The Animated Pulse - Only shows if not branch */}
-           <div className="absolute inset-0 w-full h-full bg-gradient-to-b from-transparent via-cyan-400 to-transparent opacity-70 animate-signal-pulse-vertical"></div>
+        {/* Kabel-stump for wedge */}
+        {(!showFuture && type !== 'iem') && (
+          <div className="absolute -bottom-4 w-1 h-4 bg-slate-700 -z-10"></div>
+        )}
+      </div>
+
+      {/* Label */}
+      <div className="mt-2 text-center bg-slate-900/80 px-2 py-0.5 rounded border border-slate-700/50 backdrop-blur-sm">
+        <div className="text-[10px] font-bold text-white whitespace-nowrap">{label}</div>
+        <div className="text-[9px] text-slate-400 whitespace-nowrap">{subLabel}</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="bg-slate-900 rounded-xl p-4 border border-blue-500/50 animate-fade-in shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+      
+      {/* Header */}
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <h3 className="text-blue-400 font-bold text-sm flex items-center gap-2">
+            <CornerDownRight size={16}/> Monitor Oppsett
+          </h3>
+          <p className="text-[10px] text-slate-400 mt-1">Sett fra lydbordet (FOH)</p>
+        </div>
+        
+        {/* Toggle Fremtid */}
+        <button 
+          onClick={() => setShowFuture(!showFuture)}
+          className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all flex items-center gap-2
+            ${showFuture ? 'bg-blue-600 text-white border-blue-400' : 'bg-slate-800 text-slate-400 border-slate-600'}
+          `}
+        >
+          {showFuture ? <Check size={12}/> : <ArrowLeft size={12} className="rotate-180"/>}
+          {showFuture ? "Fremtid (In-Ear)" : "Vis Fremtid"}
+        </button>
+      </div>
+
+      {/* SCENE KART */}
+      <div className="relative w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-xl mb-4 overflow-hidden">
+        
+        {/* Bakgrunnsrutenett */}
+        <div className="absolute inset-0 opacity-10" 
+             style={{backgroundImage: 'radial-gradient(#475569 1px, transparent 1px)', backgroundSize: '20px 20px'}}>
+        </div>
+
+        {/* Scene-kant (Curve) */}
+        <div className="absolute bottom-0 w-full h-12 bg-slate-900 border-t border-slate-700 flex items-center justify-center">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Scenekant</div>
+        </div>
+
+        {/* --- MONITOR PLASSERING --- */}
+        
+        {/* Mon 5: Trommer (Alltid IEM) */}
+        <MonitorIcon x="50%" y="20%" label="AUX 5" subLabel="Trommer (IEM)" type="iem" />
+
+        {/* ENDRET HER: Gitar/Bass flyttet til Venstre (25%) */}
+        <MonitorIcon x="25%" y="40%" label="AUX 4" subLabel="Gitar / Bass" type="wedge" />
+
+        {/* ENDRET HER: Piano flyttet til Høyre (75%) */}
+        <MonitorIcon x="75%" y="40%" label="AUX 3" subLabel="Piano" type="wedge" />
+
+        {/* Mon 2: Vokal Venstre (Sett fra FOH) */}
+        <MonitorIcon x="30%" y="70%" label="AUX 2" subLabel="Vokal Venstre" type="wedge" />
+
+        {/* Mon 1: Vokal Høyre (Sett fra FOH) */}
+        <MonitorIcon x="70%" y="70%" label="AUX 1" subLabel="Vokal Høyre" type="wedge" />
+
+        {/* FOH Indikator */}
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 translate-y-full text-[9px] text-slate-600">
+           deg
+        </div>
+      </div>
+
+      {/* Info boks */}
+      <div className="bg-slate-800/50 p-3 rounded border border-slate-700 space-y-2">
+         
+         <div className="flex items-start gap-2">
+            <Move size={14} className="text-blue-400 mt-0.5 shrink-0"/>
+            <p className="text-xs text-slate-300">
+               <strong>Flyttbare:</strong> Monitor 1-4 er løse kasser ("wedges"). De kan flyttes rundt etter behov, men husk å koble de i riktig kurs i gulvet!
+            </p>
          </div>
 
-        {/* Branch Dotted Line Logic - VISUAL ONLY, main line continues underneath */}
+         {showFuture && (
+            <div className="flex items-start gap-2 pt-2 border-t border-slate-700/50 animate-fade-in">
+               <Headphones size={14} className="text-green-400 mt-0.5 shrink-0"/>
+               <p className="text-xs text-green-300">
+                  <strong>Fremtidsplan:</strong> Målet er at <em>alle</em> skal over på In-Ears (IEM). Det gir mye lavere scenelyd, mindre feedback og bedre lyd i salen!
+               </p>
+            </div>
+         )}
+      </div>
+
+    </div>
+  );
+};
+
+const SignalNodeMobile = ({ node, isFirst, isLast, onClick, isActive, index }) => {
+  const isBranch = node.type === "branch_out";
+
+  // Farger for horisontal "skyting"
+  const isMonitor = node.id.includes('monitor');
+  const isFX = node.id.includes('fx');
+  let branchColorClass = "text-slate-500";
+  if (isMonitor) branchColorClass = "text-blue-500";
+  if (isFX) branchColorClass = "text-purple-500";
+
+  // Delay for domino-effekt
+  const delayStyle = { animationDelay: `${index * 0.25}s` };
+
+  return (
+    <div className="flex gap-4 relative w-full"> 
+      
+      {/* SKINNE (Venstre) */}
+      <div className="w-12 flex-shrink-0 flex flex-col items-center relative">
+        
+        {/* HOVEDLINJEN (Vertikal) */}
+        <div 
+          className="absolute width-0.5 bg-slate-800 w-0.5"
+          style={{
+            left: '50%',
+            transform: 'translateX(-50%)',
+            top: isFirst ? '1rem' : '0', 
+            height: isLast ? '1rem' : '100%'
+          }}
+        >
+          {/* ENDRING HER: Jeg fjernet {!isBranch && ...} sjekken.
+              Nå rendres lyset ALLTID, slik at det går gjennom stiplede linjer også. */}
+           <div 
+             className="absolute inset-0 w-full h-full bg-gradient-to-b from-transparent via-cyan-400 to-transparent opacity-70 animate-signal-pulse-vertical"
+             style={delayStyle}
+           ></div>
+        </div>
+
+        {/* Stiplet overlay (ligger oppå lyset, så lyset skinner "gjennom" prikkene) */}
         {isBranch && (
-           <div className="absolute top-0 bottom-0 left-1/2 w-0.5 -ml-[1px] bg-slate-700/0 border-l-2 border-dotted border-slate-600 z-10 pointer-events-none"></div>
+           <div className="absolute top-0 bottom-0 left-1/2 w-0.5 -ml-[1px] border-l-2 border-dotted border-slate-600 z-10"></div>
         )}
 
-        {/* The Node Circle */}
+        {/* HORISONTAL "LASER" (Kun for branches) */}
+        {isBranch && (
+          <div className="absolute left-1/2 top-8 w-8 h-0.5 -mt-4 z-0 overflow-hidden pointer-events-none">
+             <div 
+               className={`animate-shoot-right ${branchColorClass}`} 
+               style={delayStyle}
+             ></div>
+          </div>
+        )}
+
+        {/* SIRKEL / IKON */}
         <div className={`
-          relative z-10 w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all my-0
-          ${isActive ? 'bg-blue-600 border-blue-400 scale-110 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 
-            isBranch ? 'bg-slate-800 border-slate-600 text-slate-500' : 'bg-slate-800 border-slate-600 text-slate-300'}
+          relative z-20 w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all bg-slate-900 mt-0
+          ${isActive ? 'bg-blue-600 border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : 
+            isBranch ? `border-slate-600 ${isMonitor ? 'text-blue-400' : isFX ? 'text-purple-400' : 'text-slate-500'}` : 'border-slate-600 text-slate-300'}
         `}>
           <IconHelper name={node.iconName} size={isBranch ? 14 : 16} />
         </div>
       </div>
 
-      {/* The Card */}
-      <div className="flex-1"> 
+      {/* KORTET (Høyre) */}
+      <div className="flex-1 pb-8 min-w-0"> 
         <div 
           onClick={() => onClick(node)}
-          className={`p-4 rounded-xl border transition-all active:scale-[0.98] cursor-pointer relative
-            ${isActive ? 'bg-blue-900/20 border-blue-500 shadow-lg shadow-blue-900/20' : 'bg-slate-800 border-slate-700'}
+          className={`p-4 rounded-xl border transition-all active:scale-[0.98] cursor-pointer relative overflow-hidden
+            ${isActive ? 'bg-blue-900/20 border-blue-500 shadow-lg' : 'bg-slate-800 border-slate-700'}
             ${isBranch ? 'ml-2 border-dashed bg-slate-800/50' : ''}
           `}
         >
-          <div className="flex justify-between items-start">
-            <div>
-              <h4 className={`font-bold text-sm ${isActive ? 'text-blue-300' : 'text-slate-200'}`}>{node.label}</h4>
+          {/* Lys-blink inni boksen (kun branches) */}
+          {isBranch && (
+            <div 
+              className={`absolute inset-0 opacity-10 animate-pulse ${isMonitor ? 'bg-blue-500' : 'bg-purple-500'}`}
+              style={{ animationDuration: '3s' }} 
+            ></div>
+          )}
+
+          <div className="flex justify-between items-start relative z-10">
+            <div className="min-w-0">
+              <h4 className={`font-bold text-sm truncate ${isActive ? 'text-blue-300' : 'text-slate-200'}`}>{node.label}</h4>
               <p className="text-xs text-slate-400 mt-1 line-clamp-2">{node.desc}</p>
             </div>
-            {isBranch && <span className="text-[10px] bg-slate-700 px-1.5 py-0.5 rounded text-slate-400 uppercase tracking-wider">Aux</span>}
-            {!isBranch && <ChevronRight size={16} className={`text-slate-600 ${isActive ? 'text-blue-400' : ''}`}/>}
+            {isBranch && <span className={`text-[10px] px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ml-2 border ${isMonitor ? 'bg-blue-900/30 text-blue-300 border-blue-500/30' : 'bg-purple-900/30 text-purple-300 border-purple-500/30'}`}>Aux</span>}
+            {!isBranch && <ChevronRight size={16} className={`text-slate-600 shrink-0 ml-2 ${isActive ? 'text-blue-400' : ''}`}/>}
           </div>
         </div>
       </div>
@@ -1961,6 +2320,11 @@ const DetailPanel = ({ node, subItem, setSubItem }) => {
         )}
         {node.viz === "matrix" && <MatrixVisualizer />}
         {node.viz === "pa" && <PAVisualizer />}
+        
+        {node.viz === "mixbus_map" && <MixBusVisualizer />}
+
+
+        {node.viz === "monitor_map" && <MonitorVisualizer />}
 
         {node.subChain && !subItem && (
           <div>
@@ -2067,6 +2431,163 @@ const DetailPanel = ({ node, subItem, setSubItem }) => {
   );
 };
 
+const MixBusVisualizer = () => {
+  const [view, setView] = useState('overview'); // overview, dca, group, mute
+
+  // Farger
+  const colorVox = "#e879f9"; // Pink
+  const colorBand = "#38bdf8"; // Blue
+  const colorFX = "#a855f7";   // Purple
+  const colorDCA = "#facc15";  // Yellow
+  const colorGrp = "#4ade80";  // Green
+
+  // Hjelper for animert høyttaler (Mini-versjon av den store)
+  const MiniSpeaker = ({ label, side }) => (
+    <div className="relative flex flex-col items-center z-10">
+       <div className={`w-16 h-24 bg-slate-800 rounded-xl border-2 border-slate-700 shadow-2xl flex flex-col items-center justify-center gap-2 ${view === 'overview' || view === 'group' ? 'border-red-500/50 shadow-red-500/20' : ''}`}>
+          <div className="w-4 h-4 bg-slate-900 rounded-full border border-slate-600"></div>
+          <div className="relative w-12 h-12 bg-slate-900 rounded-full border-2 border-slate-600 flex items-center justify-center overflow-visible">
+             <div className="w-8 h-8 bg-gradient-to-br from-slate-700 to-slate-800 rounded-full shadow-lg relative z-10"></div>
+             {/* Puls effekt når lyden er på */}
+             {(view === 'overview' || view === 'group') && (
+                <div className="absolute inset-0 rounded-full border-2 border-red-500/40 animate-ping"></div>
+             )}
+          </div>
+       </div>
+       <div className="w-16 h-1 bg-slate-900 rounded-full mt-2 overflow-hidden border border-slate-800">
+          <div className={`h-full bg-red-500 transition-all duration-300 ${view === 'overview' || view === 'group' ? 'w-3/4' : 'w-0'}`}></div>
+       </div>
+       <span className="text-[9px] font-bold text-slate-500 mt-1 uppercase tracking-widest">{label}</span>
+    </div>
+  );
+
+  const ConnectionLine = ({ active, type, startX, endX, startY, endY, color }) => {
+    if (!active && view !== 'overview') return null;
+    const isDCA = type === 'control';
+    const opacity = active ? 1 : 0.1;
+    const strokeWidth = active ? 3 : 1;
+    const dash = isDCA ? "5,5" : "none";
+    // Bezier kurve
+    const path = `M ${startX} ${startY} C ${startX} ${startY + 60}, ${endX} ${endY - 60}, ${endX} ${endY}`;
+
+    return (
+      <path d={path} stroke={color} strokeWidth={strokeWidth} strokeDasharray={dash} fill="none" opacity={opacity} className={active ? (isDCA ? "animate-pulse" : "animate-signal-pulse") : ""} />
+    );
+  };
+
+  const ChannelIcon = ({ label, icon: Icon, color, dimmed }) => (
+    <div className={`flex flex-col items-center z-10 transition-all duration-300 ${dimmed ? 'opacity-20 grayscale' : 'opacity-100'}`}>
+      <div className="w-10 h-10 rounded-lg border-2 bg-slate-900 flex items-center justify-center shadow-lg" style={{ borderColor: color }}>
+        <Icon size={20} style={{ color: color }} />
+      </div>
+      <span className="text-[9px] font-bold mt-1 text-slate-300">{label}</span>
+    </div>
+  );
+
+  return (
+    <div className="bg-slate-900 rounded-xl p-4 border border-red-500/50 animate-fade-in">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-red-400 font-bold text-sm flex items-center gap-2"><GitMerge size={16}/> Mix Bus & Routing</h3>
+        <div className="flex gap-1 bg-slate-800 p-1 rounded-lg">
+           <button onClick={() => setView('overview')} className={`px-3 py-1 text-[10px] rounded font-bold transition-all ${view === 'overview' ? 'bg-slate-600 text-white' : 'text-slate-400 hover:text-white'}`}>Oversikt</button>
+           <button onClick={() => setView('group')} className={`px-3 py-1 text-[10px] rounded font-bold transition-all ${view === 'group' ? 'bg-green-600 text-white' : 'text-slate-400 hover:text-green-400'}`}>Audio Group</button>
+           <button onClick={() => setView('dca')} className={`px-3 py-1 text-[10px] rounded font-bold transition-all ${view === 'dca' ? 'bg-yellow-600 text-white' : 'text-slate-400 hover:text-yellow-400'}`}>DCA</button>
+           <button onClick={() => setView('mute')} className={`px-3 py-1 text-[10px] rounded font-bold transition-all ${view === 'mute' ? 'bg-red-600 text-white' : 'text-slate-400 hover:text-red-400'}`}>Mute</button>
+        </div>
+      </div>
+
+      <div className="relative w-full h-96 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden mb-4">
+        {/* SVG LAYER */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+           {/* 1. INPUTS TO GROUPS (Audio) */}
+           <ConnectionLine active={view === 'group' || view === 'overview'} type="audio" startX="15%" startY="60" endX="20%" endY="160" color={colorVox} />
+           <ConnectionLine active={view === 'group' || view === 'overview'} type="audio" startX="30%" startY="60" endX="20%" endY="160" color={colorVox} />
+           
+           {/* Band -> Main (Direkte linjer til L og R) */}
+           <ConnectionLine active={view === 'overview'} type="audio" startX="45%" startY="60" endX="40%" endY="280" color={colorBand} /> {/* Gtr -> L */}
+           <ConnectionLine active={view === 'overview'} type="audio" startX="60%" startY="60" endX="60%" endY="280" color={colorBand} /> {/* Bass -> R/L */}
+           <ConnectionLine active={view === 'overview'} type="audio" startX="75%" startY="60" endX="40%" endY="280" color={colorBand} /> {/* Drum -> L */}
+           
+           {/* FX -> Main */}
+           <ConnectionLine active={view === 'overview'} type="audio" startX="90%" startY="60" endX="60%" endY="280" color={colorFX} />
+
+           {/* 2. VOX GROUP TO MAIN */}
+           <ConnectionLine active={view === 'group' || view === 'overview'} type="audio" startX="20%" startY="220" endX="40%" endY="280" color={colorGrp} />
+           <ConnectionLine active={view === 'group' || view === 'overview'} type="audio" startX="20%" startY="220" endX="60%" endY="280" color={colorGrp} />
+
+           {/* 3. DCA CONTROL */}
+           <ConnectionLine active={view === 'dca'} type="control" startX="75%" startY="160" endX="45%" endY="60" color={colorDCA} />
+           <ConnectionLine active={view === 'dca'} type="control" startX="75%" startY="160" endX="60%" endY="60" color={colorDCA} />
+           <ConnectionLine active={view === 'dca'} type="control" startX="75%" startY="160" endX="75%" endY="60" color={colorDCA} />
+
+           {/* 4. MUTE GROUP */}
+           <ConnectionLine active={view === 'mute'} type="control" startX="50%" startY="160" endX="15%" endY="60" color="red" />
+           <ConnectionLine active={view === 'mute'} type="control" startX="50%" startY="160" endX="30%" endY="60" color="red" />
+           <ConnectionLine active={view === 'mute'} type="control" startX="50%" startY="160" endX="45%" endY="60" color="red" />
+           <ConnectionLine active={view === 'mute'} type="control" startX="50%" startY="160" endX="60%" endY="60" color="red" />
+           <ConnectionLine active={view === 'mute'} type="control" startX="50%" startY="160" endX="75%" endY="60" color="red" />
+        </svg>
+
+        {/* LEVEL 1: INPUTS */}
+        <div className="absolute top-4 w-full flex justify-around px-4">
+           <ChannelIcon label="Vox 1" icon={Mic2} color={colorVox} dimmed={view === 'dca'} />
+           <ChannelIcon label="Vox 2" icon={Mic2} color={colorVox} dimmed={view === 'dca'} />
+           <ChannelIcon label="Gitar" icon={Music} color={colorBand} dimmed={view === 'group'} />
+           <ChannelIcon label="Bass" icon={Music} color={colorBand} dimmed={view === 'group'} />
+           <ChannelIcon label="Trommer" icon={Music} color={colorBand} dimmed={view === 'group'} />
+           <ChannelIcon label="FX Retur" icon={Sparkles} color={colorFX} dimmed={view === 'group' || view === 'dca'} />
+        </div>
+
+        {/* LEVEL 2: BUSSES / DCA / MUTE */}
+        <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-around px-8">
+           
+           {/* VOX GROUP */}
+           <div className={`relative flex flex-col items-center p-2 rounded-xl border-2 bg-slate-900 z-10 transition-all ${view === 'group' ? 'scale-110 border-green-500 shadow-[0_0_15px_rgba(74,222,128,0.5)]' : 'border-slate-700 opacity-50'}`}>
+              <Layers size={20} className="text-green-500 mb-1" />
+              <span className="text-[9px] font-bold text-white">VOX GRP</span>
+              {view === 'group' && <div className="absolute -right-12 top-0 bg-slate-800 text-[8px] p-1 rounded border border-slate-600 w-10 text-center">Glue Comp</div>}
+           </div>
+
+           {/* MUTE GROUP */}
+           <div className={`flex flex-col items-center p-2 rounded-xl border-2 border-dashed bg-slate-900 z-10 transition-all ${view === 'mute' ? 'scale-110 border-red-500 bg-red-900/20' : 'border-slate-700 opacity-30'}`}>
+              <Scissors size={20} className="text-red-500 mb-1" />
+              <span className="text-[9px] font-bold text-white">MUTE BAND</span>
+           </div>
+
+           {/* BAND DCA */}
+           <div className={`relative flex flex-col items-center p-2 rounded-xl border-2 border-dashed bg-slate-900 z-10 transition-all ${view === 'dca' ? 'scale-110 border-yellow-500 shadow-[0_0_15px_rgba(250,204,21,0.3)]' : 'border-slate-700 opacity-50'}`}>
+              <Sliders size={20} className="text-yellow-500 mb-1" />
+              <span className="text-[9px] font-bold text-white">BAND DCA</span>
+              {view === 'dca' && <div className="absolute -top-8 w-20 bg-yellow-900/80 text-yellow-200 text-[8px] p-1 rounded text-center">Fjernkontroll</div>}
+           </div>
+        </div>
+
+        {/* LEVEL 3: MAIN LR SPEAKERS */}
+        <div className="absolute bottom-4 w-full flex justify-center gap-16 px-12">
+           <MiniSpeaker label="MAIN L" side="left"/>
+           <MiniSpeaker label="MAIN R" side="right"/>
+        </div>
+      </div>
+
+      {/* INFO BOX */}
+      <div className="bg-slate-800/50 p-3 rounded border border-slate-700 min-h-[80px] flex items-center gap-3">
+         <div className="bg-slate-900 p-2 rounded-full">
+            {view === 'group' && <Layers className="text-green-400" size={20}/>}
+            {view === 'dca' && <Sliders className="text-yellow-400" size={20}/>}
+            {view === 'mute' && <Scissors className="text-red-400" size={20}/>}
+            {view === 'overview' && <GitMerge className="text-blue-400" size={20}/>}
+         </div>
+         <div className="text-xs text-slate-300 leading-relaxed">
+            {view === 'overview' && "Oversikt: Instrumenter og Vokaler rutes enten via Grupper eller direkte til Main LR. DCA styrer nivåer uten å røre lyden."}
+            {view === 'group' && "Audio Group: Samler lyd. Brukes ofte til å 'lime' sammen Trommer (Drum Bus) eller Vokal. Her kan du bruke kompressor på hele pakka!"}
+            {view === 'dca' && "DCA: En fjernkontroll. Ingen lyd går gjennom her! Når du drar i DCA-en, justeres bare gainen på kanalene den styrer. Faderne beveger seg ikke fysisk."}
+            {view === 'mute' && "Mute Group: Panikk-knapp. Kutter lyden på mange kanaler samtidig (f.eks. hele bandet når pastoren snakker)."}
+         </div>
+      </div>
+    </div>
+  );
+};
+
 const SignalFlowDiagram = () => {
   const [selectedNode, setSelectedNode] = useState(null);
   const [subItem, setSubItem] = useState(null);
@@ -2091,19 +2612,20 @@ const SignalFlowDiagram = () => {
           <h3 className="text-lg md:text-xl font-bold text-slate-300 mb-6 flex items-center gap-2 relative z-10">
             <Activity className="text-blue-400"/> Signalvei
           </h3>
-          <div className="block md:hidden pl-2 relative z-10">
-            {signalPathData.map((node, idx) => (
+          {/* Inne i SignalFlowDiagram */}
+<           div className="block md:hidden pl-2 relative z-10">
+              {signalPathData.map((node, idx) => (
               <SignalNodeMobile
-                key={node.id}
-                node={node}
-                isFirst={idx === 0}
-                isLast={idx === signalPathData.length - 1}
-                onClick={handleNodeClick}
-                isActive={selectedNode?.id === node.id}
+              key={node.id}
+              node={node}
+              isFirst={idx === 0}
+              isLast={idx === signalPathData.length - 1}
+              onClick={handleNodeClick}
+              isActive={selectedNode?.id === node.id}
+              index={idx} // <--- LEGG TIL DENNE!
               />
-            ))}
+             ))}
           </div>
-
           <div className="hidden md:block relative h-[500px] w-full">
             <svg className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
                {/* Static Base Line */}
@@ -2292,11 +2814,30 @@ const App = () => {
         }
 
         /* Mobile Vertical Pulse - Comet Effect - CORRECT DIRECTION (DOWN) */
-        @keyframes signalPulseVertical {
-          0% { background-position: 0% -150%; }
-          100% { background-position: 0% 250%; }
+          @keyframes signalPulseVertical {
+          /* Før: Startet på -150% (oppe). Nå: Starter på 250% (nede) */
+          0% { background-position: 0% 250%; }
+          
+          /* Før: Sluttet på 250% (nede). Nå: Slutter på -150% (oppe) */
+          100% { background-position: 0% -150%; }
         }
         .animate-signal-pulse-vertical {
+        @keyframes shootRight {
+          0% { left: -100%; opacity: 0; }
+          50% { opacity: 1; }
+          100% { left: 100%; opacity: 0; }
+        }
+        
+        .animate-shoot-right {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          /* Bruker en gradient som fader ut i begge ender */
+          background: linear-gradient(to right, transparent, currentColor, transparent); 
+          animation: shootRight 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
           background: linear-gradient(to bottom, transparent 0%, rgba(6,182,212,0) 20%, #22d3ee 50%, rgba(6,182,212,0) 80%, transparent 100%);
           background-size: 100% 300%;
           animation: signalPulseVertical 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
