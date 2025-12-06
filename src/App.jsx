@@ -1959,6 +1959,8 @@ const DetailPanel = ({ node, subItem, setSubItem }) => {
         {node.viz === "fader_section" && (
             <FaderSectionVisualizer />
         )}
+        {node.viz === "matrix" && <MatrixVisualizer />}
+        {node.viz === "pa" && <PAVisualizer />}
 
         {node.subChain && !subItem && (
           <div>
@@ -1985,21 +1987,7 @@ const DetailPanel = ({ node, subItem, setSubItem }) => {
             </div>
           </div>
         )}
-
-        {node.viz === "fx_info" && (
-            <FXInfoVisualizer deepDive={node.deepDive} />
-        )}
-        {node.viz === "gain_structure" && (
-            <GainStructureVisualizer />
-        )}
-        {node.viz === "fader_section" && (
-            <FaderSectionVisualizer />
-        )}
         
-        {/* --- LEGG TIL DISSE TO LINJENE: --- */}
-        {node.viz === "matrix" && <MatrixVisualizer />}
-        {node.viz === "pa" && <PAVisualizer />}
-
         {subItem && (
           <div className="mt-4 bg-slate-950 border border-blue-500/30 rounded-xl p-4 animate-fade-in-up shadow-2xl">
             <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
