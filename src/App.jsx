@@ -4,8 +4,10 @@ import {
   Mic2, Sliders, Play, Info, Home,
   Activity, Volume2, Settings,
   Speaker, Radio, ChevronRight, ArrowLeft, Layers,
-  X, Music, Sparkles, BarChart2, Zap, CornerDownRight, Check, Download, AlertTriangle, Clock, List, Star, HelpCircle, Lightbulb, MoveVertical, Copy, Scissors, Disc, GitMerge,
-  Move, Headphones
+  X, Music, Sparkles, BarChart2, Zap, CornerDownRight, Check, 
+  Download, AlertTriangle, Clock, List, Star, HelpCircle, 
+  Lightbulb, MoveVertical, Copy, Scissors, Disc, GitMerge,
+  Move, Headphones, Layout, BookOpen, Youtube, GraduationCap, Search, Film
 } from 'lucide-react';
 
 // --- HELPER FUNCTIONS FOR LOG SCALES ---
@@ -25,30 +27,107 @@ const toPercent = (freq) => {
 // --- DATA ---
 
 const videoData = {
-  "dlive": {
-    title: "DLive C3500 Funksjoner",
-    description: "Spesifikke guider for mikseren vår.",
+  "dlive_course": {
+    title: "dLive C3500 Grunnkurs",
+    description: "Komplett gjennomgang av mikseren fra A til Å.",
     videos: [
-      { id: 1, title: "Grunnleggende oversikt C3500", videoId: "YOUTUBE_ID_HER", desc: "Start her for å forstå overflaten." },
-      { id: 2, title: "Routing og I/O", videoId: "YOUTUBE_ID_HER", desc: "Hvordan patche innganger og utganger." },
-      { id: 3, title: "Bruk av effekter (FX)", videoId: "YOUTUBE_ID_HER", desc: "Klang, delay og insert-effekter." }
+      { id: 1, title: "Del 1: Introduksjon", videoId: "q7BQkq6A5qc", desc: "Start her: Oversikt over overflaten." },
+      { id: 2, title: "Del 2: Oppsett", videoId: "Lgr2cALG_1w", desc: "Grunnleggende konfigurasjon." },
+      { id: 3, title: "Del 3: Prosessering", videoId: "JEvV97HOLm4", desc: "Kanalbehandling." },
+      { id: 4, title: "Del 4: Routing", videoId: "_iQpEfMi9x0", desc: "Hvor går lyden?" },
+      { id: 5, title: "Del 5: Miksing", videoId: "Rzu3udGD4rU", desc: "Selve miksejobben." },
+      { id: 6, title: "Del 6: Scener", videoId: "o6NFlr42Omg", desc: "Lagre og hente opp innstillinger." },
+      { id: 7, title: "Del 7: FX", videoId: "QF74XS_ANGA", desc: "Effekter og rack." },
+      { id: 8, title: "Del 8: SoftKeys", videoId: "Uo_8myEos4M", desc: "Programmerbare knapper." },
+      { id: 9, title: "Del 9: Ganging", videoId: "fYPuy6Vvs2I", desc: "Linke kanaler sammen." },
+      { id: 10, title: "Del 10: DCA & Mute", videoId: "1Ejh3jwbdnw", desc: "Gruppering og muting." },
+      { id: 11, title: "Del 11: Talkback", videoId: "DCQaRbwf1PA", desc: "Kommunikasjon." },
+      { id: 12, title: "Del 12: Signal Generator", videoId: "-gzTjYvbQ68", desc: "Testtoner og støy." },
+      { id: 13, title: "Del 13: RTA", videoId: "USf6nL7fhXI", desc: "Real Time Analyzer." },
+      { id: 14, title: "Del 14: Surface Prefs", videoId: "VyOjG0HuuBQ", desc: "Tilpass overflaten." },
+      { id: 15, title: "Del 15: Show & Scene", videoId: "UASRqs5DKHw", desc: "Filbehandling." },
+      { id: 16, title: "Del 16: Filters", videoId: "jUYv6W1ldDE", desc: "Tilpasning av visning." },
+      { id: 17, title: "Del 17: Copy/Paste", videoId: "HBzvRMSE_B8", desc: "Kopiere innstillinger." },
+      { id: 18, title: "Del 18: Libraries", videoId: "-HTVVfF8jdQ", desc: "Bibliotek for presets." },
+      { id: 19, title: "Del 19: Kildevalg", videoId: "fXQ9OVTXL_I", desc: "Source Select." },
+      { id: 20, title: "Del 20: ABCD Input", videoId: "8kewPAoAERc", desc: "Input alt." },
+      { id: 21, title: "Del 21: Virtual Soundcheck", videoId: "Vu2wnX5_kg8", desc: "Opptak og avspilling." },
+      { id: 22, title: "Del 22: AMM", videoId: "jVlBeC_VUE0", desc: "Automatisk Mikser." },
+      { id: 23, title: "Del 23: MIDI", videoId: "_cid9jVEa8g", desc: "Styring." },
+      { id: 24, title: "Del 24: Director", videoId: "LI0jmTmlOfI", desc: "PC/Mac programvare." },
     ]
   },
-  "basic": {
-    title: "Generell Lydforståelse",
-    description: "Lydteori, EQ, kompresjon og gain-struktur.",
+  "mixing": {
+    title: "Miksing & Teori",
+    description: "Gain, EQ, Kompresjon og Lydforståelse.",
     videos: [
-      { id: 4, title: "Hva er Gain?", videoId: "YOUTUBE_ID_HER", desc: "Forskjellen på gain og volum." },
-      { id: 5, title: "EQ Teknikker", videoId: "YOUTUBE_ID_HER", desc: "Hvordan rydde plass i miksen." },
-      { id: 6, title: "Kompresjon forklart", videoId: "YOUTUBE_ID_HER", desc: "Kontrollere dynamikk." }
+      { id: 101, title: "VIKTIG: Gain Struktur", videoId: "sdrgPJD0Vvg", desc: "Fundamentet for all god lyd. Må sees!" },
+      { id: 102, title: "Lydteori: Forstå lydbølger", videoId: "YEorsfZe4vU", desc: "Hva er frekvenser?" },
+      { id: 103, title: "EQ: Hvordan bruke det", videoId: "ehB5s5SHG4M", desc: "Rydde opp i miksen." },
+      { id: 104, title: "Kompresjon 101", videoId: "jveKIYyafaQ", desc: "Kontrollere dynamikk." },
+      { id: 105, title: "Gate & Expander", videoId: "lxdq-2eCgLg", desc: "Fjerne støy." },
+      { id: 106, title: "Mikse Trommer", videoId: "iX5H5oh6azU", desc: "Praktisk eksempel." },
+      { id: 107, title: "Mikse Vokal", videoId: "Qag5wmZ1xvc", desc: "Få vokalen frem i miksen." },
+      { id: 108, title: "Balanse i miksen", videoId: "QlmQQjGTm6o", desc: "Volum og panorering." },
+      { id: 109, title: "Lydteknikerens rolle", videoId: "w-v75Mgh9dA", desc: "Hva er jobben vår?" },
+      { id: 110, title: "Feedback", videoId: "8BLsze-hE10", desc: "Hvordan unngå hyling." }
     ]
   },
-  "examples": {
-    title: "Kirke-eksempler & Oppsett",
-    description: "Inspirasjon og 'best practice' fra andre kirker.",
+  "inserts": {
+    title: "Inserts & FX",
+    description: "Dyn8, DEEP Plugins og Effekter.",
     videos: [
-      { id: 7, title: "Fullt band oppsett", videoId: "YOUTUBE_ID_HER", desc: "Gjennomgang av en søndagsmiks." },
-      { id: 8, title: "Tale og Vokal", videoId: "YOUTUBE_ID_HER", desc: "Få tydelig tale i store rom." }
+      { id: 201, title: "Oversikt over Inserts", videoId: "idNyL9imKDY", desc: "Hva kan vi sette inn?" },
+      { id: 202, title: "Dyn8 Forklart", videoId: "4jw-8nNgbQ8", desc: "Multiband Comp + DynEQ." },
+      { id: 203, title: "DEEP Compressors", videoId: "huA9ACDOgDA", desc: "Vintage kompressorer i dLive." },
+      { id: 204, title: "Opto Compressor", videoId: "l_42QaBb3mk", desc: "LA-2A stil på vokal." },
+      { id: 205, title: "16T Compressor", videoId: "jHzZUuIrvLw", desc: "1176 stil på trommer." }
+    ]
+  },
+  "tips": {
+    title: "Tips & Kirkeoppsett",
+    description: "Hvordan andre kirker gjør det + smarte triks.",
+    videos: [
+      { id: 301, title: "Kirke-oppsett Ex 1", videoId: "drBZv6NBRIU", desc: "Gjennomgang av en søndagsmiks." },
+      { id: 302, title: "Kirke-oppsett Ex 2", videoId: "WewLdCgHWJI", desc: "Worship miksing." },
+      { id: 303, title: "Effektiv arbeidsflyt", videoId: "Ns8jgVgMvoU", desc: "Jobbe raskere." },
+      { id: 304, title: "Nyttige funksjoner", videoId: "XEuP7hscNy8", desc: "Ting du kanskje ikke visste." },
+      { id: 305, title: "Digital Patching", videoId: "G-_x7xDcn5k", desc: "Avansert routing." },
+      { id: 306, title: "Fjernstyring (iPad)", videoId: "EPjrFU5d_OA", desc: "MixPad appen." },
+      { id: 307, title: "Opptak", videoId: "YgCIo-lzlHw", desc: "Multitrack recording." },
+      { id: 308, title: "Monitor-miksing", videoId: "4KbiXB7-R7w", desc: "Lyd til musikerne." },
+      { id: 309, title: "Feilsøking", videoId: "Djr1ZlVdl34", desc: "Når ting ikke virker." }
+    ]
+  },
+  "director_control": {
+    title: "Director & Styring",
+    description: "dLive Director (PC/Mac) og ekstern kontroll.",
+    videos: [
+      { id: 401, title: "Director Del 1: Oversikt", videoId: "c6Hng92Jf7I", desc: "Intro til programvaren." },
+      { id: 402, title: "Director Del 2: Offline", videoId: "we2BWRlMGhg", desc: "Jobbe uten mikser tilkoblet." },
+      { id: 403, title: "Director Del 3: Touch", videoId: "9X_UDQPmq0c", desc: "Bruk med touch-skjerm." },
+      { id: 404, title: "Director Routing", videoId: "pOZmwrI4mZg", desc: "Patching i software." },
+      { id: 405, title: "Director Scenes", videoId: "g-5QPa0M-TM", desc: "Scenebehandling på PC." },
+      { id: 406, title: "IP Kontrollere", videoId: "q53pzh8LNpw", desc: "IP6 og IP8 oppsett." },
+      { id: 407, title: "GPIO Integrasjon", videoId: "UaUoaxxUotM", desc: "Styring av eksternt utstyr." },
+      { id: 408, title: "ME Personal Mixing", videoId: "t2lT2tVcjhc", desc: "Oppsett av ME-1 / ME-500." },
+      { id: 409, title: "Brukertilganger", videoId: "GmBTc6YxYRk", desc: "User Permissions & Passord." }
+    ]
+  },
+  "advanced_system": {
+    title: "System & Utvidelse",
+    description: "Dante, Waves, DX-bokser og avansert oppsett.",
+    videos: [
+      { id: 501, title: "DX Expanders", videoId: "rl-4xUptlyg", desc: "Koble til flere stagebokser." },
+      { id: 502, title: "DX Link & Redundancy", videoId: "wsrSnanS3b0", desc: "Sikkert oppsett av kabler." },
+      { id: 503, title: "Dante Kort", videoId: "18qI5uBypSQ", desc: "Lyd over nettverk." },
+      { id: 504, title: "Waves Kort", videoId: "XCpAk3Dz-vo", desc: "SoundGrid server oppsett." },
+      { id: 505, title: "SuperMADI", videoId: "0YAjNXiWyAs", desc: "MADI tilkobling (Broadcast)." },
+      { id: 506, title: "FibreACE", videoId: "RqHvxKnyg5M", desc: "Lange strekk med fiber." },
+      { id: 507, title: "GigaACE", videoId: "sW0CgSHqEc4", desc: "Standard tilkobling." },
+      { id: 508, title: "Oppdatering (Firmware)", videoId: "N6NrHo-3-Ls", desc: "Hvordan oppdatere mikseren." },
+      { id: 509, title: "Nettverksoppsett", videoId: "Lkrs6NBKix8", desc: "IP-adresser og tilkobling." },
+      { id: 510, title: "Safes & Recall Filters", videoId: "cXNe_61eLiY", desc: "Hva skal IKKE endres ved sceneskift?" }
     ]
   }
 };
@@ -56,30 +135,70 @@ const videoData = {
 const signalPathData = [
   {
     id: "input",
-    label: "XLR / Stagebox",
+    label: "Kabler & Stageboks",
     iconName: "Mic2",
     x: 50, y: 100,
-    desc: "Startpunktet: Fysisk inngang.",
-    details: "Signalet starter i de analoge stageboksene på scenen. Derfra går det via multikabler (analog slange) bort til FOH, hvor det treffer vår CDM64 MixRack (hjernen i systemet). Pass på at du plugger i riktig nummer!",
-    deepDiveTitle: "Hardware Oppsett",
+    desc: "Oversikt over plugger.",
+    details: "For å få lyd inn i systemet må vi velge riktig kabel og forstå forskjellen på balanserte og ubalanserte signaler.",
+    viz: "input_connectors", 
+    
+    relatedVideos: [
+       { videoId: "l6vrcz2xoqQ", title: "Kildevalg (Source Select)", desc: "Hvordan patche innganger i dLive." }
+    ],
+
+    deepDiveTitle: "Kabel-Teori",
     deepDive: [
-      { name: "Stagebokser", tag: "Scene", info: "Analoge bokser på scenen der mikrofonene plugges inn." },
-      { name: "Multikabel", tag: "Transport", info: "Frakter signalet analogt fra scenen til mikseren på FOH." },
-      { name: "CDM64", tag: "FOH Rack", info: "Selve mikser-hjernen som tar imot alle linjene." }
+      { 
+        name: "XLR (Han & Hun)", 
+        tag: "Balansert", 
+        info: "XLR-kabler har en retning: Signalet går alltid UT av Han-pluggen (pinner) og INN i Hun-pluggen (hull). De er balanserte, som betyr at de kansellerer ut støy. Derfor kan vi strekke dem 100 meter uten problemer." 
+      },
+      { 
+        name: "Jack (Ubalansert)", 
+        tag: "Støy-felle", 
+        info: "Hvorfor Jack? Det er standarden på gitarer fordi den er billig og robust. Men signalet er ubalansert. Det betyr at kabelen fungerer som en antenne. Er kabelen lenger enn 5 meter, vil du garantert få during og støy." 
+      },
+      { 
+        name: "DI-Boks: Problemløseren", 
+        tag: "Konvertering", 
+        info: "Siden Jack støyer på lange strekk, bruker vi en DI-boks. Den gjør om det ubalanserte Jack-signalet til et balansert XLR-signal som kan sendes helt til mikseren uten støy."
+      },
+      { 
+        name: "Ground Lift (Løft)", 
+        tag: "Brum-fjerner", 
+        info: "På DI-boksen finner du ofte en knapp som heter 'Lift'. Hvis du hører en dyp during (50Hz brum) fra en PC eller Synth, trykk på denne! Den kutter jordforbindelsen og bryter 'loopen' som skaper støyen." 
+      },
+      { 
+        name: "Speakon", 
+        tag: "Utgang / Monitor", 
+        info: "Brukes for å koble forsterkere til passive høyttalere. Dette gjelder ofte scenemonitorer (wedges) og hoved-PA. Den låses fast med en vri for sikkerhet. Fører sterk strøm og må aldri blandes med mikrofonkabler." 
+      }
     ]
   },
-{
+  {
     id: "preamp",
     label: "Preamp / Gain",
     iconName: "Activity",
     x: 200, y: 100,
     desc: "Forsterkning av signalet.",
-    details: "Gain er det aller viktigste trinnet i signalkjeden. Det bestemmer arbeidsnivået inn i mikseren. Målet er å løfte signalet godt over støygulvet, men holde god avstand til taket (Headroom).",
-    viz: "gain_structure", // <-- Beholder din favoritt-visualizer!
     
+    details: "Juster gain slik at signalet ligger stabilt rundt det gule feltet (-18dB). Unngå rødt lys (klipping)!",
+    
+    viz: "gain_structure", 
+    
+    relatedVideos: [
+      { videoId: "sdrgPJD0Vvg", title: "VIKTIG: Gain Struktur", desc: "Fundamentet for all god lyd. Må sees!" },
+      { videoId: "G-_x7xDcn5k", title: "Gain viktig?", desc: "Mer om Gain." },
+      { videoId: "w-v75Mgh9dA", title: "Lydteknikerens rolle", desc: "Oversikt over miksing og gain." },
+    ],
+
     deepDiveTitle: "Teori & Innstillinger",
     deepDive: [
-      // --- TEORI (Oppdatert og profesjonell) ---
+      {
+        name: "Hvorfor er Gain viktig?",
+        tag: "Fundamentet",
+        info: "Gain er det aller viktigste trinnet i signalkjeden. Det bestemmer arbeidsnivået inn i mikseren. Målet er å løfte signalet godt over støygulvet, men holde god avstand til taket (Headroom)."
+      },
       { 
         name: "Hva gjør Preampen?", 
         tag: "Signalnivå", 
@@ -88,18 +207,38 @@ const signalPathData = [
       { 
         name: "A/D Konvertering", 
         tag: "Kritisk", 
-        info: "Rett etter preampen gjøres de analoge strømbølgene om til digitale tall (0 og 1). Denne konverteren har et absolutt tak på 0dBFS. Hvis det analoge signalet er for kraftig når det treffer konverteren, finnes det ingen digitale verdier som kan representere det. Toppen av bølgen blir flat, og lyden er irreversibelt ødelagt." 
+        info: "Rett etter preampen gjøres de analoge strømbølgene om til digitale tall (0 og 1). Denne konverteren har et absolutt tak på 0dBFS. Hvis det analoge signalet er for kraftig når det treffer konverteren, finnes det ingen digitale verdier som kan representere det." 
       },
       { 
         name: "Konsekvenser av Klipping", 
         tag: "Advarsel", 
-        info: "Når en lydbølge blir kappet flatt (klipping), endres bølgeformen mot en firkantbølge. Dette introduserer kraftig harmonisk forvrengning og høyfrekvent energi som kan overopphete diskanthøyttalere (tweetere) i PA-anlegget, selv ved moderat volum." 
+        info: "Når en lydbølge blir kappet flatt (klipping), endres bølgeformen mot en firkantbølge. Dette introduserer kraftig harmonisk forvrengning og høyfrekvent energi som kan overopphete diskanthøyttalere." 
       },
-      
-      // --- PRAKTISKE INNSTILLINGER ---
-      { name: "48V Phantom", tag: "Strøm", info: "Leverer 48 volt spenning via XLR-kabelen. Påkrevd for kondensatormikrofoner og aktive DI-bokser." },
-      { name: "Pad (-20dB)", tag: "Demping", info: "En motstand som demper signalet *før* preampen. Brukes hvis kilden (f.eks. Kick eller Snare) er så kraftig at den vrenger selv med Gain på minimum." },
-      { name: "Gain Staging", tag: "Tips", info: "Sikt på at meteret ligger rundt -18dBFS (ofte gult på dLive) i gjennomsnitt. Da har du nok 'Headroom' til plutselige sterke utbrudd uten å klippe." }
+      { 
+        name: "48V Phantom", 
+        tag: "Strøm", 
+        info: "Leverer 48 volt spenning via XLR-kabelen. Påkrevd for kondensatormikrofoner og aktive DI-bokser." 
+      },
+      { 
+        name: "Pad (-20dB)", 
+        tag: "Demping", 
+        info: "En motstand som demper signalet *før* preampen. Brukes hvis kilden er så kraftig at den vrenger selv med Gain på minimum." 
+      },
+      { 
+        name: "Polaritet (Ø)", 
+        tag: "Fase", 
+        info: "Vender signalets fase 180 grader. Kritisk når to mikrofoner plukker opp samme kilde." 
+      },
+      { 
+        name: "Gain Staging", 
+        tag: "Best Practice", 
+        info: "Sikt på at meteret ligger rundt -18dBFS (ofte gult på dLive) i gjennomsnitt." 
+      },
+      {
+        name: "Digital Trim",
+        tag: "Finjustering",
+        info: "På digitale miksere har du ofte en 'Trim' etter A/D-konverteren. Denne påvirker kun volumet digitalt."
+      }
     ]
   },
   {
@@ -108,13 +247,62 @@ const signalPathData = [
     iconName: "Settings",
     x: 350, y: 100,
     desc: "HPF, Gate, EQ, Kompressor.",
-    details: "Kjernen i lydbehandlingen. Trykk under for detaljer.",
+    details: "Kjernen i lydbehandlingen. Velg modul under for å se detaljer og videoer.",
+    
+    // --- GENERELLE VIDEOER FOR HELE STRIPEN ---
+    relatedVideos: [
+       { videoId: "8BLsze-hE10", title: "Basis Kompresjon", desc: "Hvordan kontrollere dynamikk (Start her!)." }, 
+       { videoId: "YgCIo-lzlHw", title: "Generelt om EQ", desc: "Slik former du lyden." }
+    ],
+
     subChain: [
-      { label: "Filters (HPF / LPF)", desc: "Rens opp i toppen og bunnen av lyden.", viz: "hpf" },
-      { label: "Gate", desc: "Fjerner bakgrunnsstøy", viz: "gate" },
-      { label: "Insert A", desc: "Dyn8, MBC, Hypabass...", viz: "inserts" },
-      { label: "PEQ", desc: "4-bånds Equalizer", viz: "peq" },
-      { label: "Compressor", desc: "Dynamikk kontroll", viz: "comp", 
+      { 
+        label: "Filters (HPF / LPF)", 
+        desc: "Rens opp i toppen og bunnen av lyden.", 
+        viz: "hpf" 
+      },
+{ 
+        label: "Gate", 
+        desc: "Fjerner bakgrunnsstøy", 
+        viz: "gate",  // <-- Her manglet det et komma!
+        relatedVideos: [
+           { videoId: "DCQaRbwf1PA", title: "Gate Overview", desc: "Hvordan sette opp noise gate og sidechain." }
+        ]
+      },
+      { 
+        label: "Insert A", 
+        desc: "Dyn8, DEEP, Plugins...", 
+        viz: "inserts",
+        // --- VIDEOER SPESIFIKT FOR INSERTS (Dyn8, DEEP osv) ---
+        relatedVideos: [
+           { videoId: "huA9ACDOgDA", title: "Dyn8 Multiband", desc: "Kraftig verktøy for dynamisk EQ og kompresjon." },
+           { videoId: "l_42QaBb3mk", title: "Hypabass (Sub-synth)", desc: "Lag dypbass fra ingenting." },
+           { videoId: "jHzZUuIrvLw", title: "Opto Compressor", desc: "LA-2A stil. Myk og musikalsk på vokal." },
+           { videoId: "idNyL9imKDY", title: "16T Compressor", desc: "1176 stil. Rask og aggressiv." },
+           { videoId: "4jw-8nNgbQ8", title: "Peak Limiter 76", desc: "Stopper toppene hardt." },
+           { videoId: "Djr1ZlVdl34", title: "Dynamic EQ", desc: "EQ som reagerer på volum." },
+           { videoId: "RGaAl-hx5-M", title: "Multiband Comp", desc: "Komprimer kun bass eller diskant." }
+        ]
+      },
+      { 
+        label: "PEQ", 
+        desc: "4-bånds Equalizer", 
+        viz: "peq",
+        // --- VIDEOER SPESIFIKT FOR EQ ---
+        relatedVideos: [
+           { videoId: "EPjrFU5d_OA", title: "EQ på Vokal", desc: "Praktiske tips for å skru vokal." },
+           { videoId: "YgCIo-lzlHw", title: "Generell EQ Teori", desc: "Frekvenser og filtre forklart." }
+        ]
+      },
+      { 
+        label: "Compressor", 
+        desc: "Dynamikk kontroll", 
+        viz: "comp", 
+        // --- VIDEOER SPESIFIKT FOR KOMPRESSOR ---
+        relatedVideos: [
+           { videoId: "XEuP7hscNy8", title: "Kompresjon i dybden", desc: "Threshold, Ratio, Attack og Release." },
+           { videoId: "8BLsze-hE10", title: "Unngå Feedback", desc: "Hvordan kompresjon påvirker feedback." }
+        ],
         deepDive: [
           { name: "Threshold", tag: "Start", info: "Når den begynner å jobbe." },
           { name: "Ratio", tag: "Mengde", info: "Hvor mye den demper." },
@@ -124,7 +312,7 @@ const signalPathData = [
       }
     ]
   },
-{
+  {
     id: "monitor_branch",
     label: "Aux Send (Monitor)",
     iconName: "CornerDownRight",
@@ -133,38 +321,115 @@ const signalPathData = [
     x: 475, y: 180,
     desc: "Lyd til scene (Post-EQ / Pre-Fade).",
     details: "Lyden tappes her (vanligvis etter EQ/Comp) for å sendes til monitorer. Fader-bevegelser påvirker IKKE monitorlyden.",
-    viz: "monitor_map" // <--- VIKTIG: Legg til denne koden!
+    viz: "monitor_map"
   },
   {
     id: "fader",
-    label: "Fader & Mute",
+    label: "Fader & Mute & PAN",
     iconName: "Sliders",
     x: 600, y: 100,
     desc: "Volum, Pan, Solo & Patching.",
-    details: "Dette er kontrollsenteret for kanalen. Her setter du sluttvolum, plassering i stereo-bildet, og styrer lytting (PAFL).",
+    details: "Dette er kontrollsenteret. Her setter du sluttvolum, plassering i stereo-bildet, og styrer lytting (PAFL).",
     viz: "fader_section",
+    
+    relatedVideos: [
+      { videoId: "w-v75Mgh9dA", title: "Lydteknikerens rolle", desc: "Hva er jobben vår egentlig? (Viktig!)" },
+      { videoId: "YEorsfZe4vU", title: "Balanse i miksen", desc: "Volum og panorering forklart." },
+    ],
+
     deepDiveTitle: "Fader & Kanal Funksjoner",
     deepDive: [
-      { name: "Fader", tag: "Volum", info: "Logaritmisk volumkontroll. Best oppløsning rundt 0dB." },
-      { name: "Pan", tag: "Stereo", info: "Plasserer lyden mot venstre eller høyre høyttaler." },
-      { name: "PAFL", tag: "Lytting", info: "Pre/After Fade Listen. Sender lyden til dine hodetelefoner/monitor." }
+      { 
+        name: "Fader (Volum)", 
+        tag: "Nivå", 
+        info: "Dette er volumkontrol for kanalen. Skalaen er logaritmisk, noe som betyr at du har mest finkontroll rundt 0dB-merket. Under -20dB skjer endringene veldig brått." 
+      },
+      { 
+        name: "Pan (Panorering)", 
+        tag: "Bredde", 
+        info: "Plasserer lyden i lydbildet (Venstre/Høyre). Ved å spre instrumentene skaper du plass i midten til det viktigste: Vokalen og Basstromma." 
+      },
+      { 
+        name: "PAFL (Solo)", 
+        tag: "Lytting", 
+        info: "Pre/After Fade Listen. Dette er din 'Solo'-knapp. Den sender lyden til dine hodetelefoner og monitorhøyttaleren ved mikseren, uten å påvirke lyden ut i salen." 
+      },
+      { 
+        name: "Mute", 
+        tag: "Av/På", 
+        info: "Slår av lyden fullstendig. Husk: Mute kutter også lyden til monitorene (Aux), men påvirker ikke PFL-lytting." 
+      }
     ]
   },
-  {
+{
     id: "fx_branch",
-    label: "FX Send (Klang)",
+    label: "FX Send (Klang & Delay)",
     iconName: "Sparkles",
     type: "branch_out",
     source: "fader",
     x: 750, y: 180,
     desc: "Lyd til klangboks (Post-Fader).",
-    details: "Sendes ETTER faderen. Drar du ned faderen, forsvinner også klangen.",
+    
+    // --- 1. OVERSIKT: KUN KONSEPTET (Ren og ryddig) ---
+    details: "Her gir vi lyden romfølelse! Uten effekter låter det tørt og 'dødt'. \n\n• KLANG (Reverb): Simulerer at instrumentene står i et fysisk rom (som en hall eller stue).\n• DELAY (Ekko): Lager rytmiske repetisjoner av lyden.",
+    
     viz: "fx_info",
-    deepDiveTitle: "Effekt Typer",
+    
+    relatedVideos: [
+      { videoId: "1gyJEdQD3G4", title: "dLive FX Oversikt", desc: "Grundig gjennomgang av effektene." },
+      { videoId: "K9XUNtfflLo", title: "Routing av FX", desc: "Hvordan sende lyd til klangboksen (Send/Return)." },
+      { videoId: "oBB_Xei6mXY", title: "Oppsett av FX Rack", desc: "Hvordan velge og plassere effekter i racket." },
+      { videoId: "YyekNJMWYas", title: "Standard FX Demo", desc: "Demo av effektene vi har (Standard Pack)." }
+    ],
+
+    // --- 2. FORDYPNING: TEKNISK & ROUTING ---
+    deepDiveTitle: "Teknisk Routing",
     deepDive: [
-      { name: "Vokal Reverb (EMT250 / Hall)", tag: "Plate/Hall", info: "Plate: 1.2s - 1.8s decay. Pre-delay 30ms (skiller klang fra vokal). High-cut på 8kHz for å unngå sss-støy i klangen.", usage: "Hovedvokal." },
-      { name: "Tromme Reverb", tag: "Room/NonLin", info: "Kort tid (0.5s - 1.0s). Gjør at trommene høres større ut uten å grøte til miksen. Gated reverb på skarptromme for 80s effekt.", usage: "Skarptromme, Toms." },
-      { name: "Delay (Stereo Tap)", tag: "Echo", info: "Bruk Tap Tempo til å matche låta. Feedback rundt 20-30%. Legg gjerne litt klang PÅ delayen igjen.", usage: "Ballader, Solo." }
+      { 
+        name: "Send & Return", 
+        tag: "Signalvei", 
+        info: "Vi bruker 'Send'-metoden. Du sender en KOPI av lyden til klangboksen (via Aux/Bus). Klangen kommer tilbake på en egen fader (FX Return). Slik kan du mikse tørt og vått signal perfekt." 
+      },
+      // --- NYTT PUNKT: EQ FØR OG ETTER ---
+      { 
+        name: "EQ på Klang (Før vs. Etter)", 
+        tag: "Pro Trick", 
+        info: "Du kan forme klangen to steder:\n1. FØR (Send Master): 'Shit in = Shit out'. Hvis du fjerner bassen FØR den treffer klangboksen, slipper klangen å jobbe med gjørmete frekvenser. Dette gir renest resultat.\n2. ETTER (FX Return): Her former du selve 'halen' som kommer tilbake. F.eks. gjøre klangen mørkere for at den skal ligge bak i miksen." 
+      },
+      { 
+        name: "Post-Fader", 
+        tag: "Viktig", 
+        info: "FX-sendinger er alltid 'Post-Fader'. Det betyr at sender-nivået følger hovedfaderen. Drar du ned vokalen, forsvinner også klangen automatisk." 
+      },
+      { 
+        name: "Rack-begrensninger", 
+        tag: "Hardware", 
+        info: "dLive har 16 Rack-plasser. Hver klang/delay tar én plass. Tunge inserts (Hypabass) stjeler også herfra. (Dyn8 og DEEP bruker ikke av racket)." 
+      }
+    ],
+
+    // --- 3. TIPS: INNSTILLINGER ---
+    proTips: [
+      { 
+        name: "Vokal Reverb: Pre-Delay", 
+        tag: "30-50ms", 
+        info: "Dette er hemmeligheten for tydelig vokal! Det forsinker klangen bittelitt, slik at selve ordet (konsonantene) kommer frem FØR klangen starter. Hindrer 'grøtete' lyd." 
+      },
+      { 
+        name: "Vokal Reverb: EQ", 
+        tag: "HPF/LPF", 
+        info: "Klang skal høres, ikke støye. \n• Kutt toppen (LPF) på 6-8kHz for å fjerne sss-lyder.\n• Kutt bunnen (HPF) på 200Hz for å fjerne rumling." 
+      },
+      { 
+        name: "Delay: Tap Tempo", 
+        tag: "Må gjøres!", 
+        info: "Delay MÅ gå i takt med musikken for å låte bra. Bruk en SoftKey tilegnet 'Tap Tempo' og trykk i takt med låta før du skrur opp volumet på delayen." 
+      },
+      { 
+        name: "Tromme-Klang", 
+        tag: "Kort & Hard", 
+        info: "På skarptromme vil vi ha 'smell', ikke 'hale'. Bruk 'Gated' eller 'NonLin' preset med kort tid (under 1 sek). Det gjør tromma feit uten å rote til miksen." 
+      }
     ]
   },
 {
@@ -173,44 +438,86 @@ const signalPathData = [
     iconName: "Layers",
     x: 900, y: 100,
     desc: "Summen av alle kanaler.",
-    details: "Her samles alle signalene før de går til høyttalerne. Det er smart å organisere miksen i Grupper og DCA-er.",
+    
+    details: "Her samles alle signalene før de går til høyttalerne. Det er smart å organisere miksen i Grupper og DCA-er for å ha kontroll.",
+    
     viz: "mixbus_map",
+    
+    relatedVideos: [
+      { videoId: "JEvV97HOLm4", title: "Bus Configuration", desc: "Hvordan sette opp og endre antall Busser (Groups, Aux, Matrix)." },
+      { videoId: "VyOjG0HuuBQ", title: "Output Processing", desc: "Gjennomgang av prosessering på utganger (GEQ, Comp, Insert)." },
+      { videoId: "Lgr2cALG_1w", title: "Oppsett & Default Show", desc: "Hvordan starte med et rent oppsett (FOH/Monitor)." }
+    ],
+
     deepDiveTitle: "Pro Tips: Gruppering",
     deepDive: [
       { 
         name: "Audio Groups (Sub-grupper)", 
         tag: "Audio", 
-        info: "Bruk grupper når du vil behandle flere kanaler som én enhet. \n• Trommer: 'Glue'-kompresjon for å få settet til å låte tett. \n• Vokal: Felles EQ eller De-Esser for å samle koret." 
+        info: "En 'Group' er en samlebuss der lyden faktisk passerer gjennom. Dette gir deg to fordeler:\n1. Felles Prosessering: Du kan legge en kompressor på hele trommesettet ('Glue') for å få det til å låte tett, eller en felles EQ på koret.\n2. Routing: Du sender gruppene til Main LR. Dette gir deg full kontroll på balansen mellom instrumentgruppene." 
       },
       { 
-        name: "DCA (Control)", 
-        tag: "Styring", 
-        info: "Bruk DCA når du bare vil styre volumet. \n• Band DCA: Skru ned hele bandet når noen snakker. \n• Trommer DCA: Enklere enn å flytte 8 fadere. \nMerk: DCA flytter ikke faderne fysisk, den endrer bare volumet internt." 
+        name: "DCA (Fjernstyring)", 
+        tag: "Control", 
+        info: "DCA minner om en gruppe fordi du styrer volumet på mange kanaler med én spak (f.eks. hele bandet). MEN forskjellen er kritisk: Det går **ingen lyd** gjennom en DCA. Den fungerer som en fjernkontroll som sier til de individuelle kanalene at de skal skru seg opp/ned. Derfor kan du IKKE legge EQ eller Kompressor på en DCA.\n\n• Smart bruk: Legg alle FX-returer på en DCA for å fjerne klang når noen prater.\n• DCA Spills: Trykk på DCA-knappen for å hente opp alle medlemmene på overflaten umiddelbart." 
       },
       { 
         name: "Mute Groups", 
         tag: "Praktisk", 
-        info: "Lag en 'All Band Mute' og en 'All Vocal Mute'. Da kan du raskt rense lydbildet mellom sanger eller under taler." 
+        info: "Lag en 'All Band Mute' og en 'All Vocal Mute'. Da kan du raskt rense lydbildet mellom sanger eller under taler med ett trykk." 
       }
     ]
   },
   {
     id: "matrix",
-    label: "Matrix / Zoner", // Endret navn
+    label: "Matrix / Zoner",
     iconName: "Radio",
-    x: 1050, y: 100,       // Justerte X litt for plass
-    viz: "matrix",         // KOBLING TIL VISUALIZER
+    x: 1050, y: 100,
+    viz: "matrix",
     desc: "Fordeling til rom.",
     details: "Main LR sendes inn her, og splittes ut til PA, Foajé, Streaming osv. Her kan du gjøre egne justeringer for hvert rom."
   },
-  {
-    id: "speakers",        // NY BLOKK
+{
+    id: "speakers",
     label: "PA / Høyttalere",
     iconName: "Speaker",
     x: 1200, y: 100,
-    viz: "pa",             // KOBLING TIL VISUALIZER
+    viz: "pa",
     desc: "Siste stopp!",
-    details: "Det elektriske signalet gjøres om til fysiske lydbølger som treffer ørene til publikum."
+    
+    // --- OVERSIKT ---
+    details: "Siste ledd i kjeden! Vi bruker et profesjonelt d&b audiotechnik-system. Det er et 'passivt' system, som betyr at høyttalerne drives av kraftige forsterkere plassert under scenen.",
+    
+    deepDiveTitle: "Vårt d&b System",
+    deepDive: [
+      // --- TEORI: PASSIVT VS AKTIVT ---
+      { 
+        name: "Passivt vs. Aktivt", 
+        tag: "System", 
+        info: "Mange små høyttalere er 'Aktive' (har stikkontakt og forsterker inni seg). Vårt d&b-system er PASSIVT. Det betyr at selve kassen bare inneholder elementer og delefilter. All kraften kommer fra eksterne forsterkere via tykke høyttalerkabler (SpeakOn)." 
+      },
+      
+      // --- RIGGEN DERES ---
+      { 
+        name: "Hoved-PA (Mains)", 
+        tag: "L/R", 
+        info: "Hovedanlegget dekker salen i Stereo. \n• Topper: 2 stk Venstre + 2 stk Høyre (Tar seg av vokal og instrumenter).\n• Subber: 2 stk Venstre + 2 stk Høyre (Tar seg av dypbassen fra kick og bass)." 
+      },
+      
+      // --- FRONTFILLS ---
+      { 
+        name: "Frontfills", 
+        tag: "Utfylling", 
+        info: "Hoved-PA henger høyt og skyter ofte over hodet på de som står helt inntil scenekanten. Derfor har vi 2 mindre høyttalere på scenen. Disse fyller 'hullet' i midten så første rad også får klar lyd." 
+      },
+      
+      // --- FORSTERKERE ---
+      { 
+        name: "Forsterkere (Amps)", 
+        tag: "Under scenen", 
+        info: "Under scenen står d&b-forsterkerne. De gjør to ting:\n1. Forsterker signalet opp til tusenvis av watt.\n2. Prosessering (DSP): De vet nøyaktig hvilke høyttalere som er koblet til og beskytter dem mot å sprenge hvis du spiller for høyt." 
+      }
+    ]
   }
 ];
 
@@ -220,7 +527,10 @@ const IconHelper = ({ name, size = 24, className }) => {
   const icons = {
     Mic2, Sliders, Play, Info, Home, Activity, Volume2, Settings,
     Speaker, Radio, Download, ChevronRight, ArrowLeft, Layers,
-    X, Music, Sparkles, BarChart2, Zap, CornerDownRight, Check, AlertTriangle, Clock, List, Star, HelpCircle, Lightbulb, MoveVertical, Copy, Scissors, Disc, GitMerge
+    X, Music, Sparkles, BarChart2, Zap, CornerDownRight, Check, 
+    AlertTriangle, Clock, List, Star, HelpCircle, Lightbulb, 
+    MoveVertical, Copy, Scissors, Disc, GitMerge, Move, Headphones,
+    Layout, BookOpen, Youtube, GraduationCap
   };
   const IconComponent = icons[name] || Activity;
   return <IconComponent size={size} className={className} />;
@@ -241,82 +551,267 @@ const NavButton = ({ active, onClick, Icon, text, isMobile }) => (
 
 // ... (HPF, Gate, PEQ, Compressor, FXInfo, GainStructure, FaderSection must be defined before being used)
 // --- NY HJELPEKOMPONENT FOR PROFF KNOTT-FØLELSE ---
-const RotaryKnob = ({ value, setValue, min = 0, max = 100, label, color = "#38bdf8", size = 64 }) => {
-  // State for å spore draing
+// --- NY KOMPONENT: VIDEO I SIGNALVEIEN ---
+
+const VideoHighlight = ({ videoId, title }) => {
+  const [showVideo, setShowVideo] = useState(false);
+
+  if (!videoId) return null;
+
+  return (
+    <div className="mt-6 border-t border-slate-700 pt-4 animate-fade-in">
+      {!showVideo ? (
+        <button 
+          onClick={() => setShowVideo(true)}
+          className="w-full bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-red-500/50 transition-all rounded-xl p-3 flex items-center gap-4 group text-left group"
+        >
+          <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-lg shadow-red-900/30">
+            <Play size={18} className="text-white fill-current ml-1" />
+          </div>
+          <div>
+            <span className="text-[10px] text-red-400 font-bold uppercase tracking-wider block mb-0.5">Se Video</span>
+            <span className="text-sm font-bold text-white group-hover:text-red-100 transition-colors">{title || "Lær mer om dette"}</span>
+          </div>
+          <ChevronRight size={16} className="ml-auto text-slate-600 group-hover:text-white" />
+        </button>
+      ) : (
+        <div className="rounded-xl overflow-hidden border border-slate-700 shadow-2xl bg-black animate-fade-in relative">
+          <div className="relative pb-[56.25%] h-0">
+            <iframe 
+              className="absolute top-0 left-0 w-full h-full"
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&origin=${window.location.origin}`} 
+              title="YouTube video player" 
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen
+            ></iframe>
+          </div>
+          <button 
+            onClick={() => setShowVideo(false)}
+            className="w-full py-2 bg-slate-900 text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800 transition-colors border-t border-slate-800"
+          >
+            Lukk Video
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const RotaryKnob = ({ value, setValue, label, color = "#38bdf8", size = 50 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const startY = useRef(0);
-  const startValue = useRef(0);
+  const startVal = useRef(0);
 
-  // Når du trykker ned
   const handlePointerDown = (e) => {
+    e.preventDefault(); 
     setIsDragging(true);
     startY.current = e.clientY;
-    startValue.current = value;
-    e.currentTarget.setPointerCapture(e.pointerId); // Låser fingeren til knotten
+    startVal.current = value;
   };
 
-  // Når du beveger fingeren
-  const handlePointerMove = (e) => {
-    if (!isDragging) return;
+  useEffect(() => {
+    const handlePointerMove = (e) => {
+      if (!isDragging) return;
+      const deltaY = startY.current - e.clientY;
+      let newVal = startVal.current + (deltaY * 1.5);
+      if (newVal < 0) newVal = 0;
+      if (newVal > 100) newVal = 100;
+      setValue(newVal);
+    };
     
-    // Beregn forskjell. Vi deler på 2 for å gjøre den litt mindre følsom (mer presis)
-    const deltaY = (startY.current - e.clientY) / 2; 
-    
-    let newValue = startValue.current + deltaY;
-    
-    // Hold verdien innenfor min/max
-    if (newValue < min) newValue = min;
-    if (newValue > max) newValue = max;
-    
-    setValue(Math.round(newValue));
-  };
+    const handlePointerUp = () => setIsDragging(false);
 
-  const handlePointerUp = (e) => {
-    setIsDragging(false);
-    e.currentTarget.releasePointerCapture(e.pointerId);
-  };
+    if (isDragging) {
+      window.addEventListener('pointermove', handlePointerMove);
+      window.addEventListener('pointerup', handlePointerUp);
+    }
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+    };
+  }, [isDragging, setValue]);
 
-  // Beregn rotasjon (-135 til 135 grader er standard for lydutstyr)
-  const percentage = (value - min) / (max - min);
-  const rotation = -135 + (percentage * 270);
+  const rotation = -135 + (value / 100) * 270;
 
   return (
     <div 
-      className="flex flex-col items-center gap-2 relative touch-none select-none cursor-ns-resize group"
+      className="flex flex-col items-center gap-1 select-none touch-none cursor-ns-resize z-30" 
       onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
     >
-      {label && <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-400 transition-colors">{label}</div>}
-      
-      <div className="relative" style={{ width: size, height: size }}>
-        <svg viewBox="0 0 100 100" className="w-full h-full pointer-events-none filter drop-shadow-lg">
-          {/* Bakgrunnssirkel */}
-          <circle cx="50" cy="50" r="45" fill="#1e293b" stroke="#334155" strokeWidth="2" />
-          
-          {/* Prikker rundt */}
-          <circle cx="20" cy="80" r="2" fill="#475569" />
-          <circle cx="80" cy="80" r="2" fill="#475569" />
-          <circle cx="50" cy="10" r="2" fill="#475569" />
-
-          {/* Selve viseren */}
-          <line 
-            x1="50" y1="50" x2="50" y2="10" 
-            stroke={isDragging ? "#ffffff" : color} 
-            strokeWidth={isDragging ? 5 : 4} 
-            strokeLinecap="round" 
-            transform={`rotate(${rotation} 50 50)`} 
-            className="transition-colors duration-200"
+      <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
+        <svg width={size} height={size} viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#1e293b" strokeWidth="8" strokeDasharray="200" strokeDashoffset="50" transform="rotate(135 50 50)" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke={color} strokeWidth="8" 
+            strokeDasharray={`${(value / 100) * 188} 300`} 
+            transform="rotate(135 50 50)" 
+            className="transition-all duration-75"
           />
         </svg>
+        <div 
+          className="absolute rounded-full bg-slate-800 border-2 border-slate-600 shadow-xl flex items-center justify-center"
+          style={{ width: size * 0.7, height: size * 0.7, transform: `rotate(${rotation}deg)` }}
+        >
+          <div className="w-1.5 h-4 bg-white mb-auto mt-1 rounded-full"></div>
+        </div>
       </div>
+      <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{label}</div>
+    </div>
+  );
+};
+
+const InputConnectorsVisualizer = () => {
+  return (
+    <div className="grid grid-cols-2 gap-3 mt-2">
       
-      {/* Verdivisning som dukker opp når du drar */}
-      <div className={`text-xs font-mono px-2 py-1 rounded min-w-[40px] text-center transition-all
-        ${isDragging ? 'bg-blue-600 text-white scale-110 shadow-lg' : 'bg-slate-800 text-blue-300'}`}>
-        {value}
+      {/* 1. XLR (Mer detaljert hunn-kontakt) */}
+      <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 flex flex-col items-center justify-between text-center min-h-[110px]">
+        <div className="relative">
+          {/* Selve kontakten (Sølv ring) */}
+          <div className="w-14 h-14 rounded-full bg-slate-800 border-4 border-slate-400 flex items-center justify-center relative shadow-inner">
+            {/* Låse-knapp (Push) */}
+            <div className="absolute -top-1 w-4 h-2 bg-slate-500 rounded-b"></div>
+            {/* 3 Hull (Hunn-kontakt) */}
+            <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-1">
+               <div className="w-2.5 h-2.5 bg-black rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)]"></div>
+               <div className="w-2.5 h-2.5 bg-black rounded-full shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)]"></div>
+               <div className="w-2.5 h-2.5 bg-black rounded-full col-span-2 mx-auto shadow-[inset_0_1px_2px_rgba(255,255,255,0.2)]"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <span className="text-xs font-bold text-white block">XLR</span>
+          <span className="text-[9px] text-slate-400">Mikrofoner (Inn)</span>
+        </div>
       </div>
+
+      {/* 2. JACK (Med kabel-hale) */}
+      <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 flex flex-col items-center justify-between text-center min-h-[110px]">
+        <div className="flex items-center justify-center h-14 w-full relative">
+           {/* Kabel hale (SVG for krøll) */}
+           <svg width="40" height="20" viewBox="0 0 40 20" className="absolute right-[60%] top-1/2 -translate-y-1/2 text-slate-600 stroke-current fill-none" style={{zIndex: 0}}>
+              <path d="M40,10 C30,10 30,18 20,18 C10,18 10,2 0,2" strokeWidth="3" strokeLinecap="round"/>
+           </svg>
+           
+           {/* Selve Jack Pluggen */}
+           <div className="flex items-center relative z-10 rotate-[-15deg]">
+              {/* Kropp/Håndtak */}
+              <div className="w-8 h-4 bg-slate-700 rounded-l border border-slate-600"></div>
+              {/* Isolator */}
+              <div className="w-1 h-3 bg-black"></div>
+              {/* Sleeve */}
+              <div className="w-4 h-2.5 bg-slate-300"></div>
+              {/* Ring (Isolator) */}
+              <div className="w-0.5 h-2.5 bg-black"></div>
+              {/* Tupp */}
+              <div className="w-3 h-2.5 bg-slate-300 rounded-r-full"></div>
+           </div>
+        </div>
+        <div>
+          <span className="text-xs font-bold text-white block">Jack (6.3mm)</span>
+          <span className="text-[9px] text-slate-400">Instrumenter (Inn)</span>
+        </div>
+      </div>
+
+      {/* 3. DI BOKS (Viser flyten) */}
+      <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 flex flex-col items-center justify-between text-center min-h-[110px]">
+        <div className="flex items-center gap-1 mt-2">
+            {/* Jack ikon liten */}
+            <div className="flex flex-col items-center">
+               <div className="w-1 h-3 bg-slate-500 rounded-full mb-0.5"></div>
+               <span className="text-[8px] text-slate-500">Jack</span>
+            </div>
+            {/* BOKSEN */}
+            <div className="w-16 h-10 bg-yellow-600/20 border-2 border-yellow-600 rounded flex items-center justify-center shadow-[0_0_10px_rgba(234,179,8,0.2)]">
+               <span className="text-xs font-bold text-yellow-500">DI</span>
+            </div>
+            {/* Pil */}
+            <ChevronRight size={12} className="text-slate-500"/>
+            {/* XLR ikon liten */}
+            <div className="flex flex-col items-center">
+               <div className="w-3 h-3 rounded-full border border-slate-500 bg-black"></div>
+               <span className="text-[8px] text-slate-500">XLR</span>
+            </div>
+        </div>
+        <span className="text-[9px] text-slate-400 mt-2">Konverterer Jack til XLR</span>
+      </div>
+
+      {/* 4. SPEAKON (Blå/Svart) */}
+      <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 flex flex-col items-center justify-between text-center min-h-[110px]">
+        <div className="relative w-14 h-14 flex items-center justify-center">
+           {/* Ytre ring (Blå) */}
+           <div className="w-12 h-12 rounded-full bg-blue-900/50 border-4 border-blue-600 flex items-center justify-center shadow-[0_0_10px_rgba(37,99,235,0.3)]">
+              {/* Indre lås (Svart) */}
+              <div className="w-6 h-6 bg-black rounded-full relative">
+                 {/* Keyway slot */}
+                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-2 bg-slate-700"></div>
+              </div>
+           </div>
+        </div>
+        <div>
+          <span className="text-xs font-bold text-white block">Speakon</span>
+          <span className="text-[9px] text-slate-400">Høyttaler (Ut)</span>
+        </div>
+      </div>
+
+    </div>
+  );
+};
+
+// --- VIKTIG: Denne må ligge UTENFOR hovedfunksjonen for å unngå glitching ---
+// --- NY OG KRAFTIGERE HØYTTALER-KOMPONENT ---
+// --- 2. HJELPEKOMPONENT: HØYTTALER (Nå med låst takt) ---
+const CompactSpeaker = ({ intensity, label, isMuted }) => {
+  const effectiveIntensity = isMuted ? 0 : intensity;
+  
+  // Skalering (Hvor mye elementet "hopper" mot deg)
+  const coneScale = 1 + (effectiveIntensity * 0.25); 
+  
+  // Farge (Blir hvitere ved høyt trykk)
+  const waveColor = effectiveIntensity > 0.8 ? 'border-cyan-200' : 'border-cyan-500';
+
+  return (
+    <div className={`flex flex-col items-center gap-2 transition-all duration-300 ${isMuted ? 'opacity-30 grayscale' : 'opacity-100'}`}>
+       <div className="relative w-16 h-24 bg-slate-800 rounded-xl border-2 border-slate-700 shadow-2xl flex items-center justify-center overflow-visible z-10">
+          
+          {/* Pulsering 1 (FAST HASTIGHET for sync) */}
+          {effectiveIntensity > 0.05 && (
+            <div className={`absolute inset-0 rounded-xl border-[3px] ${waveColor} animate-ping pointer-events-none`} 
+                style={{ 
+                    animationDuration: '1.4s', 
+                    opacity: effectiveIntensity * 0.8, 
+                    transform: `scale(${1 + effectiveIntensity})`
+                }}
+            ></div>
+          )}
+          
+          {/* Pulsering 2 (FAST HASTIGHET for sync) */}
+          {effectiveIntensity > 0.4 && (
+            <div className={`absolute inset-0 rounded-xl border-2 ${waveColor} animate-ping pointer-events-none`} 
+                style={{ 
+                    animationDuration: '1.4s', 
+                    animationDelay: '0.3s', 
+                    opacity: effectiveIntensity * 0.5, 
+                    zIndex: -1 
+                }}
+            ></div>
+          )}
+
+          {/* Selve elementet */}
+          <div className="w-10 h-10 bg-slate-900 rounded-full border-2 border-slate-600 shadow-inner flex items-center justify-center relative z-20 transition-transform duration-75 ease-out"
+              style={{ transform: `scale(${coneScale})` }}>
+              <div className="w-5 h-5 bg-slate-800 rounded-full border border-slate-700"></div>
+          </div>
+
+          {/* Volum-søyle */}
+          <div className="absolute bottom-2 w-10 h-1.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800 z-20">
+              <div className={`h-full transition-all duration-75 shadow-[0_0_8px_rgba(34,211,238,0.8)] ${effectiveIntensity > 0.9 ? 'bg-red-500' : 'bg-cyan-400'}`}
+                  style={{ width: `${effectiveIntensity * 100}%` }}></div>
+          </div>
+       </div>
+       <span className="text-[10px] font-bold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800 shadow-sm mt-1">
+         {label}
+       </span>
     </div>
   );
 };
@@ -328,75 +823,18 @@ const FaderSectionVisualizer = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isPafl, setIsPafl] = useState(false);
 
-  // --- STEREO VISUALIZER ---
-  const StereoVisualizer = ({ pan, fader, muted, pafl }) => {
-    let leftVol = pan <= 50 ? 1 : (100 - pan) / 50;
-    let rightVol = pan >= 50 ? 1 : pan / 50;
-    const masterVol = fader / 100;
-    
-    leftVol *= masterVol;
-    rightVol *= masterVol;
+  // Lyd-logikk
+  let leftVol = panVal <= 50 ? 1 : (100 - panVal) / 50;
+  let rightVol = panVal >= 50 ? 1 : panVal / 50;
+  const masterVol = faderPos / 100;
+  
+  const finalL = isMuted ? 0 : leftVol * masterVol;
+  const finalR = isMuted ? 0 : rightVol * masterVol;
 
-    if (muted) { leftVol = 0; rightVol = 0; }
-
-    const SoundRipples = ({ intensity }) => {
-        if (intensity < 0.05) return null; 
-        const style = { 
-            '--scale-factor': 1.8 + (intensity * 2.0),
-            opacity: intensity * 0.8 
-        };
-        return (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-               <div className="absolute inset-0 rounded-full bg-cyan-400/30 blur-xl transition-opacity duration-100" style={{ opacity: intensity > 0.7 ? 1 : 0 }}></div>
-               <div className="absolute w-full h-full rounded-full border-[3px] border-cyan-300/60 animate-ping" style={{ animationDuration: '0.8s', ...style }}></div>
-               <div className="absolute w-full h-full rounded-full border-2 border-cyan-400/40 animate-ping" style={{ animationDuration: '1.2s', animationDelay: '0.1s', ...style }}></div>
-               <div className="absolute w-full h-full rounded-full bg-cyan-400/20 animate-pulse" style={{ transform: `scale(${1 + (intensity * 1.2)})` }}></div>
-            </div>
-        );
-    };
-
-    const SpeakerCone = ({ intensity, label }) => (
-       <div className="flex flex-col items-center gap-3 relative transition-opacity duration-300" style={{ opacity: muted ? 0.4 : 1 }}>
-          <div className="relative w-16 h-24 bg-slate-800 rounded-xl border-2 border-slate-700 shadow-2xl flex flex-col items-center justify-center gap-3 z-10">
-             <div className="w-4 h-4 bg-slate-900 rounded-full border border-slate-600 shadow-inner"></div>
-             <div className="relative w-12 h-12 bg-slate-900 rounded-full border-2 border-slate-600 flex items-center justify-center shadow-inner overflow-visible">
-                 <div 
-                    className="w-8 h-8 bg-gradient-to-br from-slate-700 to-slate-800 rounded-full shadow-lg transition-transform duration-75 ease-out border border-slate-600 relative z-10"
-                    style={{ transform: `scale(${1 + (intensity * 0.4)})` }} 
-                 ></div>
-                 <SoundRipples intensity={intensity} />
-             </div>
-          </div>
-          <div className="w-16 h-1 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
-             <div className="h-full bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,1)] transition-all duration-75" style={{ width: `${intensity * 100}%` }}></div>
-          </div>
-          <span className="text-[9px] font-bold text-slate-500 tracking-widest">{label}</span>
-       </div>
-    );
-
-    return (
-       <div className="relative flex justify-between items-center w-full px-6 py-4 bg-slate-900/50 rounded-xl border border-slate-800/50 mb-2 h-40">
-          <SpeakerCone intensity={leftVol} label="L" />
-          
-          {/* PAFL HEADPHONES (Statisk, uten animasjon som re-trigger) */}
-          {pafl && (
-             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-20">
-                <div className="relative">
-                   <div className="absolute inset-0 bg-yellow-500/20 blur-xl rounded-full"></div>
-                   <Headphones size={48} className="text-yellow-400 relative z-10 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
-                </div>
-                <div className="text-[10px] font-bold text-yellow-400 mt-2 bg-yellow-900/40 px-2 py-0.5 rounded border border-yellow-500/30">SOLO</div>
-             </div>
-          )}
-
-          <SpeakerCone intensity={rightVol} label="R" />
-       </div>
-    );
-  };
-
-  // Logic
+  // Fader-logikk
   const faderRef = useRef(null);
   const handleFaderDrag = (e) => {
+    e.preventDefault(); 
     const rect = faderRef.current.getBoundingClientRect();
     const bottomY = rect.bottom;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -404,12 +842,6 @@ const FaderSectionVisualizer = () => {
     let newPct = ((bottomY - clientY) / height) * 100;
     if (newPct < 0) newPct = 0; if (newPct > 100) newPct = 100;
     setFaderPos(Math.round(newPct));
-  };
-
-  const getPanText = (val) => {
-    if (val === 50) return "C";
-    if (val < 50) return `L${50 - val}`;
-    return `R${val - 50}`;
   };
 
   const getDb = (pos) => {
@@ -423,99 +855,84 @@ const FaderSectionVisualizer = () => {
     switch(activeTab) {
       case 'mixer':
         return (
-          <div className="animate-fade-in relative z-10 select-none pb-4">
-            
-            <StereoVisualizer pan={panVal} fader={faderPos} muted={isMuted} pafl={isPafl} />
-
-            {/* CHANNEL STRIP */}
-            <div className="flex flex-col items-center bg-slate-950 p-6 rounded-xl border border-slate-800 shadow-inner">
+          <div className="animate-fade-in relative z-10 select-none pb-4 mt-6">
+            <div className="flex flex-col items-center bg-slate-950 p-4 pt-8 rounded-xl border border-slate-800 shadow-inner">
                 
-                {/* 1. PAN KNOB */}
-                <div className="mb-6 relative z-20">
-                   <RotaryKnob 
-                      value={panVal} 
-                      setValue={setPanVal} 
-                      label="PAN" 
-                      color="#38bdf8"
-                      size={56} 
-                   />
+                {/* 1. TOPP-SEKSJON: HØYTTALERE + PAN */}
+                <div className="flex items-end justify-between w-full mb-8 px-2 relative h-28">
+                    <CompactSpeaker intensity={finalL} label="LEFT" isMuted={isMuted} />
+                    
+                    <div className="relative z-20 mx-2 flex flex-col items-center justify-end h-full pb-1">
+                       {/* PAFL INDIKATOR */}
+                       <div className={`absolute -top-10 transition-all duration-300 pointer-events-none ${isPafl ? 'opacity-100 -translate-y-1' : 'opacity-0 translate-y-2'}`}>
+                           <div className="bg-yellow-500 text-black px-2 py-0.5 rounded text-[9px] font-bold shadow-lg flex items-center gap-1 border border-yellow-400">
+                             <Headphones size={10}/> SOLO
+                           </div>
+                           <div className="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px] border-t-yellow-500 mx-auto"></div>
+                       </div>
+                       
+                       {/* HER ER ENDRINGEN: size={70} */}
+                       <RotaryKnob value={panVal} setValue={setPanVal} label="PAN" color={isPafl ? "#eab308" : "#38bdf8"} size={70} />
+                    </div>
+                    
+                    <CompactSpeaker intensity={finalR} label="RIGHT" isMuted={isMuted} />
                 </div>
 
                 {/* 2. KNAPPER */}
-                <div className="flex gap-3 mb-4 w-full justify-center">
-                    <button 
-                      onClick={() => setIsMuted(!isMuted)}
-                      className={`w-12 h-8 rounded font-bold text-[9px] transition-all shadow-lg flex items-center justify-center border
-                        ${isMuted ? 'bg-red-600 text-white border-red-500 shadow-red-900/50' : 'bg-slate-800 text-slate-400 border-slate-700'}`}
-                    >
-                      MUTE
+                <div className="flex gap-4 mb-6 w-full justify-center">
+                    <button onClick={() => setIsMuted(!isMuted)} className={`w-16 h-10 rounded-lg font-bold text-[10px] transition-all shadow-lg flex flex-col items-center justify-center gap-0.5 border ${isMuted ? 'bg-red-600 text-white border-red-500 shadow-red-900/50 scale-95' : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'}`}>
+                      <span className="leading-none tracking-wider">MUTE</span>
+                      <div className={`w-3 h-1 rounded-full mt-1 ${isMuted ? 'bg-white' : 'bg-slate-900'}`}></div>
                     </button>
-                    <button 
-                      onClick={() => setIsPafl(!isPafl)}
-                      className={`w-12 h-8 rounded font-bold text-[9px] transition-all shadow-lg flex items-center justify-center border
-                        ${isPafl ? 'bg-yellow-500 text-black border-yellow-400 shadow-yellow-500/50' : 'bg-slate-800 text-slate-400 border-slate-700'}`}
-                    >
-                      PAFL
+                    <button onClick={() => setIsPafl(!isPafl)} className={`w-16 h-10 rounded-lg font-bold text-[10px] transition-all shadow-lg flex flex-col items-center justify-center gap-0.5 border ${isPafl ? 'bg-yellow-500 text-black border-yellow-400 shadow-yellow-500/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'}`}>
+                      <span className="leading-none tracking-wider">PAFL</span>
+                      <div className={`w-3 h-1 rounded-full mt-1 ${isPafl ? 'bg-black animate-pulse' : 'bg-slate-900'}`}></div>
                     </button>
                 </div>
 
-                {/* 3. FADER TRACK (Krympet høyde til h-48) */}
+                {/* 3. FADER TRACK */}
                 <div className="flex flex-col items-center w-full">
                     <div 
-                      className="relative w-16 h-48 bg-slate-900 rounded border border-slate-800 flex justify-center cursor-ns-resize touch-none"
-                      ref={faderRef}
-                      onPointerMove={(e) => e.buttons === 1 && handleFaderDrag(e)}
-                      onPointerDown={handleFaderDrag}
+                        className="relative w-20 h-56 bg-slate-900 rounded-lg border-2 border-slate-800 flex justify-center cursor-ns-resize touch-none shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]" 
+                        ref={faderRef} 
+                        onPointerMove={(e) => e.buttons === 1 && handleFaderDrag(e)} 
+                        onPointerDown={handleFaderDrag}
                     >
-                      <div className="absolute top-[25%] w-full h-0.5 bg-white/30 z-0"></div>
-                      <div className="absolute -right-5 top-[23%] text-[9px] text-white/50 font-mono">0</div>
-                      <div className="absolute -right-5 top-[48%] text-[9px] text-white/30 font-mono">-10</div>
-                      <div className="absolute -right-5 top-[73%] text-[9px] text-white/30 font-mono">-30</div>
+                      <div className="absolute top-[10%] w-full h-[1px] bg-white/10"></div>
+                      <div className="absolute top-[25%] w-full h-[2px] bg-white/30"></div> 
+                      <div className="absolute top-[50%] w-full h-[1px] bg-white/10"></div>
+                      <div className="absolute top-[75%] w-full h-[1px] bg-white/10"></div>
+                      <div className="absolute -right-7 top-[24%] text-[9px] text-white/60 font-mono font-bold">+10</div>
+                      <div className="absolute -right-7 top-[23%] text-[9px] text-yellow-500 font-mono font-bold">0</div>
+                      <div className="absolute -right-7 top-[48%] text-[9px] text-white/30 font-mono">-10</div>
+                      <div className="absolute -right-7 top-[73%] text-[9px] text-white/30 font-mono">-30</div>
+                      <div className="w-1.5 h-full bg-black/60 rounded-full shadow-inner mx-auto"></div>
                       
-                      <div className="w-2 h-full bg-black/40 rounded-full shadow-inner"></div>
-
                       <div 
-                          className={`absolute w-24 h-12 bg-gradient-to-b from-slate-600 to-slate-800 rounded shadow-2xl border-t border-slate-500 z-10 flex items-center justify-center active:scale-105 transition-transform ${isMuted ? 'opacity-50 grayscale' : ''}`}
-                          style={{ bottom: `${faderPos}%`, marginBottom: '-24px' }}
+                        className={`absolute w-32 h-14 bg-gradient-to-b from-slate-600 via-slate-700 to-slate-800 rounded shadow-[0_10px_20px_rgba(0,0,0,0.5)] border-t border-slate-500 z-10 flex items-center justify-center active:scale-105 transition-transform cursor-grab active:cursor-grabbing ${isMuted ? 'grayscale opacity-70' : ''}`} 
+                        style={{ bottom: `${faderPos}%`, marginBottom: '-28px' }}
                       >
-                          <div className="w-20 h-[2px] bg-black/50"></div>
-                          <div className="absolute w-full h-1 bg-white/10 top-1/2 -translate-y-1/2"></div>
+                          <div className="w-24 h-[2px] bg-black/80 mb-1"></div>
+                          <div className="w-24 h-[2px] bg-black/80 mb-1"></div>
+                          <div className="w-24 h-[2px] bg-black/80"></div>
+                          <div className="absolute w-full h-0.5 bg-white/50 top-1/2 -translate-y-1/2 shadow-[0_0_5px_white]"></div>
                       </div>
                     </div>
-                    
-                    <div className="mt-4 text-[12px] font-mono font-bold text-slate-400 min-w-[50px] text-center bg-slate-900 px-2 py-1 rounded border border-slate-800">
-                      {getDb(faderPos)} dB
-                    </div>
+                    <div className="mt-8 text-[14px] font-mono font-bold text-cyan-400 min-w-[60px] text-center bg-slate-900/80 px-2 py-1 rounded border border-slate-700 shadow-lg">{getDb(faderPos)} dB</div>
                 </div>
             </div>
           </div>
         );
       case 'pafl':
         return (
-          <div className="space-y-4 animate-fade-in text-xs text-slate-300">
+          <div className="space-y-4 animate-fade-in text-xs text-slate-300 mt-4">
             <div className="bg-yellow-900/20 border border-yellow-600/30 p-3 rounded-lg">
                <h4 className="font-bold text-yellow-400 mb-2 flex items-center gap-2"><Speaker size={14}/> PAFL (Pre/After Fade Listen)</h4>
-               <p className="mb-2 leading-relaxed">
-                 PAFL er dLive sin "Solo"-knapp. Den sender lyden til hodetelefonene dine og Monitor-høyttaleren ved mikseren, uten å påvirke PA-anlegget.
-               </p>
-               
+               <p className="mb-2 leading-relaxed">PAFL er dLive sin "Solo"-knapp. Den sender lyden til hodetelefonene dine og Monitor-høyttaleren ved mikseren, uten å påvirke PA-anlegget.</p>
                <div className="space-y-2 mt-4">
                   <div className="bg-slate-800/50 p-2 rounded border-l-2 border-yellow-500">
                      <span className="font-bold text-white block mb-1">Lyttepunkter</span>
-                     <p className="text-slate-400">
-                        På skjermen kan du velge *hvor* i rekken du vil lytte. 
-                        Du kan f.eks. lytte på signalet <strong>før</strong> kompressoren for å høre hva som kommer inn, eller <strong>etter</strong> EQ for å høre endringene.
-                     </p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                     <div className="bg-slate-800 p-2 rounded text-center">
-                        <div className="font-bold text-white mb-1">PFL</div>
-                        <div className="text-[9px] text-slate-500">Før Fader (Standard)</div>
-                     </div>
-                     <div className="bg-slate-800 p-2 rounded text-center">
-                        <div className="font-bold text-white mb-1">AFL</div>
-                        <div className="text-[9px] text-slate-500">Etter Fader (Stereo)</div>
-                     </div>
+                     <p className="text-slate-400">På skjermen kan du velge *hvor* i rekken du vil lytte (Før/Etter EQ/Comp).</p>
                   </div>
                </div>
             </div>
@@ -523,32 +940,22 @@ const FaderSectionVisualizer = () => {
         );
       case 'copy':
         return (
-          <div className="space-y-4 animate-fade-in text-xs text-slate-300">
+          <div className="space-y-4 animate-fade-in text-xs text-slate-300 mt-4">
              <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded-lg">
                 <h4 className="font-bold text-blue-400 mb-2 flex items-center gap-2"><Copy size={14}/> Copy / Paste Workflow</h4>
-                
                 <div className="space-y-4">
-                   {/* Hele Kanalen */}
                    <div className="bg-slate-800/50 p-3 rounded border border-slate-700">
                       <h5 className="font-bold text-white mb-1 flex items-center gap-2"><Layers size={12}/> Kopiere HELE kanalen</h5>
-                      <p className="text-slate-400 mb-2">Kopierer alt: Preamp, EQ, Comp, Gate, Navn og Farge.</p>
-                      <div className="flex items-center gap-2 text-[10px] bg-slate-900 p-2 rounded">
-                         <span className="bg-slate-700 px-1 rounded text-white">Hold COPY</span>
-                         <span>+</span>
-                         <span className="bg-cyan-600 px-1 rounded text-white">Trykk SEL (Kilde)</span>
-                         <span>-></span>
-                         <span className="bg-slate-700 px-1 rounded text-white">Hold PASTE</span>
-                         <span>+</span>
-                         <span className="bg-cyan-600 px-1 rounded text-white">Trykk SEL (Mål)</span>
+                      <div className="flex flex-wrap gap-2 items-center text-[10px] bg-slate-900 p-2 rounded">
+                         <span className="bg-slate-700 px-1.5 py-0.5 rounded text-white border border-slate-600">Hold COPY</span>+
+                         <span className="bg-cyan-600 px-1.5 py-0.5 rounded text-white border border-cyan-500">Trykk SEL</span>->
+                         <span className="bg-slate-700 px-1.5 py-0.5 rounded text-white border border-slate-600">Hold PASTE</span>+
+                         <span className="bg-cyan-600 px-1.5 py-0.5 rounded text-white border border-cyan-500">Trykk SEL</span>
                       </div>
                    </div>
-
-                   {/* Deler av Kanalen */}
                    <div className="bg-slate-800/50 p-3 rounded border border-slate-700">
-                      <h5 className="font-bold text-white mb-1 flex items-center gap-2"><Scissors size={12}/> Kopiere KUN deler (f.eks. EQ)</h5>
-                      <p className="text-slate-400 mb-2">Hvis du likte EQ-en på vokalen, men ikke vil overskrive preampen på neste vokalist.</p>
+                      <h5 className="font-bold text-white mb-1 flex items-center gap-2"><Scissors size={12}/> Kopiere KUN deler</h5>
                       <ul className="list-disc pl-4 space-y-1 text-slate-400">
-                         <li>Gå til skjermbildet for det du vil kopiere (f.eks. PEQ).</li>
                          <li>Hold <strong>COPY</strong> og trykk på selve EQ-boksen på <strong>skjermen</strong>.</li>
                          <li>Gå til ny kanal. Hold <strong>PASTE</strong> og trykk på EQ-boksen på skjermen.</li>
                       </ul>
@@ -559,88 +966,50 @@ const FaderSectionVisualizer = () => {
         );
       case 'patch':
         return (
-          <div className="space-y-4 animate-fade-in text-xs text-slate-300">
+          <div className="space-y-4 animate-fade-in text-xs text-slate-300 mt-4">
             <div className="bg-purple-900/20 border border-purple-500/30 p-3 rounded-lg">
                <h4 className="font-bold text-purple-400 mb-2 flex items-center gap-2"><GitMerge size={14}/> Input Patching (dLive)</h4>
-               
                <div className="bg-slate-800 p-3 rounded border border-slate-700 mb-3">
                   <h5 className="font-bold text-white mb-1">Socket vs. Channel</h5>
-                  <p className="leading-relaxed mb-2">
-                     På en analog mikser er "Hull 1" alltid "Kanal 1". På dLive er dette løsrevet.
-                  </p>
                   <ul className="space-y-2">
-                     <li className="flex gap-2">
-                        <Disc size={16} className="text-slate-500 shrink-0"/>
-                        <span><strong>Socket (Fysisk):</strong> Selve hullet i stageboksen. Dette er kilden.</span>
-                     </li>
-                     <li className="flex gap-2">
-                        <Sliders size={16} className="text-blue-400 shrink-0"/>
-                        <span><strong>Channel (Digital):</strong> Stripen du mikser på. Du velger selv hvilken socket den skal lytte til.</span>
-                     </li>
+                     <li className="flex gap-2"><Disc size={16} className="text-slate-500 shrink-0"/><span><strong>Socket:</strong> Fysisk hull i stageboksen.</span></li>
+                     <li className="flex gap-2"><Sliders size={16} className="text-blue-400 shrink-0"/><span><strong>Channel:</strong> Stripen du mikser på.</span></li>
                   </ul>
                </div>
-
                <div className="bg-slate-950 p-3 rounded border border-slate-800">
-                  <h5 className="font-bold text-purple-300 mb-1">Hvorfor er dette smart? (Split)</h5>
-                  <p className="leading-relaxed text-slate-400">
-                     Du kan bruke "Digital Split". Det betyr at du tar <strong>én mikrofon</strong> (f.eks. Forsanger) og sender den til <strong>to kanaler</strong>:
-                  </p>
+                  <h5 className="font-bold text-purple-300 mb-1">Digital Split</h5>
                   <ul className="list-disc pl-4 mt-2 text-slate-300 space-y-1">
-                     <li><strong>Kanal 1 (FOH):</strong> Mikset for salen med mye klang og kompresjon.</li>
-                     <li><strong>Kanal 33 (Monitor):</strong> Mikset tørt og trygt for sangerens øre.</li>
+                     <li><strong>Kanal 1 (FOH):</strong> Mikset for salen.</li>
+                     <li><strong>Kanal 33 (Monitor):</strong> Mikset for scenen.</li>
                   </ul>
-                  <p className="mt-2 text-[10px] text-slate-500 italic">Dette gjøres i I/O-skjermen på dLive.</p>
                </div>
             </div>
           </div>
         );
       case 'protips': 
         return (
-          <div className="space-y-4 animate-fade-in text-xs text-slate-300">
-             
-             {/* Panorering */}
+          <div className="space-y-4 animate-fade-in text-xs text-slate-300 mt-4">
              <div className="bg-slate-800 p-3 rounded border border-slate-700">
                 <h4 className="font-bold text-cyan-400 mb-2 flex items-center gap-2"><Lightbulb size={14}/> Panorering</h4>
-                <p className="mb-2">Gir bredde og rydder plass i midten.</p>
                 <ul className="list-disc pl-4 space-y-1 text-slate-400">
                    <li><strong className="text-yellow-400">Center:</strong> Kick, Bass, Vokal.</li>
-                   <li><strong className="text-blue-400">Stereo:</strong> Piano, Synth, Overhead.</li>
+                   <li><strong className="text-blue-400">Stereo:</strong> Piano, Synth.</li>
                    <li><strong className="text-purple-400">Side:</strong> Gitarer, Koring.</li>
                 </ul>
              </div>
-
-             {/* DCA vs Groups */}
-             <div className="bg-slate-800 p-3 rounded border border-slate-700">
-                <h4 className="font-bold text-green-400 mb-2 flex items-center gap-2"><Layers size={14}/> DCA vs Audio Group</h4>
-                <p className="mb-2 text-slate-400">Hva skal du bruke for å styre flere kanaler?</p>
-                <div className="space-y-2">
-                   <div className="bg-slate-900 p-2 rounded">
-                      <span className="font-bold text-white block">DCA (Fjernkontroll)</span>
-                      <span className="text-slate-500">Bare en volumkontroll. Ingen lyd går gjennom denne. Bruk denne til Trommer, Vokal, Band for å justere nivået samlet.</span>
-                   </div>
-                   <div className="bg-slate-900 p-2 rounded">
-                      <span className="font-bold text-white block">Group (Samlebuss)</span>
-                      <span className="text-slate-500">Lyden samles her. Her kan du legge kompressor på HELE trommesettet (Bus compression).</span>
-                   </div>
-                </div>
-             </div>
-
-             {/* 48V Sikkerhet */}
              <div className="bg-red-900/20 border border-red-500/30 p-3 rounded">
                 <h4 className="font-bold text-red-400 mb-1 flex items-center gap-2"><AlertTriangle size={14}/> 48V Phantom Power</h4>
-                <p className="text-slate-300">
-                   Aldri slå på 48V mens kanalen er åpen! Det smeller i anlegget.
-                   <br/>Mute kanalen -> Koble til mikk -> Slå på 48V -> Vent 5 sek -> Unmute.
-                </p>
+                <p className="text-slate-300">Aldri slå på 48V mens kanalen er åpen!</p>
              </div>
           </div>
         );
+      default: return null;
     }
   };
 
   return (
     <div className="bg-slate-900 rounded-xl p-4 border border-slate-600/50 animate-fade-in">
-      <div className="flex gap-1 mb-4 overflow-x-auto pb-1 scrollbar-hide">
+      <div className="flex gap-1 mb-0 overflow-x-auto pb-1 scrollbar-hide">
         {[
           {id:'mixer', l:'Miks', i: Sliders}, 
           {id:'pafl', l:'PAFL', i: Speaker}, 
@@ -2081,118 +2450,146 @@ const PAVisualizer = () => {
 const MonitorVisualizer = () => {
   const [showFuture, setShowFuture] = useState(false);
 
-  // Hjelpekomponent for en monitor på scenen
-  const MonitorIcon = ({ label, subLabel, type, x, y, color }) => (
-    <div 
-      className="absolute flex flex-col items-center transition-all duration-500"
-      style={{ left: x, top: y, transform: 'translate(-50%, -50%)' }}
-    >
-      <div className={`
-        relative flex items-center justify-center rounded-lg border-2 shadow-lg transition-all
-        ${type === 'iem' || showFuture ? 'w-10 h-10 rounded-full bg-blue-900/40 border-blue-400' : 'w-14 h-10 bg-slate-800 border-slate-600 skew-x-[-10deg]'}
-        ${showFuture && type !== 'iem' ? 'translate-y-2 opacity-100' : ''}
-      `}>
-        {/* Ikon: Vis Hodetelefoner hvis IEM eller Fremtidsmodus. Ellers Høyttaler */}
-        {type === 'iem' || showFuture ? (
-          <Disc size={20} className="text-blue-300 animate-pulse" />
-        ) : (
-          <Speaker size={20} className="text-slate-400" />
-        )}
-        
-        {/* Kabel-stump for wedge */}
-        {(!showFuture && type !== 'iem') && (
-          <div className="absolute -bottom-4 w-1 h-4 bg-slate-700 -z-10"></div>
-        )}
-      </div>
+  // --- SUB-KOMPONENT: MONITOR IKON ---
+  const StageMonitor = ({ label, subLabel, aux, x, y, type }) => {
+    // Sjekk om vi skal vise IEM (In-Ear) grafikk
+    const isIEM = type === 'iem' || showFuture;
 
-      {/* Label */}
-      <div className="mt-2 text-center bg-slate-900/80 px-2 py-0.5 rounded border border-slate-700/50 backdrop-blur-sm">
-        <div className="text-[10px] font-bold text-white whitespace-nowrap">{label}</div>
-        <div className="text-[9px] text-slate-400 whitespace-nowrap">{subLabel}</div>
+    return (
+      <div 
+        className="absolute flex flex-col items-center group"
+        style={{ left: x, top: y, transform: 'translate(-50%, -50%)', zIndex: 20 }}
+      >
+        
+        {/* --- GRAFIKK --- */}
+        <div className="relative w-24 h-20 flex items-center justify-center mb-1">
+          
+          {/* A: WEDGE MONITOR (Gulvhøyttaler) */}
+          <div 
+            className={`
+              absolute transition-all duration-500 ease-in-out
+              ${isIEM ? 'opacity-0 scale-50' : 'opacity-100 scale-100'}
+            `}
+          >
+             {/* Gulvboks (Kobling) */}
+             <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center opacity-60">
+                <div className="w-0.5 h-6 bg-slate-600"></div>
+                <div className="w-4 h-3 bg-slate-800 border border-slate-600 rounded-sm"></div>
+             </div>
+
+             {/* Selve Høyttaleren (3D Trapes effekt) */}
+             <div 
+               className="w-16 h-12 bg-slate-800 border-2 border-slate-600 rounded-lg shadow-2xl flex items-center justify-center relative overflow-hidden"
+               style={{ transform: 'perspective(200px) rotateX(20deg)' }} // Dette gir "liggende" look
+             >
+                {/* Høyttaler Grill (Netting) */}
+                <div className="absolute inset-1 bg-black/60 rounded border border-slate-700"
+                     style={{
+                        backgroundImage: 'radial-gradient(circle, #1e293b 1px, transparent 1px)', 
+                        backgroundSize: '3px 3px'
+                     }}>
+                </div>
+                {/* Selve elementet (Woofer) - Gjør det tydelig at det er en høyttaler */}
+                <div className="absolute w-8 h-8 rounded-full border-2 border-slate-700 bg-slate-900/80 shadow-inner flex items-center justify-center">
+                    <div className="w-3 h-3 bg-slate-800 rounded-full"></div>
+                </div>
+             </div>
+          </div>
+
+          {/* B: IEM BODYPACK (Fremtid) */}
+          <div 
+            className={`
+              absolute transition-all duration-500 ease-in-out
+              ${isIEM ? 'opacity-100 scale-100' : 'opacity-0 scale-50 translate-y-4'}
+            `}
+          >
+             <div className="w-10 h-14 bg-gradient-to-b from-blue-900 to-slate-900 rounded border border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)] flex flex-col items-center pt-2 relative">
+                <div className="absolute -top-3 right-1 w-0.5 h-4 bg-black"></div> {/* Antenne */}
+                <span className="text-[8px] text-blue-300 font-bold mb-1">SHURE</span>
+                <div className="w-6 h-4 bg-blue-950 border border-blue-800 rounded flex items-center justify-center">
+                   <span className="text-[8px] text-green-400 font-mono">{aux.replace("AUX ", "")}</span>
+                </div>
+                <div className="w-1 h-1 bg-green-500 rounded-full mt-2 animate-pulse shadow-[0_0_5px_#22c55e]"></div>
+             </div>
+          </div>
+
+        </div>
+
+        {/* --- LABEL (Tekstboks) --- */}
+        {/* Lagt til fast bredde og bedre bakgrunn for å hindre overlap-lesbarhet */}
+        <div className="flex flex-col items-center gap-0.5 z-30 min-w-[80px]">
+          <div className="flex items-center gap-1.5 bg-slate-900/95 border border-slate-600 rounded px-2 py-1 shadow-lg">
+             <div className={`
+               w-4 h-4 rounded-sm flex items-center justify-center text-[9px] font-bold shrink-0
+               ${isIEM ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-200'}
+             `}>
+               {aux.replace("AUX ", "")}
+             </div>
+             <span className="text-[10px] font-bold text-white whitespace-nowrap leading-none">{label}</span>
+          </div>
+          <span className="text-[9px] text-slate-300 bg-black/40 px-1.5 py-0.5 rounded-full backdrop-blur-sm whitespace-nowrap border border-slate-700/30">
+            {subLabel}
+          </span>
+        </div>
+
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
-    <div className="bg-slate-900 rounded-xl p-4 border border-blue-500/50 animate-fade-in shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+    <div className="bg-slate-900 rounded-xl border border-blue-500/30 overflow-hidden shadow-2xl mt-4">
       
-      {/* Header */}
-      <div className="flex justify-between items-start mb-4">
+      {/* HEADER */}
+      <div className="bg-slate-950 p-3 flex justify-between items-center border-b border-slate-800">
         <div>
-          <h3 className="text-blue-400 font-bold text-sm flex items-center gap-2">
-            <CornerDownRight size={16}/> Monitor Oppsett
+          <h3 className="text-white font-bold text-sm flex items-center gap-2">
+            <CornerDownRight size={16} className="text-blue-500"/> Monitor Oppsett
           </h3>
-          <p className="text-[10px] text-slate-400 mt-1">Sett fra lydbordet (FOH)</p>
+          <p className="text-[10px] text-slate-400">Sett fra FOH (Tekniker-posisjon)</p>
         </div>
-        
-        {/* Toggle Fremtid */}
         <button 
           onClick={() => setShowFuture(!showFuture)}
-          className={`px-3 py-1.5 rounded-full text-[10px] font-bold border transition-all flex items-center gap-2
-            ${showFuture ? 'bg-blue-600 text-white border-blue-400' : 'bg-slate-800 text-slate-400 border-slate-600'}
+          className={`
+            px-3 py-1.5 rounded text-[10px] font-bold border transition-all flex items-center gap-2
+            ${showFuture ? 'bg-blue-900/50 border-blue-500 text-blue-200' : 'bg-slate-800 border-slate-600 text-slate-400'}
           `}
         >
-          {showFuture ? <Check size={12}/> : <ArrowLeft size={12} className="rotate-180"/>}
-          {showFuture ? "Fremtid (In-Ear)" : "Vis Fremtid"}
+          {showFuture ? "Viser: In-Ears" : "Viser: Wedges"}
         </button>
       </div>
 
-      {/* SCENE KART */}
-      <div className="relative w-full h-64 bg-slate-950 border-2 border-slate-800 rounded-xl mb-4 overflow-hidden">
+      {/* SCENE GRAFIKK */}
+      <div className="relative w-full aspect-[16/9] bg-[#0f172a] overflow-hidden group">
         
-        {/* Bakgrunnsrutenett */}
+        {/* Scenegulv styling */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 opacity-80"></div>
         <div className="absolute inset-0 opacity-10" 
-             style={{backgroundImage: 'radial-gradient(#475569 1px, transparent 1px)', backgroundSize: '20px 20px'}}>
+             style={{backgroundImage: 'radial-gradient(#94a3b8 1px, transparent 1px)', backgroundSize: '30px 30px'}}>
         </div>
 
-        {/* Scene-kant (Curve) */}
-        <div className="absolute bottom-0 w-full h-12 bg-slate-900 border-t border-slate-700 flex items-center justify-center">
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Scenekant</div>
-        </div>
-
-        {/* --- MONITOR PLASSERING --- */}
+        {/* --- POSISJONER --- */}
+        {/* Justerte koordinater for å unngå kollisjon */}
         
-        {/* Mon 5: Trommer (Alltid IEM) */}
-        <MonitorIcon x="50%" y="20%" label="AUX 5" subLabel="Trommer (IEM)" type="iem" />
+        {/* BAK: Trommer */}
+        <StageMonitor x="50%" y="20%" aux="AUX 5" label="Trommer" subLabel="Alltid IEM" type="iem" />
 
-        {/* ENDRET HER: Gitar/Bass flyttet til Venstre (25%) */}
-        <MonitorIcon x="25%" y="40%" label="AUX 4" subLabel="Gitar / Bass" type="wedge" />
+        {/* MIDT: Flyttet lenger ut til sidene (15% og 85%) */}
+        <StageMonitor x="15%" y="45%" aux="AUX 4" label="Bass/Gitar" subLabel="Scene Venstre" type="wedge" />
+        <StageMonitor x="85%" y="45%" aux="AUX 3" label="Piano/Keys" subLabel="Scene Høyre" type="wedge" />
 
-        {/* ENDRET HER: Piano flyttet til Høyre (75%) */}
-        <MonitorIcon x="75%" y="40%" label="AUX 3" subLabel="Piano" type="wedge" />
+        {/* FRONT: Sentrert men med god avstand */}
+        <StageMonitor x="35%" y="70%" aux="AUX 2" label="Vokal (L)" subLabel="Front" type="wedge" />
+        <StageMonitor x="65%" y="70%" aux="AUX 1" label="Vokal (R)" subLabel="Front" type="wedge" />
 
-        {/* Mon 2: Vokal Venstre (Sett fra FOH) */}
-        <MonitorIcon x="30%" y="70%" label="AUX 2" subLabel="Vokal Venstre" type="wedge" />
-
-        {/* Mon 1: Vokal Høyre (Sett fra FOH) */}
-        <MonitorIcon x="70%" y="70%" label="AUX 1" subLabel="Vokal Høyre" type="wedge" />
-
+        {/* Scenekant kurve nederst */}
+        <div className="absolute -bottom-10 left-0 right-0 h-20 bg-black rounded-[50%] blur-md z-10"></div>
+        
         {/* FOH Indikator */}
-        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 translate-y-full text-[9px] text-slate-600">
-           deg
+        <div className="absolute bottom-2 w-full text-center z-20">
+            <span className="text-[8px] text-slate-600 uppercase tracking-[0.2em] font-bold">Publikum / FOH</span>
         </div>
+
       </div>
-
-      {/* Info boks */}
-      <div className="bg-slate-800/50 p-3 rounded border border-slate-700 space-y-2">
-         
-         <div className="flex items-start gap-2">
-            <Move size={14} className="text-blue-400 mt-0.5 shrink-0"/>
-            <p className="text-xs text-slate-300">
-               <strong>Flyttbare:</strong> Monitor 1-4 er løse kasser ("wedges"). De kan flyttes rundt etter behov, men husk å koble de i riktig kurs i gulvet!
-            </p>
-         </div>
-
-         {showFuture && (
-            <div className="flex items-start gap-2 pt-2 border-t border-slate-700/50 animate-fade-in">
-               <Headphones size={14} className="text-green-400 mt-0.5 shrink-0"/>
-               <p className="text-xs text-green-300">
-                  <strong>Fremtidsplan:</strong> Målet er at <em>alle</em> skal over på In-Ears (IEM). Det gir mye lavere scenelyd, mindre feedback og bedre lyd i salen!
-               </p>
-            </div>
-         )}
-      </div>
-
     </div>
   );
 };
@@ -2291,11 +2688,47 @@ const SignalNodeMobile = ({ node, isFirst, isLast, onClick, isActive, index }) =
 };
 
 const DetailPanel = ({ node, subItem, setSubItem }) => {
+  // Nå med 4 faner: 'overview', 'theory', 'tips', 'video'
+  const [activeTab, setActiveTab] = useState("overview");
+  const [selectedVideo, setSelectedVideo] = useState(null);
+
+  // Hent videoer
+  const getVideos = () => {
+    const target = subItem || node;
+    if (!target) return [];
+    if (target.relatedVideos && target.relatedVideos.length > 0) return target.relatedVideos;
+    if (target.videoId) return [{ videoId: target.videoId, title: target.videoTitle, desc: "Instruksjonsvideo" }];
+    return [];
+  };
+
+  const videos = getVideos();
+  const hasVideos = videos.length > 0;
+  
+  // Sjekk innhold
+  const target = subItem || node;
+  const hasDeepDive = target.deepDive && target.deepDive.length > 0;
+  const hasTips = target.proTips && target.proTips.length > 0; // <--- NY SJEKK FOR TIPS
+
+  // Reset ved bytte av node
+  useEffect(() => {
+    setActiveTab("overview");
+    setSelectedVideo(null);
+  }, [node]);
+
+  // Sett første video default
+  useEffect(() => {
+    if (activeTab === "video" && !selectedVideo && hasVideos) {
+      setSelectedVideo(videos[0]);
+    }
+  }, [activeTab, hasVideos, videos, selectedVideo]);
+
   if (!node) return null;
 
   return (
-    <div className="animate-fade-in pb-20 md:pb-0">
-      <div className="flex items-center gap-3 mb-4 border-b border-slate-700 pb-4">
+    <div className="animate-fade-in pb-20 md:pb-0 h-full flex flex-col">
+      
+      {/* HEADER */}
+      <div className="flex items-center gap-3 mb-4 border-b border-slate-700 pb-4 shrink-0">
         <div className="p-3 bg-blue-600 rounded-lg text-white shadow-lg shadow-blue-600/20">
           <IconHelper name={node.iconName} size={28} />
         </div>
@@ -2305,127 +2738,266 @@ const DetailPanel = ({ node, subItem, setSubItem }) => {
         </div>
       </div>
 
-      <div className="space-y-6">
-        <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-          <p className="text-slate-300 leading-relaxed text-sm md:text-base">{node.details}</p>
-        </div>
-        {node.viz === "fx_info" && (
-            <FXInfoVisualizer deepDive={node.deepDive} />
-        )}
-        {node.viz === "gain_structure" && (
-            <GainStructureVisualizer />
-        )}
-        {node.viz === "fader_section" && (
-            <FaderSectionVisualizer />
-        )}
-        {node.viz === "matrix" && <MatrixVisualizer />}
-        {node.viz === "pa" && <PAVisualizer />}
+      {/* --- FANE-MENY (4 FANER) --- */}
+      <div className="flex gap-4 mb-6 border-b border-slate-800 shrink-0 overflow-x-auto pb-1 scrollbar-hide">
         
-        {node.viz === "mixbus_map" && <MixBusVisualizer />}
+        {/* 1. Oversikt */}
+        <button 
+          onClick={() => setActiveTab("overview")}
+          className={`pb-2 text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
+            activeTab === "overview" ? "border-blue-500 text-white" : "border-transparent text-slate-500 hover:text-slate-300"
+          }`}
+        >
+          <Layout size={16}/> Oversikt
+        </button>
 
+        {/* 2. Fordypning (Teori) */}
+        {hasDeepDive && (
+          <button 
+            onClick={() => setActiveTab("theory")}
+            className={`pb-2 text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
+              activeTab === "theory" ? "border-green-500 text-white" : "border-transparent text-slate-500 hover:text-green-400"
+            }`}
+          >
+            <GraduationCap size={18}/> Fordypning
+          </button>
+        )}
 
-        {node.viz === "monitor_map" && <MonitorVisualizer />}
+        {/* 3. Pro Tips (NY!) */}
+        {hasTips && (
+          <button 
+            onClick={() => setActiveTab("tips")}
+            className={`pb-2 text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
+              activeTab === "tips" ? "border-yellow-500 text-white" : "border-transparent text-slate-500 hover:text-yellow-400"
+            }`}
+          >
+            <Lightbulb size={18}/> Tips & Triks
+          </button>
+        )}
+        
+        {/* 4. Video */}
+        {hasVideos && (
+          <button 
+            onClick={() => setActiveTab("video")}
+            className={`pb-2 text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
+              activeTab === "video" ? "border-red-500 text-white" : "border-transparent text-slate-500 hover:text-red-400"
+            }`}
+          >
+            <Youtube size={18}/> Video {videos.length > 1 && <span className="bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded text-[10px] ml-1">{videos.length}</span>}
+          </button>
+        )}
+      </div>
 
-        {node.subChain && !subItem && (
-          <div>
-            <h5 className="text-xs font-bold text-slate-400 uppercase mb-3 flex items-center gap-2">
-              <Layers size={14}/> Velg for å se graf/info:
-            </h5>
-            <div className="space-y-2">
-              {node.subChain.map((step, idx) => (
-                <div 
-                  key={idx}
-                  onClick={() => setSubItem(step)}
-                  className="flex items-center gap-3 p-3 bg-slate-800 border border-slate-700 rounded-lg cursor-pointer hover:border-blue-500 transition-colors group"
-                >
-                  <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-xs font-bold text-blue-500 border border-blue-500/30 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                    {idx + 1}
-                  </div>
-                  <div className="flex-1">
-                    <span className="font-bold text-slate-200 text-sm block group-hover:text-blue-400">{step.label}</span>
-                    <span className="text-xs text-slate-500">{step.desc}</span>
-                  </div>
-                  <ChevronRight size={14} className="text-slate-600"/>
+      {/* CONTENT AREA */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
+
+        {/* --- FANE 1: OVERSIKT --- */}
+        {activeTab === "overview" && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+              <p className="text-slate-300 leading-relaxed text-sm md:text-base">
+                 {subItem ? subItem.desc : node.details}
+              </p>
+            </div>
+
+            {/* Visualizers */}
+            {!subItem && (
+                <>
+                    {node.viz === "fx_info" && <FXInfoVisualizer deepDive={node.deepDive} />}
+                    {node.viz === "gain_structure" && <GainStructureVisualizer />}
+                    {node.viz === "fader_section" && <FaderSectionVisualizer />}
+                    {node.viz === "matrix" && <MatrixVisualizer />}
+                    {node.viz === "pa" && <PAVisualizer />}
+                    {node.viz === "mixbus_map" && <MixBusVisualizer />}
+                    {node.viz === "monitor_map" && <MonitorVisualizer />}
+                    {node.viz === "input_connectors" && <InputConnectorsVisualizer />}
+                </>
+            )}
+
+            {/* Sub-Chain */}
+            {node.subChain && !subItem && (
+              <div>
+                <h5 className="text-xs font-bold text-slate-400 uppercase mb-3 flex items-center gap-2">
+                  <Layers size={14}/> Velg modul:
+                </h5>
+                <div className="space-y-2">
+                  {node.subChain.map((step, idx) => (
+                    <div 
+                      key={idx}
+                      onClick={() => setSubItem(step)}
+                      className="flex items-center gap-3 p-3 bg-slate-800 border border-slate-700 rounded-lg cursor-pointer hover:border-blue-500 transition-colors group"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-xs font-bold text-blue-500 border border-blue-500/30 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                        {idx + 1}
+                      </div>
+                      <div className="flex-1">
+                        <span className="font-bold text-slate-200 text-sm block group-hover:text-blue-400">{step.label}</span>
+                        <span className="text-xs text-slate-500">{step.desc}</span>
+                      </div>
+                      <ChevronRight size={14} className="text-slate-600"/>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            )}
+            
+            {/* Sub-Item View */}
+            {subItem && (
+              <div className="mt-2 bg-slate-950 border border-blue-500/30 rounded-xl p-4 animate-fade-in-up shadow-2xl">
+                <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
+                  <button onClick={() => setSubItem(null)} className="flex items-center gap-1 text-xs text-blue-400 font-bold hover:text-white">
+                    <ArrowLeft size={12}/> Tilbake
+                  </button>
+                  <span className="text-xs text-slate-500 uppercase">{subItem.label}</span>
+                </div>
+                
+                {subItem.viz === "hpf" && <HPFVisualizer />}
+                {subItem.viz === "dyn8" && <Dyn8Visualizer />}
+                {subItem.viz === "comp" && <CompressorVisualizer definitions={subItem.deepDive} />}
+                {subItem.viz === "gate" && <GateVisualizer definitions={subItem.deepDive} />}
+                {subItem.viz === "peq" && <PEQVisualizer />}
+                {subItem.viz === "deesser" && <DeEsserVisualizer />}
+                {subItem.viz === "inserts" && <InsertsVisualizer />}
+                
+                {subItem.deepDive && subItem.deepDive.some(d => d.interactive) && !subItem.interactive && !subItem.viz && (
+                  <div className="space-y-2 mt-4">
+                      <h5 className="text-[10px] uppercase font-bold text-slate-500">Tilgjengelige Moduler:</h5>
+                      {subItem.deepDive.map((d, i) => (
+                        <div 
+                           key={i} 
+                           onClick={() => d.interactive ? setSubItem(d) : null}
+                           className={`bg-slate-900 p-3 rounded border border-slate-700 flex justify-between items-center transition-colors ${d.interactive ? 'cursor-pointer hover:border-blue-500 hover:bg-slate-800' : ''}`}
+                        >
+                          <div>
+                            <span className="font-bold text-xs text-slate-200 block">{d.name}</span>
+                            <span className="text-[10px] text-slate-500">{d.info}</span>
+                          </div>
+                          {d.interactive ? <ChevronRight size={14} className="text-blue-500"/> : (d.tag && <span className="text-[9px] bg-blue-900 text-blue-200 px-1.5 py-0.5 rounded">{d.tag}</span>)}
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* --- FANE 2: FORDYPNING (Teori) --- */}
+        {activeTab === "theory" && hasDeepDive && (
+          <div className="animate-fade-in space-y-4">
+            <div className="bg-green-900/20 border border-green-500/30 p-4 rounded-lg">
+                <h3 className="text-green-400 font-bold flex items-center gap-2">
+                    <GraduationCap size={20}/>
+                    {target.deepDiveTitle || "Teori & Hardware"}
+                </h3>
+                <p className="text-xs text-green-200/70 mt-1">
+                    Teknisk dybdeinformasjon og routing.
+                </p>
+            </div>
+            <div className="grid grid-cols-1 gap-2">
+                {target.deepDive.map((item, i) => {
+                  if (item.interactive) return null; 
+                  return (
+                    <div key={i} className="bg-slate-800 p-4 rounded-lg border border-slate-700 hover:border-green-500/30 transition-colors">
+                        <div className="flex justify-between items-start mb-2">
+                        <span className="font-bold text-slate-200 text-sm">{item.name}</span>
+                        <span className="text-[10px] bg-slate-900 border border-slate-700 px-2 py-0.5 rounded text-slate-400 uppercase tracking-wider">{item.tag || "Info"}</span>
+                        </div>
+                        <p className="text-sm text-slate-400 leading-relaxed">{item.info}</p>
+                    </div>
+                  );
+                })}
             </div>
           </div>
         )}
-        
-        {subItem && (
-          <div className="mt-4 bg-slate-950 border border-blue-500/30 rounded-xl p-4 animate-fade-in-up shadow-2xl">
-            <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
-              <button onClick={() => setSubItem(null)} className="flex items-center gap-1 text-xs text-blue-400 font-bold hover:text-white">
-                <ArrowLeft size={12}/> Tilbake
-              </button>
-              <span className="text-xs text-slate-500 uppercase">{subItem.label}</span>
+
+        {/* --- FANE 3: TIPS & TRIKS (NY!) --- */}
+        {activeTab === "tips" && hasTips && (
+          <div className="animate-fade-in space-y-4">
+            <div className="bg-yellow-900/20 border border-yellow-500/30 p-4 rounded-lg">
+                <h3 className="text-yellow-400 font-bold flex items-center gap-2">
+                    <Lightbulb size={20}/>
+                    Praktiske Innstillinger
+                </h3>
+                <p className="text-xs text-yellow-200/70 mt-1">
+                    Konkrete tall og triks for å få det til å låte bra.
+                </p>
             </div>
-            {subItem.viz === "hpf" && <HPFVisualizer />}
-            {subItem.viz === "dyn8" && <Dyn8Visualizer />}
-            {subItem.viz === "comp" && <CompressorVisualizer definitions={subItem.deepDive} />}
-            {subItem.viz === "gate" && <GateVisualizer definitions={subItem.deepDive} />}
-            {subItem.viz === "peq" && <PEQVisualizer />}
-            {subItem.viz === "deesser" && <DeEsserVisualizer />}
-            {subItem.viz === "inserts" && <InsertsVisualizer />}
-            {!subItem.viz && !subItem.interactive && (
-              <p className="text-sm text-slate-300 mb-4">{subItem.desc}</p>
-            )}
+            <div className="grid grid-cols-1 gap-2">
+                {target.proTips.map((item, i) => (
+                    <div key={i} className="bg-slate-800 p-4 rounded-lg border border-slate-700 hover:border-yellow-500/30 transition-colors">
+                        <div className="flex justify-between items-start mb-2">
+                           <span className="font-bold text-slate-200 text-sm">{item.name}</span>
+                           <span className="text-[10px] bg-yellow-900/40 text-yellow-200 border border-yellow-700/50 px-2 py-0.5 rounded uppercase tracking-wider">{item.tag || "Tips"}</span>
+                        </div>
+                        <p className="text-sm text-slate-400 leading-relaxed">{item.info}</p>
+                    </div>
+                ))}
+            </div>
+          </div>
+        )}
 
-            {/* Interactive list for things like Insert A that contain Dyn8 */}
-            {subItem.deepDive && subItem.deepDive.some(d => d.interactive) && !subItem.interactive && !subItem.viz && (
-              <div className="space-y-2 mt-4">
-                 <h5 className="text-[10px] uppercase font-bold text-slate-500">Tilgjengelige Moduler:</h5>
-                 {subItem.deepDive.map((d, i) => (
-                   <div 
-                      key={i} 
-                      onClick={() => d.interactive ? setSubItem(d) : null}
-                      className={`bg-slate-900 p-3 rounded border border-slate-700 flex justify-between items-center transition-colors ${d.interactive ? 'cursor-pointer hover:border-blue-500 hover:bg-slate-800' : ''}`}
-                   >
-                     <div>
-                       <span className="font-bold text-xs text-slate-200 block">{d.name}</span>
-                       <span className="text-[10px] text-slate-500">{d.info}</span>
-                     </div>
-                     {d.interactive ? <ChevronRight size={14} className="text-blue-500"/> : (d.tag && <span className="text-[9px] bg-blue-900 text-blue-200 px-1.5 py-0.5 rounded">{d.tag}</span>)}
-                   </div>
-                 ))}
+        {/* --- FANE 4: VIDEO --- */}
+        {activeTab === "video" && selectedVideo && (
+          <div className="animate-fade-in space-y-4 pt-2">
+            <div className="rounded-xl overflow-hidden border border-slate-700 shadow-2xl bg-black relative">
+              <div className="relative pb-[56.25%] h-0">
+                <iframe 
+                  className="absolute top-0 left-0 w-full h-full"
+                  src={`https://www.youtube.com/embed/${selectedVideo.videoId}?autoplay=1&mute=0&playsinline=1&rel=0&modestbranding=1&origin=${window.location.origin}`} 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  allowFullScreen
+                ></iframe>
               </div>
-            )}
-            {/* Parameter list for non-interactive items */}
-            {subItem.deepDive && !subItem.deepDive.some(d => d.interactive) && !subItem.interactive && (
-              <div className="space-y-2 mt-4">
-                 {subItem.deepDive.map((d, i) => (
-                   <div key={i} className="bg-slate-900 p-2 rounded border border-slate-800 flex justify-between items-center">
-                     <div>
-                       <span className="font-bold text-xs text-slate-200 block">{d.name}</span>
-                       <span className="text-[10px] text-slate-500">{d.info}</span>
+            </div>
+            <div className="bg-slate-800 p-4 rounded-lg border border-slate-700">
+              <h3 className="font-bold text-white text-lg mb-1">{selectedVideo.title || "Instruksjonsvideo"}</h3>
+              <p className="text-slate-400 text-sm">{selectedVideo.desc}</p>
+            </div>
+            {videos.length > 1 && (
+               <div className="mt-6">
+                 <h4 className="text-xs font-bold text-slate-500 uppercase mb-3 px-1">Flere videoer i denne modulen:</h4>
+                 <div className="space-y-2">
+                   {videos.map((vid, idx) => (
+                     <div 
+                        key={idx}
+                        onClick={() => setSelectedVideo(vid)}
+                        className={`flex items-start gap-3 p-3 rounded-lg cursor-pointer border transition-all ${
+                          selectedVideo.videoId === vid.videoId 
+                            ? "bg-slate-800 border-red-500/50" 
+                            : "bg-slate-900 border-transparent hover:bg-slate-800 hover:border-slate-700"
+                        }`}
+                     >
+                       <div className="relative w-24 aspect-video bg-black rounded overflow-hidden shrink-0 border border-slate-700">
+                          <img 
+                            src={`https://img.youtube.com/vi/${vid.videoId}/mqdefault.jpg`} 
+                            alt="thumbnail" 
+                            className="w-full h-full object-cover opacity-80"
+                          />
+                          {selectedVideo.videoId === vid.videoId && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                               <div className="w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
+                                 <Play size={10} className="fill-white text-white ml-0.5"/>
+                               </div>
+                            </div>
+                          )}
+                       </div>
+                       <div>
+                         <p className={`text-xs font-bold leading-tight mb-1 ${selectedVideo.videoId === vid.videoId ? 'text-white' : 'text-slate-300'}`}>
+                           {vid.title}
+                         </p>
+                         <p className="text-[10px] text-slate-500 line-clamp-2">{vid.desc}</p>
+                       </div>
                      </div>
-                     {d.tag && <span className="text-[9px] bg-blue-900 text-blue-200 px-1.5 py-0.5 rounded">{d.tag}</span>}
-                   </div>
-                 ))}
-              </div>
+                   ))}
+                 </div>
+               </div>
             )}
           </div>
         )}
 
-        {/* Deep Dive Info - Ensure it shows even if viz is present, unless it's fx_info which handles its own */}
-        {node.deepDive && !node.subChain && node.viz !== "fx_info" && (
-          <div className="grid grid-cols-1 gap-2 mt-6 border-t border-slate-700/50 pt-4">
-            <h4 className="text-sm font-bold text-slate-300 mb-2 flex items-center gap-2">
-                <Info size={16} className="text-blue-400"/>
-                {node.deepDiveTitle || "Detaljer"}
-            </h4> 
-            {node.deepDive.map((item, i) => (
-              <div key={i} className="bg-slate-800 p-3 rounded-lg border border-slate-700 hover:border-blue-500/50 transition-colors">
-                <div className="flex justify-between items-start mb-1">
-                  <span className="font-bold text-slate-200 text-sm">{item.name}</span>
-                  <span className="text-[10px] bg-slate-700 px-2 py-0.5 rounded text-slate-300">{item.tag}</span>
-                </div>
-                <p className="text-xs text-slate-400">{item.info}</p>
-                {item.usage && <p className="text-xs text-green-400 mt-1 italic">Bruk: {item.usage}</p>}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   );
@@ -2709,34 +3281,173 @@ const SignalFlowDiagram = () => {
 
 // --- MAIN PAGES ---
 
-const VideoSection = () => {
-  const [activeCategory, setActiveCategory] = useState("dlive");
+// --- NY SØKEKOMPONENT (FIX: Ingen zooming på mobil) ---
+const VideoSearch = ({ videoData }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedVideo, setSelectedVideo] = useState(null);
+
+  const results = searchTerm === "" ? [] : Object.keys(videoData).flatMap(key => 
+    videoData[key].videos
+      .filter(v => v.title.toLowerCase().includes(searchTerm.toLowerCase()) || v.desc.toLowerCase().includes(searchTerm.toLowerCase()))
+      .map(v => ({ ...v, categoryName: videoData[key].title }))
+  );
+
   return (
-    <div className="space-y-6 pb-20 md:pb-0">
+    <div className="bg-slate-900 p-6 rounded-xl border border-slate-700 mb-8 shadow-lg">
+      <div className="flex items-center gap-4 mb-4">
+        <div className="p-3 bg-red-900/20 rounded-lg text-red-500 border border-red-500/20">
+           <Film size={24}/>
+        </div>
+        <div className="flex-1">
+           <h3 className="text-white font-bold text-lg">Videoarkiv</h3>
+           <p className="text-slate-400 text-xs">Søk i {Object.values(videoData).reduce((acc, cat) => acc + cat.videos.length, 0)} opplæringsvideoer</p>
+        </div>
+      </div>
+
+      {/* Søkefelt */}
+      <div className="relative group mb-4">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <Search size={18} className="text-slate-500 group-focus-within:text-blue-400 transition-colors"/>
+        </div>
+        <input
+          type="text"
+          placeholder="Hva leter du etter? (f.eks 'EQ', 'Gain', 'Dante')..."
+          value={searchTerm}
+          onChange={(e) => { setSearchTerm(e.target.value); setSelectedVideo(null); }}
+          // --- ENDRINGEN ER HER: text-base (16px) på mobil hindrer zoom, md:text-sm gjør den liten igjen på PC ---
+          className="w-full bg-slate-950 border border-slate-700 text-white text-base md:text-sm rounded-xl block pl-10 p-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-500 transition-all shadow-inner"
+        />
+        {searchTerm && (
+          <button onClick={() => {setSearchTerm(""); setSelectedVideo(null);}} className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-white">
+            <X size={18} />
+          </button>
+        )}
+      </div>
+
+      {/* Resultatvisning */}
+      {searchTerm !== "" && (
+        <div className="animate-fade-in bg-slate-950/50 rounded-xl border border-slate-800 overflow-hidden max-h-[500px] overflow-y-auto custom-scrollbar">
+          {results.length > 0 ? (
+            <div className="divide-y divide-slate-800">
+              {results.map((video) => (
+                <div 
+                  key={video.id} 
+                  onClick={() => setSelectedVideo(video)}
+                  className={`p-3 flex gap-4 hover:bg-slate-800 transition-colors cursor-pointer ${selectedVideo?.id === video.id ? 'bg-slate-800 border-l-4 border-red-500' : ''}`}
+                >
+                  <div className="relative w-32 aspect-video bg-black rounded overflow-hidden shrink-0 border border-slate-700">
+                    <img src={`https://img.youtube.com/vi/${video.videoId}/mqdefault.jpg`} className="w-full h-full object-cover opacity-80" alt="" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                       <Play size={12} className="text-white fill-current"/>
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0 py-1">
+                    <span className="text-[10px] text-blue-400 uppercase font-bold tracking-wider mb-0.5 block">{video.categoryName}</span>
+                    <h4 className="text-sm font-bold text-slate-200 truncate">{video.title}</h4>
+                    <p className="text-xs text-slate-500 line-clamp-1">{video.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="p-8 text-center text-slate-500 text-sm">Ingen treff på "{searchTerm}"</div>
+          )}
+        </div>
+      )}
+
+      {/* Videospiller (Dukker opp når du velger et søkeresultat) */}
+      {selectedVideo && (
+        <div className="mt-4 animate-fade-in-up">
+           <div className="rounded-xl overflow-hidden border border-slate-700 shadow-2xl bg-black relative aspect-video">
+              <iframe 
+                className="absolute top-0 left-0 w-full h-full"
+                src={`https://www.youtube.com/embed/${selectedVideo.videoId}?autoplay=1&mute=0&rel=0`} 
+                title="YouTube" frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen
+              ></iframe>
+           </div>
+           <div className="bg-slate-800 p-3 rounded-b-xl border-x border-b border-slate-700 flex justify-between items-center">
+              <span className="text-sm font-bold text-white pl-1">{selectedVideo.title}</span>
+              <button onClick={() => setSelectedVideo(null)} className="text-xs text-slate-400 hover:text-white px-3 py-1 rounded bg-slate-700 hover:bg-slate-600 transition-colors">Lukk</button>
+           </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// --- VIDEO SECTION COMPONENT (Med Instant Play Fix) ---
+const VideoSection = () => {
+  const [activeCategory, setActiveCategory] = useState("dlive_course");
+  const [playingVideo, setPlayingVideo] = useState(null);
+
+  const categoryKeys = Object.keys(videoData);
+  const safeCategory = categoryKeys.includes(activeCategory) ? activeCategory : categoryKeys[0];
+  const categoryData = videoData[safeCategory];
+
+  if (!categoryData) return <div className="p-8 text-center text-slate-500">Ingen videodata funnet.</div>;
+
+  return (
+    <div className="space-y-6 pb-20 md:pb-0 animate-fade-in">
+      
+      {/* HER LIGGER SØKEVERKTØYET ØVERST */}
+      <VideoSearch videoData={videoData} />
+
       <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-hide">
         {Object.entries(videoData).map(([key, data]) => (
           <button
             key={key}
-            onClick={() => setActiveCategory(key)}
-            className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-colors
-            ${activeCategory === key ? 'bg-blue-600 text-white' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}
+            onClick={() => {
+                setActiveCategory(key);
+                setPlayingVideo(null); 
+            }}
+            className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-colors border
+            ${safeCategory === key ? 'bg-blue-600 text-white border-blue-500' : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-slate-500'}`}
           >
             {data.title}
           </button>
         ))}
       </div>
+
       <div>
-        <h2 className="text-xl font-bold text-white mb-1">{videoData[activeCategory].title}</h2>
-        <p className="text-sm text-slate-400 mb-6">{videoData[activeCategory].description}</p>
+        <h2 className="text-xl font-bold text-white mb-1">{categoryData.title}</h2>
+        <p className="text-sm text-slate-400 mb-6">{categoryData.description}</p>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {videoData[activeCategory].videos.map((video) => (
-            <div key={video.id} className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 flex flex-col">
-              <div className="aspect-video bg-black relative flex items-center justify-center group">
-                <Play size={40} className="text-slate-600 group-hover:text-blue-500 transition-colors"/>
-              </div>
+          {categoryData.videos.map((video) => (
+            <div key={video.id} className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 flex flex-col hover:border-slate-500 transition-colors shadow-lg">
+              
+              {/* VIDEO PLAYER */}
+              {playingVideo === video.id ? (
+                <div className="aspect-video bg-black relative">
+                   <iframe 
+                      className="absolute inset-0 w-full h-full"
+                      // ENDRING HER: Lagt til &mute=1 for å tvinge start på mobil
+                      src={`https://www.youtube.com/embed/${video.videoId}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&origin=${window.location.origin}`} 
+                      title={video.title}
+                      frameBorder="0" 
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                      allowFullScreen
+                   ></iframe>
+                </div>
+              ) : (
+                <div 
+                  onClick={() => setPlayingVideo(video.id)}
+                  className="aspect-video bg-black relative flex items-center justify-center group cursor-pointer"
+                >
+                  <img 
+                    src={`https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`} 
+                    alt={video.title}
+                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity"
+                  />
+                  <div className="w-12 h-12 bg-blue-600/90 rounded-full flex items-center justify-center backdrop-blur-sm shadow-xl group-hover:scale-110 transition-transform z-10">
+                     <Play size={20} className="text-white ml-1 fill-current"/>
+                  </div>
+                </div>
+              )}
+
               <div className="p-4 flex-1">
                 <h3 className="font-bold text-white mb-1 text-sm">{video.title}</h3>
-                <p className="text-xs text-slate-400">{video.desc}</p>
+                <p className="text-xs text-slate-400 line-clamp-2">{video.desc}</p>
               </div>
             </div>
           ))}
