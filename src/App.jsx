@@ -28,106 +28,150 @@ const toPercent = (freq) => {
 
 const videoData = {
   "dlive_course": {
-    title: "dLive C3500 Grunnkurs",
-    description: "Komplett gjennomgang av mikseren fra A til Å.",
+    title: "dLive C3500 Gjennomgang",
+    description: "Start her! Komplett gjennomgang av mikseren fra A til Å.",
     videos: [
       { id: 1, title: "Del 1: Introduksjon", videoId: "q7BQkq6A5qc", desc: "Start her: Oversikt over overflaten." },
-      { id: 2, title: "Del 2: Oppsett", videoId: "Lgr2cALG_1w", desc: "Grunnleggende konfigurasjon." },
-      { id: 3, title: "Del 3: Prosessering", videoId: "JEvV97HOLm4", desc: "Kanalbehandling." },
-      { id: 4, title: "Del 4: Routing", videoId: "_iQpEfMi9x0", desc: "Hvor går lyden?" },
-      { id: 5, title: "Del 5: Miksing", videoId: "Rzu3udGD4rU", desc: "Selve miksejobben." },
-      { id: 6, title: "Del 6: Scener", videoId: "o6NFlr42Omg", desc: "Lagre og hente opp innstillinger." },
-      { id: 7, title: "Del 7: FX", videoId: "QF74XS_ANGA", desc: "Effekter og rack." },
-      { id: 8, title: "Del 8: SoftKeys", videoId: "Uo_8myEos4M", desc: "Programmerbare knapper." },
-      { id: 9, title: "Del 9: Ganging", videoId: "fYPuy6Vvs2I", desc: "Linke kanaler sammen." },
-      { id: 10, title: "Del 10: DCA & Mute", videoId: "1Ejh3jwbdnw", desc: "Gruppering og muting." },
-      { id: 11, title: "Del 11: Talkback", videoId: "DCQaRbwf1PA", desc: "Kommunikasjon." },
-      { id: 12, title: "Del 12: Signal Generator", videoId: "-gzTjYvbQ68", desc: "Testtoner og støy." },
-      { id: 13, title: "Del 13: RTA", videoId: "USf6nL7fhXI", desc: "Real Time Analyzer." },
-      { id: 14, title: "Del 14: Surface Prefs", videoId: "VyOjG0HuuBQ", desc: "Tilpass overflaten." },
-      { id: 15, title: "Del 15: Show & Scene", videoId: "UASRqs5DKHw", desc: "Filbehandling." },
-      { id: 16, title: "Del 16: Filters", videoId: "jUYv6W1ldDE", desc: "Tilpasning av visning." },
+      { id: 2, title: "Del 2: Oppsett", videoId: "Lgr2cALG_1w", desc: "Grunnleggende konfigurasjon (Busser & Strips)." },
+      { id: 3, title: "Del 3: Bus Configuration", videoId: "JEvV97HOLm4", desc: "Hvordan sette opp Busser." },
+      { id: 4, title: "Del 4: Patching", videoId: "_iQpEfMi9x0", desc: "Hvor går lyden? (Input -> Mix)." },
+      { id: 5, title: "Del 5: Patching part 2", videoId: "Rzu3udGD4rU", desc: "Input til kanal." },
+      { id: 6, title: "Del 6: Patching part 3", videoId: "o6NFlr42Omg", desc: "Patching for Dante." },
+      { id: 7, title: "Del 7: Inserts", videoId: "QF74XS_ANGA", desc: "Inserts (til eksternt eller internt: Dyn8, De-esser)." },
+      { id: 8, title: "Del 8: Virtual Sound Check", videoId: "Uo_8myEos4M", desc: "Lydsjekk med opptak." },
+      { id: 9, title: "Del 9: Channel Configuration", videoId: "fYPuy6Vvs2I", desc: "Oppsett av kanaler for bankene." },
+      { id: 10, title: "Del 10: Input channel processing", videoId: "1Ejh3jwbdnw", desc: "HPF/LPF, PEQ, Kompressor." },
+      { id: 11, title: "Del 11: Input Processing Gate", videoId: "DCQaRbwf1PA", desc: "Gate og Sidechain." },
+      { id: 12, title: "Del 12: PEQ og Kompressor", videoId: "-gzTjYvbQ68", desc: "Parametric EQ og Kompressor detaljert." },
+      { id: 13, title: "Del 13: User Library", videoId: "USf6nL7fhXI", desc: "Lagre EQ/Comp innstillinger." },
+      { id: 14, title: "Del 14: Output bus processing", videoId: "VyOjG0HuuBQ", desc: "Prosessering på utganger." },
+      { id: 15, title: "Del 15: Output bus processing GEQ", videoId: "UASRqs5DKHw", desc: "Grafisk EQ og RTA." },
+      { id: 16, title: "Del 16: Surface Controls", videoId: "jUYv6W1ldDE", desc: "Visning og kontrollere." },
       { id: 17, title: "Del 17: Copy/Paste", videoId: "HBzvRMSE_B8", desc: "Kopiere innstillinger." },
-      { id: 18, title: "Del 18: Libraries", videoId: "-HTVVfF8jdQ", desc: "Bibliotek for presets." },
-      { id: 19, title: "Del 19: Kildevalg", videoId: "fXQ9OVTXL_I", desc: "Source Select." },
-      { id: 20, title: "Del 20: ABCD Input", videoId: "8kewPAoAERc", desc: "Input alt." },
-      { id: 21, title: "Del 21: Virtual Soundcheck", videoId: "Vu2wnX5_kg8", desc: "Opptak og avspilling." },
-      { id: 22, title: "Del 22: AMM", videoId: "jVlBeC_VUE0", desc: "Automatisk Mikser." },
-      { id: 23, title: "Del 23: MIDI", videoId: "_cid9jVEa8g", desc: "Styring." },
-      { id: 24, title: "Del 24: Director", videoId: "LI0jmTmlOfI", desc: "PC/Mac programvare." },
+      { id: 18, title: "Del 18: Lighting", videoId: "-HTVVfF8jdQ", desc: "Endre lys og farger på bordet." },
+      { id: 19, title: "Del 19: Scenes", videoId: "fXQ9OVTXL_I", desc: "Lage Scener." },
+      { id: 20, title: "Del 20: Scenes part 2", videoId: "8kewPAoAERc", desc: "Scener og Recall." },
+      { id: 21, title: "Del 21: Scenes part 3", videoId: "Vu2wnX5_kg8", desc: "Utdyping av scener." },
+      { id: 22, title: "Del 22: Widgets Customization", videoId: "jVlBeC_VUE0", desc: "Lag ditt personlige oppsett." },
+      { id: 23, title: "Del 23: SoftKey Customization", videoId: "_cid9jVEa8g", desc: "Programmere knapper." },
+      { id: 24, title: "Del 24: SoftKey Customization 2", videoId: "LI0jmTmlOfI", desc: "Utdyping av SoftKeys." }
     ]
   },
+
+  "feature_deepdive": {
+    title: "dLive C3500 Oppsett",
+    description: "Detaljert gjennomgang av spesifikke funksjoner (Harry T).",
+    videos: [
+      { id: 701, title: "Channel Ganging", videoId: "wjlbrjIDIP0", desc: "Linke flere kanaler sammen (Mer enn bare stereo)." },
+      { id: 702, title: "Stereo Channels", videoId: "ElzFr9vk-es", desc: "Hvordan sette opp stereokanaler riktig." },
+      { id: 703, title: "Routing Effects", videoId: "K9XUNtfflLo", desc: "Slik sender du lyd til FX (Send/Return)." },
+      { id: 704, title: "Configuring Effects", videoId: "oBB_Xei6mXY", desc: "Oppsett av rack og busser." },
+      { id: 705, title: "Mute Groups", videoId: "05MTBOmbWOM", desc: "Hvordan sette opp og bruke Mute Groups." },
+      { id: 706, title: "Harmony UI & Widgets", videoId: "FL7QDpF2uDA", desc: "Tilpasning av skjermene og widgets." },
+      { id: 707, title: "Fader Strip Layout", videoId: "V2_M1MsLusU", desc: "Flytt faderne dit du vil ha dem." },
+      { id: 708, title: "Show Files & Scenes", videoId: "2WNha7bcyhA", desc: "Lagring, loading og USB-håndtering." },
+      { id: 709, title: "Matrix Outputs", videoId: "gsSnN8kgocc", desc: "Hvordan bruke Matrix til soner/streaming." },
+      { id: 710, title: "Signal Generator", videoId: "boYcQeJArQ4", desc: "Pink noise, sinus og testtoner." },
+      { id: 711, title: "USB Recording", videoId: "rl-4xUptlyg", desc: "Ta opp direkte til USB-pinne." },
+      { id: 712, title: "DCA Spills", videoId: "t2lT2tVcjhc", desc: "Få tilgang til DCA-kanaler raskt." },
+      { id: 713, title: "Sends on Fader", videoId: "18qI5uBypSQ", desc: "Hvordan mikse monitorer." },
+      { id: 714, title: "Virtual Soundcheck", videoId: "UaUoaxxUotM", desc: "Hvordan sette opp lydsjekk uten band." },
+      { id: 715, title: "Plugins & DEEP", videoId: "q53pzh8LNpw", desc: "Oversikt over innebygde plugins." },
+      { id: 716, title: "Configuring Busses", videoId: "RqHvxKnyg5M", desc: "Endre antall Groups, Aux og Matrix." },
+      { id: 717, title: "Scenes Deep Dive", videoId: "0YAjNXiWyAs", desc: "Oppdatering og recall filters." },
+      { id: 718, title: "Graphic EQ", videoId: "XCpAk3Dz-vo", desc: "Hvordan bruke GEQ på utganger." },
+      { id: 719, title: "Solo / PAFL", videoId: "wsrSnanS3b0", desc: "Innstillinger for hodetelefoner/lytting." },
+      { id: 720, title: "Director Software", videoId: "sW0CgSHqEc4", desc: "Koble til PC/Mac." },
+      { id: 721, title: "Patching Basics", videoId: "pOZmwrI4mZg", desc: "Oversikt over I/O skjermen." },
+      { id: 722, title: "Inserting Effects", videoId: "g-5QPa0M-TM", desc: "Sette inn effekter på kanaler/busser." },
+      { id: 723, title: "Soft Keys & Rotaries", videoId: "GmBTc6YxYRk", desc: "Tilpasse knapper og hjul." }
+    ]
+  },
+
   "mixing": {
     title: "Miksing & Teori",
     description: "Gain, EQ, Kompresjon og Lydforståelse.",
     videos: [
-      { id: 101, title: "VIKTIG: Gain Struktur", videoId: "sdrgPJD0Vvg", desc: "Fundamentet for all god lyd. Må sees!" },
-      { id: 102, title: "Lydteori: Forstå lydbølger", videoId: "YEorsfZe4vU", desc: "Hva er frekvenser?" },
-      { id: 103, title: "EQ: Hvordan bruke det", videoId: "ehB5s5SHG4M", desc: "Rydde opp i miksen." },
-      { id: 104, title: "Kompresjon 101", videoId: "jveKIYyafaQ", desc: "Kontrollere dynamikk." },
-      { id: 105, title: "Gate & Expander", videoId: "lxdq-2eCgLg", desc: "Fjerne støy." },
-      { id: 106, title: "Mikse Trommer", videoId: "iX5H5oh6azU", desc: "Praktisk eksempel." },
-      { id: 107, title: "Mikse Vokal", videoId: "Qag5wmZ1xvc", desc: "Få vokalen frem i miksen." },
-      { id: 108, title: "Balanse i miksen", videoId: "QlmQQjGTm6o", desc: "Volum og panorering." },
-      { id: 109, title: "Lydteknikerens rolle", videoId: "w-v75Mgh9dA", desc: "Hva er jobben vår?" },
-      { id: 110, title: "Feedback", videoId: "8BLsze-hE10", desc: "Hvordan unngå hyling." }
+      { id: 102, title: "Miksing og forståelse", videoId: "YEorsfZe4vU", desc: "Et eksempel på måte å tenke på for lydbildet." },
+      { id: 107, title: "Mixing Consoles", videoId: "ehB5s5SHG4M", desc: "Basic om Lydbord." },
+      { id: 109, title: "Mixing Consoles part 2", videoId: "_11Z3BEUArY", desc: "Basic om miksing - Del 2." },
+      { id: 110, title: "Mixing Consoles part 3", videoId: "lxdq-2eCgLg", desc: "Basic om miksing - Del 3." },
+      { id: 108, title: "Forståelse av frekvens", videoId: "jveKIYyafaQ", desc: "Grunnleggende om frekvenser." },
+      { id: 113, title: "Signalvei", videoId: "w-v75Mgh9dA", desc: "Veien fra instrument til høyttaler." },
+      { id: 111, title: "Bygge en miks", videoId: "Qag5wmZ1xvc", desc: "Eksempel på å bygge en miks." },
+      { id: 114, title: "Mikse Trommer", videoId: "iX5H5oh6azU", desc: "Praktisk eksempel." },
+      { id: 105, title: "How to Mix Vocals", videoId: "k6nzF68lsCY", desc: "4 steg til bedre vokal-lyd." },
+      { id: 101, title: "Gain Struktur", videoId: "sdrgPJD0Vvg", desc: "Fundamentet for all god lyd. Må sees!" },
+      { id: 310, title: "How to set Gain", videoId: "G-_x7xDcn5k", desc: "Forståelse av Gain og innstillinger." },
+      { id: 106, title: "Feedback Feilsøking", videoId: "g54qI0YNZhU", desc: "Hvordan stoppe hyling for alltid." },
+      { id: 112, title: "Balanse i miksen", videoId: "QlmQQjGTm6o", desc: "Volum og panorering." },
+      { id: 309, title: "How to compress", videoId: "XEuP7hscNy8", desc: "Komprimering forklart." },
+      { id: 311, title: "Vokal EQ", videoId: "EPjrFU5d_OA", desc: "EQ vokal eksempel." },
+      { id: 312, title: "EQ forklaring", videoId: "YgCIo-lzlHw", desc: "EQ forklart for nybegynnere." },
+      { id: 313, title: "Trommemiksing", videoId: "4KbiXB7-R7w", desc: "Eksempel på trommemiks." },
+      { id: 304, title: "Why Matrix?", videoId: "HozHm5GMmkk", desc: "Hvorfor bruke matriser?" }
     ]
   },
+
   "inserts": {
     title: "Inserts & FX",
-    description: "Dyn8, DEEP Plugins og Effekter.",
+    description: "Effekter og Plug-ins (noen eksempler fra andre bord, men likt prinsipp).",
     videos: [
-      { id: 201, title: "Oversikt over Inserts", videoId: "idNyL9imKDY", desc: "Hva kan vi sette inn?" },
-      { id: 202, title: "Dyn8 Forklart", videoId: "4jw-8nNgbQ8", desc: "Multiband Comp + DynEQ." },
-      { id: 203, title: "DEEP Compressors", videoId: "huA9ACDOgDA", desc: "Vintage kompressorer i dLive." },
-      { id: 204, title: "Opto Compressor", videoId: "l_42QaBb3mk", desc: "LA-2A stil på vokal." },
-      { id: 205, title: "16T Compressor", videoId: "jHzZUuIrvLw", desc: "1176 stil på trommer." }
+      { id: 201, title: "16T Compressor", videoId: "idNyL9imKDY", desc: "1176 stil (Rask/Punchy)." },
+      { id: 202, title: "PeakLimiter 76", videoId: "4jw-8nNgbQ8", desc: "Limiter for kontroll." },
+      { id: 203, title: "DynEQ4", videoId: "huA9ACDOgDA", desc: "Finnes i Dyn8." },
+      { id: 204, title: "Hypabass", videoId: "l_42QaBb3mk", desc: "Sub-synth generator." },
+      { id: 205, title: "Opto Compressor", videoId: "jHzZUuIrvLw", desc: "LA-2A stil (Myk vokal)." },
+      { id: 314, title: "Dynamic EQ", videoId: "Djr1ZlVdl34", desc: "Forståelse av dynamic EQ." },
+      { id: 206, title: "Avansert FX Routing", videoId: "1gyJEdQD3G4", desc: "Tips om effekter (spol til 2:05)." },
+      { id: 104, title: "Perfect Vocal Reverb", videoId: "ZDOm4hEw3kE", desc: "Hvordan få klang til å sitte i miksen." },
+      { id: 605, title: "Forbedre Rom/Klang", videoId: "4o64VcaFf1I", desc: "3 triks for bedre klang med Dyn8." }
     ]
   },
+
+  "dyn8_masterclass": {
+    title: "Dyn8 Masterclass",
+    description: "Lær dLives kraftigste verktøy: Multiband & Dynamisk EQ.",
+    videos: [
+      { id: 601, title: "Del 1: Intro til Dyn8", videoId: "wnMSaQtgw9A", desc: "Hva er det og hvor finner du det?" },
+      { id: 602, title: "Del 2: Multiband", videoId: "wWOPTK9jmYk", desc: "Kontrollere frekvensbånd separat." },
+      { id: 603, title: "Del 3: Dynamic EQ", videoId: "3AI5caP5ODM", desc: "EQ som reagerer på volum." },
+      { id: 604, title: "Del 4: Applikasjoner", videoId: "zZzZNL4-u3c", desc: "Praktisk bruk på trommer/vokal." }
+    ]
+  },
+
   "tips": {
     title: "Tips & Kirkeoppsett",
-    description: "Hvordan andre kirker gjør det + smarte triks.",
+    description: "Smarte triks, routing og feilsøking.",
     videos: [
-      { id: 301, title: "Kirke-oppsett Ex 1", videoId: "drBZv6NBRIU", desc: "Gjennomgang av en søndagsmiks." },
-      { id: 302, title: "Kirke-oppsett Ex 2", videoId: "WewLdCgHWJI", desc: "Worship miksing." },
-      { id: 303, title: "Effektiv arbeidsflyt", videoId: "Ns8jgVgMvoU", desc: "Jobbe raskere." },
-      { id: 304, title: "Nyttige funksjoner", videoId: "XEuP7hscNy8", desc: "Ting du kanskje ikke visste." },
-      { id: 305, title: "Digital Patching", videoId: "G-_x7xDcn5k", desc: "Avansert routing." },
-      { id: 306, title: "Fjernstyring (iPad)", videoId: "EPjrFU5d_OA", desc: "MixPad appen." },
-      { id: 307, title: "Opptak", videoId: "YgCIo-lzlHw", desc: "Multitrack recording." },
-      { id: 308, title: "Monitor-miksing", videoId: "4KbiXB7-R7w", desc: "Lyd til musikerne." },
-      { id: 309, title: "Feilsøking", videoId: "Djr1ZlVdl34", desc: "Når ting ikke virker." }
+      { id: 301, title: "Advanced Group Routing", videoId: "H3fnMZ2oBEc", desc: "Sende gruppe til gruppe (Workaround)." },
+      { id: 302, title: "Ganging vs Stereo", videoId: "B-wauOnaH2A", desc: "Når skal du bruke hva?" },
+      { id: 303, title: "Understanding Fader Banks", videoId: "gbiy5U1oTmI", desc: "Organisering av banker og layers." },
+      { id: 305, title: "Assign & Pre/Post", videoId: "fHcy3B726MY", desc: "Avansert routing og Assign-knappen." },
+      { id: 306, title: "Kirke-oppsett Ex 1", videoId: "drBZv6NBRIU", desc: "Gjennomgang av en søndagsmiks." },
+      { id: 307, title: "Kirke-oppsett Ex 2", videoId: "WewLdCgHWJI", desc: "Worship miksing." },
+      { id: 308, title: "Kirke-oppsett Ex 3", videoId: "Ns8jgVgMvoU", desc: "Gjennomgang av kirkeoppsett for dLive." },
+      { id: 503, title: "Routing Input Channel", videoId: "N6NrHo-3-Ls", desc: "Input routing detaljert." },
+      { id: 103, title: "Dave Rat Mixing Strategy", videoId: "H5S34Hf95gI", desc: "Proff strategi for Grupper og DCA." }
     ]
   },
+
   "director_control": {
     title: "Director & Styring",
     description: "dLive Director (PC/Mac) og ekstern kontroll.",
     videos: [
-      { id: 401, title: "Director Del 1: Oversikt", videoId: "c6Hng92Jf7I", desc: "Intro til programvaren." },
-      { id: 402, title: "Director Del 2: Offline", videoId: "we2BWRlMGhg", desc: "Jobbe uten mikser tilkoblet." },
-      { id: 403, title: "Director Del 3: Touch", videoId: "9X_UDQPmq0c", desc: "Bruk med touch-skjerm." },
-      { id: 404, title: "Director Routing", videoId: "pOZmwrI4mZg", desc: "Patching i software." },
-      { id: 405, title: "Director Scenes", videoId: "g-5QPa0M-TM", desc: "Scenebehandling på PC." },
-      { id: 406, title: "IP Kontrollere", videoId: "q53pzh8LNpw", desc: "IP6 og IP8 oppsett." },
-      { id: 407, title: "GPIO Integrasjon", videoId: "UaUoaxxUotM", desc: "Styring av eksternt utstyr." },
-      { id: 408, title: "ME Personal Mixing", videoId: "t2lT2tVcjhc", desc: "Oppsett av ME-1 / ME-500." },
-      { id: 409, title: "Brukertilganger", videoId: "GmBTc6YxYRk", desc: "User Permissions & Passord." }
+      { id: 401, title: "Del 1: Introduksjon", videoId: "c6Hng92Jf7I", desc: "Oversikt over programvaren." },
+      { id: 402, title: "Webinar: Scener & Director", videoId: "we2BWRlMGhg", desc: "Jobbe uten mikser tilkoblet." },
+      { id: 403, title: "Del 3: Touch & Surface", videoId: "9X_UDQPmq0c", desc: "Hybrid-oppsett med skjerm." }
     ]
   },
+
   "advanced_system": {
     title: "System & Utvidelse",
-    description: "Dante, Waves, DX-bokser og avansert oppsett.",
+    description: "Dante, Waves og DX-bokser.",
     videos: [
-      { id: 501, title: "DX Expanders", videoId: "rl-4xUptlyg", desc: "Koble til flere stagebokser." },
-      { id: 502, title: "DX Link & Redundancy", videoId: "wsrSnanS3b0", desc: "Sikkert oppsett av kabler." },
-      { id: 503, title: "Dante Kort", videoId: "18qI5uBypSQ", desc: "Lyd over nettverk." },
-      { id: 504, title: "Waves Kort", videoId: "XCpAk3Dz-vo", desc: "SoundGrid server oppsett." },
-      { id: 505, title: "SuperMADI", videoId: "0YAjNXiWyAs", desc: "MADI tilkobling (Broadcast)." },
-      { id: 506, title: "FibreACE", videoId: "RqHvxKnyg5M", desc: "Lange strekk med fiber." },
-      { id: 507, title: "GigaACE", videoId: "sW0CgSHqEc4", desc: "Standard tilkobling." },
-      { id: 508, title: "Oppdatering (Firmware)", videoId: "N6NrHo-3-Ls", desc: "Hvordan oppdatere mikseren." },
-      { id: 509, title: "Nettverksoppsett", videoId: "Lkrs6NBKix8", desc: "IP-adresser og tilkobling." },
-      { id: 510, title: "Safes & Recall Filters", videoId: "cXNe_61eLiY", desc: "Hva skal IKKE endres ved sceneskift?" }
+      { id: 501, title: "DX Expanders (V1.7)", videoId: "SHhDnGF6CXc", desc: "Utvidelse med flere stagebokser." },
+      { id: 505, title: "Virtual Soundcheck (Dante)", videoId: "lxhfCaDGwYU", desc: "Opptak og avspilling via Dante." }
     ]
   }
 };
@@ -658,6 +702,41 @@ const RotaryKnob = ({ value, setValue, label, color = "#38bdf8", size = 50 }) =>
       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{label}</div>
     </div>
   );
+};
+
+// --- NY HJELPE-HOOK FOR SVEIPING ---
+// --- OPPDATERT HJELPE-HOOK (Med Stop Propagation) ---
+const useSwipe = (onSwipeRight) => {
+  const touchStart = useRef(null);
+  const touchEnd = useRef(null);
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    // VIKTIG: Dette hindrer at sveipet "bobler opp" til nivået over
+    e.stopPropagation(); 
+    
+    if(e.target.tagName === 'INPUT') return; 
+    touchEnd.current = null;
+    touchStart.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchMove = (e) => {
+    // VIKTIG: Hindre bobling her også for sikkerhets skyld
+    e.stopPropagation();
+    touchEnd.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart.current || !touchEnd.current) return;
+    const distance = touchStart.current - touchEnd.current;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isRightSwipe) {
+      onSwipeRight();
+    }
+  };
+
+  return { onTouchStart, onTouchMove, onTouchEnd };
 };
 
 const InputConnectorsVisualizer = () => {
@@ -2187,10 +2266,13 @@ const HypabassVisualizer = () => {
 
 const InsertsVisualizer = () => {
   const [view, setView] = useState('list'); // list, dyn8, deesser, transient, multiband, hypabass
+  
+  // Vi lager en sveipe-funksjon som går tilbake til listen
+  const swipeBack = useSwipe(() => setView('list'));
 
   if (view === 'dyn8') {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4" {...swipeBack}>
         <div className="flex items-center gap-2">
           <button onClick={() => setView('list')} className="text-xs text-blue-400 font-bold hover:text-white flex items-center gap-1"><ArrowLeft size={12}/> Tilbake</button>
           <span className="text-xs text-slate-500">/ Dyn8</span>
@@ -2202,7 +2284,7 @@ const InsertsVisualizer = () => {
 
   if (view === 'deesser') {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4" {...swipeBack}>
         <div className="flex items-center gap-2">
           <button onClick={() => setView('list')} className="text-xs text-blue-400 font-bold hover:text-white flex items-center gap-1"><ArrowLeft size={12}/> Tilbake</button>
           <span className="text-xs text-slate-500">/ De-Esser</span>
@@ -2214,7 +2296,7 @@ const InsertsVisualizer = () => {
 
   if (view === 'transient') {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4" {...swipeBack}>
         <div className="flex items-center gap-2">
            <button onClick={() => setView('list')} className="text-xs text-blue-400 font-bold hover:text-white flex items-center gap-1"><ArrowLeft size={12}/> Tilbake</button>
            <span className="text-xs text-slate-500">/ Transient Controller</span>
@@ -2226,7 +2308,7 @@ const InsertsVisualizer = () => {
 
   if (view === 'multiband') {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4" {...swipeBack}>
         <div className="flex items-center gap-2">
            <button onClick={() => setView('list')} className="text-xs text-blue-400 font-bold hover:text-white flex items-center gap-1"><ArrowLeft size={12}/> Tilbake</button>
            <span className="text-xs text-slate-500">/ Multiband Comp</span>
@@ -2237,7 +2319,7 @@ const InsertsVisualizer = () => {
   }
   if (view === 'hypabass') {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4" {...swipeBack}>
         <div className="flex items-center gap-2">
            <button onClick={() => setView('list')} className="text-xs text-blue-400 font-bold hover:text-white flex items-center gap-1"><ArrowLeft size={12}/> Tilbake</button>
            <span className="text-xs text-slate-500">/ Hypabass</span>
@@ -2249,6 +2331,98 @@ const InsertsVisualizer = () => {
 
   return (
     <div className="space-y-6 animate-fade-in">
+      
+      {/* 1. LISTE OVER INSERTS (Nå øverst) */}
+      <h3 className="text-yellow-400 font-bold text-sm flex items-center gap-2"><Star size={16}/> Topp 5 Viktigste Inserts</h3>
+      <div className="space-y-3">
+        {/* 1. DYN8 */}
+        <div onClick={() => setView('dyn8')} className="bg-slate-800 p-3 rounded border border-purple-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
+          <div className="flex justify-between items-start mb-1">
+            <span className="font-bold text-slate-200 text-sm flex items-center gap-2">1. Dyn8 <Play size={10} className="text-purple-400 group-hover:text-white"/></span>
+            <span className="text-[9px] bg-purple-900 text-purple-200 px-1.5 py-0.5 rounded">Must-have</span>
+          </div>
+          <p className="text-xs text-slate-400 mb-2">Multibånd-komp + Dynamisk EQ. Det mest potente verktøyet i dLive.</p>
+          <div className="text-[10px] text-green-400 italic">Bruk på: Vokal (Alltid), Keys, Gitar.</div>
+        </div>
+
+        {/* 2. DE-ESSER */}
+        <div onClick={() => setView('deesser')} className="bg-slate-800 p-3 rounded border border-blue-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
+          <div className="flex justify-between items-start mb-1">
+              <span className="font-bold text-slate-200 text-sm flex items-center gap-2">2. De-Esser <Play size={10} className="text-blue-400 group-hover:text-white"/></span>
+              <span className="text-[9px] bg-blue-900 text-blue-200 px-1.5 py-0.5 rounded">Vokal</span>
+          </div>
+          <p className="text-xs text-slate-400 mb-2">Fjerner harde S-lyder. Viktig i kirker med mye klang.</p>
+        </div>
+
+        {/* 3. TRANSIENT CONTROLLER */}
+        <div onClick={() => setView('transient')} className="bg-slate-800 p-3 rounded border border-orange-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
+          <div className="flex justify-between items-start mb-1">
+              <span className="font-bold text-slate-200 text-sm flex items-center gap-2">3. Transient Controller <Play size={10} className="text-orange-400 group-hover:text-white"/></span>
+              <span className="text-[9px] bg-orange-900 text-orange-200 px-1.5 py-0.5 rounded">Trommer</span>
+          </div>
+          <p className="text-xs text-slate-400 mb-2">Gir "punch" uten å bruke EQ. Løfter anslaget.</p>
+          <div className="text-[10px] text-slate-500 italic">Bruk på: Kick, Snare, Toms (gir definisjon).</div>
+        </div>
+
+        {/* 4. MULTIBAND COMP */}
+        <div onClick={() => setView('multiband')} className="bg-slate-800 p-3 rounded border border-cyan-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
+          <div className="flex justify-between items-start mb-1">
+              <span className="font-bold text-slate-200 text-sm flex items-center gap-2">4. Multiband Compressor <Play size={10} className="text-cyan-400 group-hover:text-white"/></span>
+              <span className="text-[9px] bg-cyan-900 text-cyan-200 px-1.5 py-0.5 rounded">Glue</span>
+          </div>
+          <p className="text-xs text-slate-400 mb-2">Kontrollerer highs/mids/lows separat. "Glue" på master.</p>
+        </div>
+
+        {/* 5. HYPABASS */}
+        <div onClick={() => setView('hypabass')} className="bg-slate-800 p-3 rounded border border-pink-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
+          <div className="flex justify-between items-start mb-1">
+              <span className="font-bold text-slate-200 text-sm flex items-center gap-2">5. Hypabass <Play size={10} className="text-pink-400 group-hover:text-white"/></span>
+              <span className="text-[9px] bg-pink-900 text-pink-200 px-1.5 py-0.5 rounded">Sub</span>
+          </div>
+          <p className="text-xs text-slate-400 mb-2">Gir sub-punch uten gjørme. Hillsong/Elevation lyd.</p>
+          <div className="text-[10px] text-slate-500 italic">Bruk på: Bassgitar, Kick, Tromme-buss.</div>
+        </div>
+      </div>
+
+      {/* 2. BONUS */}
+      <div className="border-t border-slate-800 pt-4">
+        <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Bonus Inserter</h4>
+        <div className="grid grid-cols-3 gap-2">
+           <div className="bg-slate-800/50 p-2 rounded text-center">
+             <div className="text-[10px] font-bold text-blue-400">Opto (LA-2A)</div>
+             <div className="text-[9px] text-slate-500">Smooth vokal</div>
+           </div>
+           <div className="bg-slate-800/50 p-2 rounded text-center">
+             <div className="text-[10px] font-bold text-orange-400">16T (1176)</div>
+             <div className="text-[9px] text-slate-500">Rask/Punchy</div>
+           </div>
+           <div className="bg-slate-800/50 p-2 rounded text-center">
+             <div className="text-[10px] font-bold text-purple-400">Limiter 76</div>
+             <div className="text-[9px] text-slate-500">El-Gitar/Hard</div>
+           </div>
+        </div>
+      </div>
+
+      {/* 3. PRO TIPS */}
+      <div className="border-t border-slate-800 pt-4">
+        <h4 className="text-xs font-bold text-green-400 uppercase mb-2 flex items-center gap-2"><Check size={12}/> Proffenes Kombinasjoner</h4>
+        <div className="space-y-2">
+          {[
+            { src: "Vokal", combo: "Dyn8 + Opto Comp" },
+            { src: "Kick", combo: "Transient Ctrl + Peak Limiter" },
+            { src: "Snare", combo: "Transient Ctrl + 16T" },
+            { src: "Bass", combo: "Hypabass + Opto" },
+            { src: "Master", combo: "Multiband + Limiter" }
+          ].map((item, i) => (
+            <div key={i} className="flex justify-between text-xs border-b border-slate-800 pb-1">
+              <span className="font-bold text-slate-300">{item.src}</span>
+              <span className="text-slate-400">{item.combo}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 4. INFO BOKS (FLYTTET TIL BUNNEN) */}
       <div className="bg-blue-900/20 border border-blue-500/30 p-3 rounded-lg">
         <h4 className="text-xs font-bold text-blue-300 uppercase mb-2 flex items-center gap-2">
           <Sliders size={12}/> Hvor skal inserten ligge?
@@ -2284,94 +2458,6 @@ const InsertsVisualizer = () => {
         </div>
       </div>
 
-      <h3 className="text-yellow-400 font-bold text-sm flex items-center gap-2"><Star size={16}/> Topp 5 Viktigste Inserts</h3>
-      <div className="space-y-3">
-        {/* 1. DYN8 */}
-        <div onClick={() => setView('dyn8')} className="bg-slate-800 p-3 rounded border border-purple-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
-          <div className="flex justify-between items-start mb-1">
-            <span className="font-bold text-slate-200 text-sm flex items-center gap-2">1. Dyn8 <Play size={10} className="text-purple-400 group-hover:text-white"/></span>
-            <span className="text-[9px] bg-purple-900 text-purple-200 px-1.5 py-0.5 rounded">Must-have</span>
-          </div>
-          <p className="text-xs text-slate-400 mb-2">Multibånd-komp + Dynamisk EQ. Det mest potente verktøyet i dLive.</p>
-          <div className="text-[10px] text-green-400 italic">Bruk på: Vokal (Alltid), Keys, Gitar.</div>
-        </div>
-
-        {/* 2. DE-ESSER */}
-        <div onClick={() => setView('deesser')} className="bg-slate-800 p-3 rounded border border-blue-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
-          <div className="flex justify-between items-start mb-1">
-             <span className="font-bold text-slate-200 text-sm flex items-center gap-2">2. De-Esser <Play size={10} className="text-blue-400 group-hover:text-white"/></span>
-             <span className="text-[9px] bg-blue-900 text-blue-200 px-1.5 py-0.5 rounded">Vokal</span>
-          </div>
-          <p className="text-xs text-slate-400 mb-2">Fjerner harde S-lyder. Viktig i kirker med mye klang.</p>
-        </div>
-
-        {/* 3. TRANSIENT CONTROLLER */}
-        <div onClick={() => setView('transient')} className="bg-slate-800 p-3 rounded border border-orange-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
-          <div className="flex justify-between items-start mb-1">
-             <span className="font-bold text-slate-200 text-sm flex items-center gap-2">3. Transient Controller <Play size={10} className="text-orange-400 group-hover:text-white"/></span>
-             <span className="text-[9px] bg-orange-900 text-orange-200 px-1.5 py-0.5 rounded">Trommer</span>
-          </div>
-          <p className="text-xs text-slate-400 mb-2">Gir "punch" uten å bruke EQ. Løfter anslaget.</p>
-          <div className="text-[10px] text-slate-500 italic">Bruk på: Kick, Snare, Toms (gir definisjon).</div>
-        </div>
-
-        {/* 4. MULTIBAND COMP */}
-        <div onClick={() => setView('multiband')} className="bg-slate-800 p-3 rounded border border-cyan-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
-          <div className="flex justify-between items-start mb-1">
-             <span className="font-bold text-slate-200 text-sm flex items-center gap-2">4. Multiband Compressor <Play size={10} className="text-cyan-400 group-hover:text-white"/></span>
-             <span className="text-[9px] bg-cyan-900 text-cyan-200 px-1.5 py-0.5 rounded">Glue</span>
-          </div>
-          <p className="text-xs text-slate-400 mb-2">Kontrollerer highs/mids/lows separat. "Glue" på master.</p>
-        </div>
-
-        {/* 5. HYPABASS */}
-        <div onClick={() => setView('hypabass')} className="bg-slate-800 p-3 rounded border border-pink-500/50 cursor-pointer hover:bg-slate-700 transition-colors group">
-          <div className="flex justify-between items-start mb-1">
-             <span className="font-bold text-slate-200 text-sm flex items-center gap-2">5. Hypabass <Play size={10} className="text-pink-400 group-hover:text-white"/></span>
-             <span className="text-[9px] bg-pink-900 text-pink-200 px-1.5 py-0.5 rounded">Sub</span>
-          </div>
-          <p className="text-xs text-slate-400 mb-2">Gir sub-punch uten gjørme. Hillsong/Elevation lyd.</p>
-          <div className="text-[10px] text-slate-500 italic">Bruk på: Bassgitar, Kick, Tromme-buss.</div>
-        </div>
-      </div>
-
-      {/* BONUS */}
-      <div className="border-t border-slate-800 pt-4">
-        <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Bonus Inserter</h4>
-        <div className="grid grid-cols-3 gap-2">
-           <div className="bg-slate-800/50 p-2 rounded text-center">
-             <div className="text-[10px] font-bold text-blue-400">Opto (LA-2A)</div>
-             <div className="text-[9px] text-slate-500">Smooth vokal</div>
-           </div>
-           <div className="bg-slate-800/50 p-2 rounded text-center">
-             <div className="text-[10px] font-bold text-orange-400">16T (1176)</div>
-             <div className="text-[9px] text-slate-500">Rask/Punchy</div>
-           </div>
-           <div className="bg-slate-800/50 p-2 rounded text-center">
-             <div className="text-[10px] font-bold text-purple-400">Limiter 76</div>
-             <div className="text-[9px] text-slate-500">El-Gitar/Hard</div>
-           </div>
-        </div>
-      </div>
-
-      {/* PRO TIPS */}
-      <div className="border-t border-slate-800 pt-4">
-        <h4 className="text-xs font-bold text-green-400 uppercase mb-2 flex items-center gap-2"><Check size={12}/> Proffenes Kombinasjoner</h4>
-        <div className="space-y-2">
-          {[
-            { src: "Vokal", combo: "Dyn8 + Opto Comp" },
-            { src: "Kick", combo: "Transient Ctrl + Peak Limiter" },
-            { src: "Snare", combo: "Transient Ctrl + 16T" },
-            { src: "Bass", combo: "Hypabass + Opto" },
-            { src: "Master", combo: "Multiband + Limiter" }
-          ].map((item, i) => (
-            <div key={i} className="flex justify-between text-xs border-b border-slate-800 pb-1">
-              <span className="font-bold text-slate-300">{item.src}</span>
-              <span className="text-slate-400">{item.combo}</span>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
@@ -2691,6 +2777,7 @@ const DetailPanel = ({ node, subItem, setSubItem }) => {
   // Nå med 4 faner: 'overview', 'theory', 'tips', 'video'
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const swipeSubItem = useSwipe(() => setSubItem(null));
 
   // Hent videoer
   const getVideos = () => {
@@ -2841,9 +2928,12 @@ const DetailPanel = ({ node, subItem, setSubItem }) => {
               </div>
             )}
             
-            {/* Sub-Item View */}
+{/* Sub-Item View */}
             {subItem && (
-              <div className="mt-2 bg-slate-950 border border-blue-500/30 rounded-xl p-4 animate-fade-in-up shadow-2xl">
+              <div 
+                className="mt-2 bg-slate-950 border border-blue-500/30 rounded-xl p-4 animate-fade-in-up shadow-2xl"
+                {...swipeSubItem}
+              >
                 <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
                   <button onClick={() => setSubItem(null)} className="flex items-center gap-1 text-xs text-blue-400 font-bold hover:text-white">
                     <ArrowLeft size={12}/> Tilbake
@@ -3165,6 +3255,9 @@ const SignalFlowDiagram = () => {
   const [subItem, setSubItem] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
 
+  // 1. Definer sveipe-funksjonen for å lukke modalen på mobil
+  const swipeCloseNode = useSwipe(() => setSelectedNode(null));
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -3184,20 +3277,23 @@ const SignalFlowDiagram = () => {
           <h3 className="text-lg md:text-xl font-bold text-slate-300 mb-6 flex items-center gap-2 relative z-10">
             <Activity className="text-blue-400"/> Signalvei
           </h3>
-          {/* Inne i SignalFlowDiagram */}
-<           div className="block md:hidden pl-2 relative z-10">
-              {signalPathData.map((node, idx) => (
-              <SignalNodeMobile
-              key={node.id}
-              node={node}
-              isFirst={idx === 0}
-              isLast={idx === signalPathData.length - 1}
-              onClick={handleNodeClick}
-              isActive={selectedNode?.id === node.id}
-              index={idx} // <--- LEGG TIL DENNE!
+          
+          {/* MOBIL VISNING (Vertikal liste) */}
+          <div className="block md:hidden pl-2 relative z-10">
+             {signalPathData.map((node, idx) => (
+              <SignalNodeMobile 
+                key={node.id} 
+                node={node} 
+                isFirst={idx === 0} 
+                isLast={idx === signalPathData.length - 1}
+                onClick={handleNodeClick}
+                isActive={selectedNode?.id === node.id}
+                index={idx}
               />
              ))}
           </div>
+
+          {/* DESKTOP VISNING (Horisontalt kart) */}
           <div className="hidden md:block relative h-[500px] w-full">
             <svg className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
                {/* Static Base Line */}
@@ -3223,15 +3319,16 @@ const SignalFlowDiagram = () => {
                  className="animate-signal-pulse"
                />
                
-               {/* Updated Tap line for Monitor Branch (Between Processing and Fader) */}
+               {/* Monitor Branch Line */}
                <path d="M540,140 L540,180" stroke="#3b82f6" strokeWidth="2" strokeDasharray="5,5" fill="none" />
                
+               {/* FX Branch Line */}
                <path d="M640,140 L640,180 L790,180" stroke="#a855f7" strokeWidth="2" strokeDasharray="5,5" fill="none" />
                <path d="M850,220 L940,220 L940,160" stroke="#22c55e" strokeWidth="2" strokeDasharray="5,5" fill="none" opacity="0.5" />
             </svg>
             
             {signalPathData.map((node) => (
-              <div
+              <div 
                 key={node.id}
                 onClick={() => handleNodeClick(node)}
                 className={`absolute cursor-pointer p-4 rounded-xl border-2 flex flex-col items-center gap-2 w-32 z-10 transition-all hover:scale-105 hover:shadow-xl
@@ -3246,7 +3343,7 @@ const SignalFlowDiagram = () => {
                  <span className="text-xs font-bold text-center text-slate-200">{node.label}</span>
               </div>
             ))}
-            <div className="absolute bottom-4 left-4 p-4 bg-slate-800/80 rounded border border-slate-700 text-xs text-slate- 400">
+            <div className="absolute bottom-4 left-4 p-4 bg-slate-800/80 rounded border border-slate-700 text-xs text-slate-400">
                <div className="flex items-center gap-2 mb-1"><div className="w-4 h-0.5 bg-slate-500"></div><span>Hovedsignal (Main LR)</span></div>
                <div className="flex items-center gap-2 mb-1"><div className="w-4 h-0.5 bg-blue-500 border-t border-dashed"></div><span>Pre-Fade (Monitor)</span></div>
                <div className="flex items-center gap-2"><div className="w-4 h-0.5 bg-purple-500 border-t border-dashed"></div><span>Post-Fade (FX)</span></div>
@@ -3255,6 +3352,7 @@ const SignalFlowDiagram = () => {
         </div>
       </div>
 
+      {/* DESKTOP SIDE PANEL */}
       <div className="hidden md:block w-[400px] bg-slate-800 rounded-2xl border border-slate-700 p-6 shadow-xl overflow-y-auto max-h-[calc(100vh-140px)]">
         {selectedNode ? 
            <DetailPanel node={selectedNode} subItem={subItem} setSubItem={setSubItem} />
@@ -3266,9 +3364,15 @@ const SignalFlowDiagram = () => {
         )}
       </div>
 
+      {/* MOBIL MODAL (Med Swipe Close) */}
       {isMobile && selectedNode && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/60 backdrop-blur-sm" onClick={() => setSelectedNode(null)}>
-           <div className="bg-slate-900 w-full max-h-[85vh] h-[85vh] rounded-t-2xl p-6 overflow-y-auto border-t border-slate-700 shadow-2xl relative animate-slide-up" onClick={e => e.stopPropagation()}>
+           <div 
+             className="bg-slate-900 w-full max-h-[85vh] h-[85vh] rounded-t-2xl p-6 overflow-y-auto border-t border-slate-700 shadow-2xl relative animate-slide-up" 
+             onClick={e => e.stopPropagation()}
+             // 2. HER LEGGES SWIPE-LYTTEREN PÅ:
+             {...swipeCloseNode} 
+           >
               <div className="w-12 h-1 bg-slate-700 rounded-full mx-auto mb-6 sticky top-0"></div>
               <button onClick={() => setSelectedNode(null)} className="absolute top-4 right-4 text-slate-500 p-2 bg-slate-800 rounded-full"><X size={20}/></button>
               <DetailPanel node={selectedNode} subItem={subItem} setSubItem={setSubItem} />
@@ -3281,7 +3385,6 @@ const SignalFlowDiagram = () => {
 
 // --- MAIN PAGES ---
 
-// --- NY SØKEKOMPONENT (FIX: Ingen zooming på mobil) ---
 const VideoSearch = ({ videoData }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -3314,7 +3417,6 @@ const VideoSearch = ({ videoData }) => {
           placeholder="Hva leter du etter? (f.eks 'EQ', 'Gain', 'Dante')..."
           value={searchTerm}
           onChange={(e) => { setSearchTerm(e.target.value); setSelectedVideo(null); }}
-          // --- ENDRINGEN ER HER: text-base (16px) på mobil hindrer zoom, md:text-sm gjør den liten igjen på PC ---
           className="w-full bg-slate-950 border border-slate-700 text-white text-base md:text-sm rounded-xl block pl-10 p-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-500 transition-all shadow-inner"
         />
         {searchTerm && (
@@ -3324,9 +3426,9 @@ const VideoSearch = ({ videoData }) => {
         )}
       </div>
 
-      {/* Resultatvisning */}
+      {/* Resultatvisning - FIX HER: max-h-[60vh] og overscroll-contain */}
       {searchTerm !== "" && (
-        <div className="animate-fade-in bg-slate-950/50 rounded-xl border border-slate-800 overflow-hidden max-h-[500px] overflow-y-auto custom-scrollbar">
+        <div className="animate-fade-in bg-slate-950/50 rounded-xl border border-slate-800 overflow-hidden max-h-[60vh] overflow-y-auto custom-scrollbar overscroll-contain">
           {results.length > 0 ? (
             <div className="divide-y divide-slate-800">
               {results.map((video) => (
@@ -3355,14 +3457,18 @@ const VideoSearch = ({ videoData }) => {
         </div>
       )}
 
-      {/* Videospiller (Dukker opp når du velger et søkeresultat) */}
+      {/* Videospiller */}
       {selectedVideo && (
         <div className="mt-4 animate-fade-in-up">
            <div className="rounded-xl overflow-hidden border border-slate-700 shadow-2xl bg-black relative aspect-video">
               <iframe 
                 className="absolute top-0 left-0 w-full h-full"
-                src={`https://www.youtube.com/embed/${selectedVideo.videoId}?autoplay=1&mute=0&rel=0`} 
-                title="YouTube" frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+                src={`https://www.youtube-nocookie.com/embed/${selectedVideo.videoId}?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1`} 
+                title="YouTube" 
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowFullScreen
               ></iframe>
            </div>
            <div className="bg-slate-800 p-3 rounded-b-xl border-x border-b border-slate-700 flex justify-between items-center">
@@ -3466,7 +3572,7 @@ const HomePage = ({ changePage }) => (
       Lydteknikk <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-400">Portal</span>
     </h1>
     <p className="text-sm md:text-lg text-slate-400 mb-8 max-w-xl mx-auto px-4">
-      DLive C3500 guide rett i lomma. Lær signalveien, se videoer og sjekk innstillinger før du går på scenen.
+      Ha hele DLive C3500 guide rett i lomma. Lær signalveien, se videoer og sjekk innstillinger.
     </p>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left px-2">
       <div onClick={() => changePage('signal')} className="p-5 bg-slate-800 rounded-xl border border-slate-700 active:scale-[0.98] transition-all flex items-center gap-4 cursor-pointer hover:border-blue-500">
