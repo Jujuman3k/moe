@@ -3,6 +3,8 @@ import { test } from 'node:test';
 import { videoData } from '../src/data/videoData.js';
 import { signalPathData } from '../src/data/signalPathData.js';
 import { practiceScenarios } from '../src/data/practiceScenarios.js';
+import { practiceTopics, practiceScenarioIds } from '../src/data/practiceCatalog.js';
+import { filterScenarios, nextScenario, pickScenario } from '../src/utils/practiceLibrary.js';
 import { allVideos, filterVideos } from '../src/utils/videoLibrary.js';
 import { normalizeProgress, parseProgress, toggleId } from '../src/utils/learningProgress.js';
 import { routingLevels } from '../src/utils/routing.js';
@@ -53,12 +55,56 @@ test('completion and favorite toggles are reversible without mutating state', ()
 });
 
 test('each exercise has one correct answer and a valid exploration target', () => {
+  assert.equal(practiceScenarios.length, 72);
+  assert.equal(practiceTopics.length, 12);
+  assert.equal(new Set(practiceScenarios.map(scenario => scenario.id)).size, 72);
+  assert.deepEqual(practiceScenarios.map(scenario => scenario.id), practiceScenarioIds);
+  for (const topic of practiceTopics) {
+    assert.equal(topic.scenarioIds.length, 6);
+    assert.ok(topic.scenarioIds.every(id => practiceScenarios.some(scenario => scenario.id === id && scenario.topicId === topic.id)));
+  }
   for (const scenario of practiceScenarios) {
     assert.equal(scenario.options.filter(option => option.correct).length, 1);
+    assert.equal(new Set(scenario.options.map(option => option.text)).size, 3);
     assert.ok(scenario.options.every(option => option.feedback));
     assert.ok(signalPathData.some(node => node.id === scenario.nodeId));
-    assert.ok(scenario.source.startsWith('https://support.allen-heath.com/'));
+    assert.ok([1, 2, 3].includes(scenario.level));
+    assert.ok(scenario.hint && scenario.lesson && scenario.question && scenario.sourceLabel);
+    assert.equal(new URL(scenario.source).protocol, 'https:');
+    assert.ok(['support.allen-heath.com', 'www.shure.com', 'usa.yamaha.com', 'yamahacreators.com'].includes(new URL(scenario.source).hostname));
   }
+});
+
+test('all three existing scenario IDs keep saved progress after catalog expansion', () => {
+  const solved = ['monitor-pre-fade', 'send-assignment', 'active-mix'];
+  assert.deepEqual(normalizeProgress({ solved }).solved, solved);
+});
+
+test('scenario topic, level, status and search filters compose', () => {
+  const solved = ['record-dante-patch'];
+  assert.equal(filterScenarios(practiceScenarios, { topic: 'recording' }).length, 6);
+  assert.deepEqual(filterScenarios(practiceScenarios, { topic: 'recording', level: '2', status: 'solved', query: ' dAnTe  tomt ', solved }).map(scenario => scenario.id), solved);
+  assert.equal(filterScenarios(practiceScenarios, { topic: 'recording', status: 'unsolved', solved }).length, 5);
+  assert.equal(filterScenarios(practiceScenarios, { query: 'zxq-no-match' }).length, 0);
+  assert.equal(filterScenarios(practiceScenarios, { query: '   ' }).length, 72);
+});
+
+test('random exercise respects the selection, prefers unsolved and avoids immediate repeats', () => {
+  const selection = practiceScenarios.slice(0, 3);
+  const ids = selection.map(scenario => scenario.id);
+  assert.equal(pickScenario(selection, ids[0], [ids[1]], () => 0).id, ids[2]);
+  assert.equal(pickScenario(selection, ids[0], ids, () => 0).id, ids[1]);
+  assert.equal(pickScenario(selection, ids[0], ids, () => 0.999).id, ids[2]);
+  assert.equal(pickScenario([], ids[0]), null);
+  assert.equal(pickScenario([selection[0]], ids[0]).id, ids[0]);
+});
+
+test('next exercise handles wraparound and a just-solved item removed by filtering', () => {
+  const selection = practiceScenarios.slice(0, 3);
+  assert.equal(nextScenario(selection, selection[2].id).id, selection[0].id);
+  assert.equal(nextScenario([selection[1]], selection[0].id).id, selection[1].id);
+  assert.equal(nextScenario([selection[0]], selection[0].id), null);
+  assert.equal(nextScenario([], 'unknown'), null);
 });
 
 test('pre-fade stays constant and post-fade follows fader changes in both directions', () => {

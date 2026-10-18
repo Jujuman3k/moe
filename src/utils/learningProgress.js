@@ -1,9 +1,9 @@
 import { allVideos } from './videoLibrary.js';
-import { practiceScenarios } from '../data/practiceScenarios.js';
+import { practiceScenarioIds } from '../data/practiceCatalog.js';
 
 export const PROGRESS_KEY = 'lydteam.learning.v1';
 const videoIds = new Set(allVideos.map(video => video.videoId));
-const scenarioIds = new Set(practiceScenarios.map(scenario => scenario.id));
+const scenarioIds = new Set(practiceScenarioIds);
 const validIds = (values, allowed) => Array.isArray(values)
   ? [...new Set(values.filter(value => allowed.has(value)))] : [];
 
