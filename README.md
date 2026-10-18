@@ -35,7 +35,9 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 | `src/data/practice/` | 12 fagmoduler med 6 scenarioer hver, og felles kilderegister |
 | `src/data/practiceCatalog.js` | Lett katalog med temaer, nivåer og stabile ID-er for progresjon |
 | `src/components/video/` | Felles avspiller, søkefelt, videokort og videohøydepunkter |
-| `src/components/signal/` | Signalveikart, mobilkort og detaljpanel |
+| `src/components/signal/` | Responsivt signalveikart, kontroller, målere, læringslab og detaljpanel |
+| `src/data/signalJourney.js` | Ni forklaringssteg og seks praktiske signaloppdrag |
+| `src/utils/signalSimulation.js` | Ren nivåmodell, feildiagnose og mål for signaloppdragene |
 | `src/components/visualizers/` | Én modul per eksisterende simulator eller visualisering |
 | `src/components/learning/` | Pre/post-lab og øvingskort |
 | `src/components/ui/` | Knapper, progresjonslinje, modal, ikoner og dreieknott |
@@ -50,6 +52,7 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 - **Ny video:** legg den inn i riktig kategori i `videoData.js`. Behold stabile `id`- og `videoId`-verdier; progresjon og favoritter bruker `videoId`.
 - **Nytt øvingscase:** legg til et objekt i relevant fagmodul under `data/practice/` og ID-en i `practiceCatalog.js`. Bruk tre svaralternativer med én korrekt valgmulighet, forklaring på hvert svar, `level` (1–3), `hint`, `lesson`, eksisterende `nodeId` og `sourceId` fra `sources.js`. Behold ID-er for eksisterende case. Se [scenarioarkivet](docs/practice-scenarios.md) for oversikt og verifikasjon.
 - **Endre en simulator:** arbeid i den aktuelle filen i `components/visualizers/`. Behold eksisterende props. Nye visualiseringer kobles til `DetailPanel.jsx` gjennom fagdataenes `viz`-verdi.
+- **Endre signalveiens lab:** bruk `utils/signalSimulation.js` for beregninger, `data/signalJourney.js` for læringsinnhold og `components/signal/` for visning. Se [modell og tester](docs/signal-lab.md).
 - **Endre design:** arbeid i den relevante siden/komponenten eller `styles/app.css`; ikke legg fagdata tilbake i appskallet.
 - **Ny side:** legg til siden i `pages/`, ruten i `useNavigation.js`, menypunktet i `AppLayout.jsx` og den utsatte importen i `App.jsx`.
 
@@ -62,7 +65,8 @@ Hold en endring avgrenset til relevant modul, og kjør kontrollene over. Det kre
 - Sett-markeringer, favoritter, løste oppgaver og sist åpnete video lagres i nettleserens `localStorage` under `lydteam.learning.v1`. Ingen konto eller synkronisering mellom enheter.
 - Sett-markering er manuell; avspilling alene fullfører ikke en video. «Fortsett» åpner sist valgte video, men lagrer ikke tidsposisjon inne i YouTube-videoen.
 - Hvis lagring er blokkert, fungerer appen videre i minnet og viser beskjed. Ødelagte eller utdaterte lagringsverdier valideres og ignoreres.
-- Pre/post-laben er en forenklet modell av nivåendringer, uten lyd, mute, DCA eller annen prosessering. Appen styrer ikke en fysisk mikser.
+- Hjemsidens pre/post-lab er en enkel modell av faderavhengighet. Signalveisiden har en større visuell lab med gain, fader, monitor/FX-send, mute, routing, ni forklaringssteg og seks praktiske oppdrag. Appen spiller ikke lyd eller styrer en fysisk mikser.
+- Signaloppdragenes løst-teller gjelder bare mens signalveisiden er åpen. Den er separat fra de 72 scenarioene på øvingssiden og lagres ikke mellom besøk.
 - Øvingssiden tilbyr tema, nivå, søk, løst/uløst-filter og tilfeldig oppgave. Tilfeldig valg prioriterer uløste oppgaver i utvalget og unngår gjentakelse av aktiv oppgave når alternativer finnes. Riktig svar registrerer oppgaven som løst; dette er ikke en eksamen eller måling av mestring på første forsøk.
 
 Se [refaktoreringsrapporten](docs/refactoring.md) for omfang og verifikasjon.

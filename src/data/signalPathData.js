@@ -50,7 +50,7 @@ export const signalPathData = [
     x: 200, y: 100,
     desc: "Forsterkning av signalet.",
 
-    details: "Juster gain slik at signalet ligger stabilt rundt det gule feltet (-18dB). Unngå rødt lys (klipping)!",
+    details: "Juster gain mens kilden spiller eller synger på forventet nivå. Hold god avstand til klipping, slik at det er plass til uventede topper. Kontroller hvilken skala og hvilket målepunkt meteret bruker.",
 
     viz: "gain_structure",
 
@@ -100,7 +100,7 @@ export const signalPathData = [
       {
         name: "Gain Staging",
         tag: "Best Practice",
-        info: "Sikt på at meteret ligger rundt -18dBFS (ofte gult på dLive) i gjennomsnitt."
+        info: "La kilden spille på forventet nivå, sjekk meterets skala og målepunkt, og behold headroom til sterkere topper. Meterfarge alene er ikke et universelt nivåmål."
       },
       {
         name: "Digital Trim",
@@ -187,8 +187,8 @@ export const signalPathData = [
     type: "branch_out",
     source: "processing",
     x: 475, y: 180,
-    desc: "Lyd til scene (Post-EQ / Pre-Fade).",
-    details: "Lyden tappes her (vanligvis etter EQ/Comp) for å sendes til monitorer. Fader-bevegelser påvirker IKKE monitorlyden.",
+    desc: "Egen miks til scenen, ofte pre-fade.",
+    details: "En aux-send lager en egen miks til monitorene. Når senden er pre-fade, følger den ikke kanalfaderen; post-fade følger faderen. På dLive kan Mix Source velges per miks, så kontroller også hvor i prosesseringen signalet hentes.",
     viz: "monitor_map"
   },
   {
@@ -267,7 +267,7 @@ export const signalPathData = [
       {
         name: "Post-Fader",
         tag: "Viktig",
-        info: "FX-sendinger er alltid 'Post-Fader'. Det betyr at sender-nivået følger hovedfaderen. Drar du ned vokalen, forsvinner også klangen automatisk."
+        info: "FX-sendinger er vanligvis post-fade, men kan også settes pre-fade. Med post-fade følger send-nivået kanalfaderen. Drar du ned vokalen, reduseres signalet inn i effekten. En klanghale kan fortsette etterpå."
       },
       {
         name: "Rack-begrensninger",

@@ -6,9 +6,16 @@ export function Modal({ label, onClose, swipeHandlers, children }) {
   useEffect(() => {
     const dialog = ref.current;
     const previousOverflow = document.body.style.overflow;
+    const previousFocus = document.activeElement;
     dialog.showModal();
     document.body.style.overflow = 'hidden';
-    return () => { dialog.close(); document.body.style.overflow = previousOverflow; };
+    return () => {
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+      // React removes the dialog before passive cleanup; native focus restoration
+      // alone is not reliable once the dialog has been disconnected.
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
+    };
   }, []);
   return (
     <dialog ref={ref} aria-label={label} onCancel={event => { event.preventDefault(); onClose(); }}
