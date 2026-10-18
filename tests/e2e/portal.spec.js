@@ -65,6 +65,7 @@ test('only one archive player and sequential course playback', async ({ page }) 
 
 test('practice feedback, saved progress and relevant signal link', async ({ page }) => {
   await page.goto('/#practice');
+  await page.getByLabel('Fagområde').selectOption('monitor');
   await page.getByRole('button', { name: 'A Øke preamp-gain' }).click();
   await expect(page.getByText('Prøv en annen tilnærming')).toBeVisible();
   await page.getByRole('button', { name: 'B Sjekke om monitor-senden er post-fade' }).click();
@@ -72,6 +73,7 @@ test('practice feedback, saved progress and relevant signal link', async ({ page
   await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
   await page.reload();
   await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
+  await page.getByLabel('Fagområde').selectOption('monitor');
   await page.getByRole('button', { name: 'Utforsk i signalveien' }).click();
   await expect(page.getByRole('heading', { name: 'Aux Send (Monitor)', exact: true, level: 2 })).toBeVisible();
 });

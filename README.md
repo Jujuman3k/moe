@@ -31,7 +31,9 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 | `src/pages/` | Hjem, videoarkiv, signalvei og øvingsoppgaver |
 | `src/data/videoData.js` | 92 videoer fordelt på 8 kategorier |
 | `src/data/signalPathData.js` | Signalveiens 9 ledd, undertrinn, fagtekst og videolenker |
-| `src/data/practiceScenarios.js` | Øvingscase, svarforklaringer og fagkilder |
+| `src/data/practiceScenarios.js` | Samler 72 scenarioer fra fagmodulene; lastes med øvingssiden |
+| `src/data/practice/` | 12 fagmoduler med 6 scenarioer hver, og felles kilderegister |
+| `src/data/practiceCatalog.js` | Lett katalog med temaer, nivåer og stabile ID-er for progresjon |
 | `src/components/video/` | Felles avspiller, søkefelt, videokort og videohøydepunkter |
 | `src/components/signal/` | Signalveikart, mobilkort og detaljpanel |
 | `src/components/visualizers/` | Én modul per eksisterende simulator eller visualisering |
@@ -46,7 +48,7 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 ## Videreutvikle med KI
 
 - **Ny video:** legg den inn i riktig kategori i `videoData.js`. Behold stabile `id`- og `videoId`-verdier; progresjon og favoritter bruker `videoId`.
-- **Nytt øvingscase:** legg til et objekt i `practiceScenarios.js`. Bruk én korrekt valgmulighet, forklaring på hvert svar, en eksisterende `nodeId` og en relevant primærkilde.
+- **Nytt øvingscase:** legg til et objekt i relevant fagmodul under `data/practice/` og ID-en i `practiceCatalog.js`. Bruk tre svaralternativer med én korrekt valgmulighet, forklaring på hvert svar, `level` (1–3), `hint`, `lesson`, eksisterende `nodeId` og `sourceId` fra `sources.js`. Behold ID-er for eksisterende case. Se [scenarioarkivet](docs/practice-scenarios.md) for oversikt og verifikasjon.
 - **Endre en simulator:** arbeid i den aktuelle filen i `components/visualizers/`. Behold eksisterende props. Nye visualiseringer kobles til `DetailPanel.jsx` gjennom fagdataenes `viz`-verdi.
 - **Endre design:** arbeid i den relevante siden/komponenten eller `styles/app.css`; ikke legg fagdata tilbake i appskallet.
 - **Ny side:** legg til siden i `pages/`, ruten i `useNavigation.js`, menypunktet i `AppLayout.jsx` og den utsatte importen i `App.jsx`.
@@ -61,5 +63,6 @@ Hold en endring avgrenset til relevant modul, og kjør kontrollene over. Det kre
 - Sett-markering er manuell; avspilling alene fullfører ikke en video. «Fortsett» åpner sist valgte video, men lagrer ikke tidsposisjon inne i YouTube-videoen.
 - Hvis lagring er blokkert, fungerer appen videre i minnet og viser beskjed. Ødelagte eller utdaterte lagringsverdier valideres og ignoreres.
 - Pre/post-laben er en forenklet modell av nivåendringer, uten lyd, mute, DCA eller annen prosessering. Appen styrer ikke en fysisk mikser.
+- Øvingssiden tilbyr tema, nivå, søk, løst/uløst-filter og tilfeldig oppgave. Tilfeldig valg prioriterer uløste oppgaver i utvalget og unngår gjentakelse av aktiv oppgave når alternativer finnes. Riktig svar registrerer oppgaven som løst; dette er ikke en eksamen eller måling av mestring på første forsøk.
 
 Se [refaktoreringsrapporten](docs/refactoring.md) for omfang og verifikasjon.

@@ -1,7 +1,7 @@
 import { Activity, ArrowRight, CheckCircle2, GraduationCap, Play, Radio } from 'lucide-react';
 import { videoData } from '../data/videoData.js';
 import { allVideos } from '../utils/videoLibrary.js';
-import { practiceScenarios } from '../data/practiceScenarios.js';
+import { practiceScenarioCount, practiceTopics } from '../data/practiceCatalog.js';
 import { ProgressBar } from '../components/ui/ProgressBar.jsx';
 import { RoutingLab } from '../components/learning/RoutingLab.jsx';
 
@@ -24,7 +24,7 @@ export function HomePage({ navigate, learning, onOpenVideo }) {
             <button onClick={() => navigate('signal')} className="secondary-button">Utforsk signalveien <ArrowRight size={16} /></button>
           </div>
           <div className="mt-8 flex flex-wrap gap-5 border-t border-slate-800 pt-5 text-xs text-slate-500">
-            <span><strong className="mr-1 text-slate-200">{allVideos.length}</strong> videoer</span><span><strong className="mr-1 text-slate-200">{Object.keys(videoData).length}</strong> temaer</span><span><strong className="mr-1 text-slate-200">3</strong> øvingscase</span>
+            <span><strong className="mr-1 text-slate-200">{allVideos.length}</strong> videoer</span><span><strong className="mr-1 text-slate-200">{Object.keys(videoData).length}</strong> videotemaer</span><span><strong className="mr-1 text-slate-200">{practiceScenarioCount}</strong> øvingscase</span>
           </div>
         </div>
         <RoutingLab />
@@ -45,8 +45,8 @@ export function HomePage({ navigate, learning, onOpenVideo }) {
           </article>
           <article className="learning-card flex flex-col">
             <div className="mb-5 flex items-center justify-between"><span className="card-icon text-violet-400"><GraduationCap size={20} /></span><span className="text-[10px] font-bold uppercase tracking-wider text-violet-300">03 · Prøv selv</span></div>
-            <h3 className="font-bold text-white">Hva ville du gjort?</h3><p className="mb-6 mt-2 text-sm leading-relaxed text-slate-400">Monitoren blir stille. Feil miks er aktiv. Øv på valgene før du står bak bordet.</p>
-            <div className="mt-auto"><div className="flex items-center gap-2 text-xs text-slate-400"><CheckCircle2 size={16} className="text-violet-400" />{progress.solved.length} av {practiceScenarios.length} oppgaver løst</div><button onClick={() => navigate('practice')} className="mt-5 flex min-h-11 w-full items-center justify-between text-sm font-semibold text-violet-300">Ta en øvingsrunde<ArrowRight size={17} /></button></div>
+            <h3 className="font-bold text-white">Hva ville du gjort?</h3><p className="mb-6 mt-2 text-sm leading-relaxed text-slate-400">{practiceScenarioCount} scenarioer i {practiceTopics.length} fagområder. Fra mikrofon og EQ til dLive-scener, monitor og stream. Velg nivå og forstå hvert valg.</p>
+            <div className="mt-auto"><div className="flex items-center gap-2 text-xs text-slate-400"><CheckCircle2 size={16} className="text-violet-400" />{progress.solved.length} av {practiceScenarioCount} oppgaver løst</div><button onClick={() => navigate('practice')} className="mt-5 flex min-h-11 w-full items-center justify-between text-sm font-semibold text-violet-300">Ta en øvingsrunde<ArrowRight size={17} /></button></div>
           </article>
         </div>
       </section>

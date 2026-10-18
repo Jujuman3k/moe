@@ -2,6 +2,8 @@
 
 Utgangspunkt: `main` ved commit `71c586012df8ec98af69985c55f9458a381e3f23` (8. desember 2025). Gjennomført 18. oktober 2026.
 
+Dette er rapporten fra den første refaktoreringen. Den senere utvidelsen fra 3 til 72 oppgaver er beskrevet i [scenarioarkivet](practice-scenarios.md).
+
 ## Endringene
 
 `App.jsx` er redusert fra 3701 til 38 linjer. Videodata og signalveidata er flyttet uten innholdsendringer. Alle opprinnelige visualiseringer er beholdt som egne moduler. Hjem, videoarkiv, signalvei og øving er egne sider; de tre siste lastes først når de åpnes.
