@@ -79,6 +79,8 @@ test('practice feedback, saved progress and relevant signal link', async ({ page
 });
 
 test('every signal node, processing tool and video tab remains reachable', async ({ page }) => {
+  // Nine dialogs plus every nested processing tool and video tab in one journey.
+  test.setTimeout(60000);
   await page.goto('/#signal');
   for (const node of signalPathData) {
     await page.getByRole('button', { name: node.label, exact: false }).first().click();

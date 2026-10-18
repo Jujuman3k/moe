@@ -1,0 +1,73 @@
+.signal-lab { overflow: clip; border: 1px solid #1e293b; border-radius: 1.25rem; background: #0b1221; }
+.signal-lab-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; padding: 1rem; border-bottom: 1px solid #1e293b88; }
+.signal-tab, .signal-toolbar-button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 2.5rem; padding: .5rem .75rem; border-radius: .5rem; color: #94a3b8; font-size: .75rem; font-weight: 600; transition: background .15s, color .15s; }
+.signal-tab[aria-pressed='true'] { background: #1e293b; color: #f1f5f9; box-shadow: 0 1px 4px #0004; }
+.signal-tab:hover, .signal-toolbar-button:hover { background: #1e293b; color: #fff; }
+.signal-journey { display: flex; flex-wrap: wrap; gap: 1rem; padding: 1.25rem 1rem; background: radial-gradient(ellipse at 0 0, #0d948814, transparent 70%); }
+.signal-journey > [aria-live] { flex-basis: 100%; }
+.signal-step-number { display: none; color: #2dd4bf; font-size: 2rem; letter-spacing: -.05em; font-weight: 300; line-height: 1; }
+.signal-mission-brief { padding: 1.25rem 1rem; background: linear-gradient(120deg, #7c3aed12, transparent); }
+.signal-map-surface { background-image: radial-gradient(#33415555 .7px, transparent .7px); background-size: 16px 16px; }
+.signal-map { isolation: isolate; position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(7, 88px); margin: 0 .5rem; }
+.signal-connections { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+.signal-connections-desktop { display: none; }
+.signal-map-node { grid-column: 2; grid-row: var(--signal-step); align-self: center; justify-self: center; width: calc(100% - 12px); height: 72px; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 3px; text-align: left; padding: .4rem .5rem; border: 1px solid #334155; border-radius: .65rem; color: #5eead4; background: linear-gradient(145deg, #182539, #111c2e); box-shadow: 0 3px 10px #02061788; transition: border-color .2s, box-shadow .2s, opacity .2s; }
+.signal-map-node:hover { border-color: #94a3b8; box-shadow: 0 0 0 3px #94a3b81a; }
+.signal-map-node[data-active='true'] { border-color: #2dd4bf; box-shadow: 0 0 0 3px #2dd4bf22, 0 0 30px #2dd4bf15; }
+.signal-map-node[data-silent='true'] { opacity: .65; border-style: dashed; }
+.signal-map-node[data-clipped='true'] { border-color: #fb7185; color: #fb7185; }
+.signal-map-node[data-node='monitor_branch'] { grid-column: 1; grid-row: 4; color: #93c5fd; background: linear-gradient(145deg, #172c46, #101c30); }
+.signal-map-node[data-node='fx_branch'] { grid-column: 3; grid-row: 5; color: #d8b4fe; background: linear-gradient(145deg, #2b2040, #1b142b); }
+.signal-node-tag { font-size: 8px; letter-spacing: .08em; opacity: .65; }
+.signal-map-note { align-self: end; justify-self: center; padding-bottom: 0; font-size: 8px; color: #94a3b8; white-space: nowrap; }
+.signal-monitor-note { grid-column: 1; grid-row: 4; }
+.signal-fx-note { grid-column: 3; grid-row: 5; }
+.signal-travelling-line { stroke-dasharray: 4 12; animation: signalTravel 1.2s linear infinite; }
+.signal-motion-paused .signal-travelling-line { animation-play-state: paused; }
+@keyframes signalTravel { to { stroke-dashoffset: -32; } }
+.signal-console { display: flex; flex-direction: column; border-top: 1px solid #1e293b; background: #0f172a99; }
+.signal-controls-grid { display: grid; gap: 1.75rem; padding: 1.25rem 1rem; }
+.signal-range { min-height: 2.5rem; accent-color: #2dd4bf; cursor: pointer; touch-action: pan-y; }
+.signal-mode-button { min-height: 3rem; border: 1px solid #334155; border-radius: .65rem; padding: .5rem; font-size: .75rem; color: #94a3b8; }
+.signal-mode-button[aria-pressed='true'] { border-color: #3b82f6; background: #172e4b; color: #bfdbfe; }
+.signal-toggle { display: flex; align-items: center; gap: .5rem; min-height: 2.75rem; padding: .6rem; border: 1px solid #334155; border-radius: .65rem; color: #94a3b8; font-size: .7rem; background: #02061744; }
+.signal-toggle[data-enabled='true'] { border-color: #0f766e88; background: #0d94880d; color: #99f6e4; }
+.signal-toggle[data-warning='true'][data-enabled='true'] { border-color: #f43f5e88; background: #88133722; color: #fda4af; }
+.signal-diagnosis { padding: 1rem; border: 1px solid #0f766e66; border-radius: .75rem; background: #042f2e55; color: #5eead4; }
+.signal-diagnosis[data-tone='rose'] { background: #4c051933; border-color: #be123c88; color: #fda4af; }
+.signal-diagnosis[data-tone='amber'] { background: #451a0333; border-color: #92400e88; color: #fcd34d; }
+.signal-output-strip { order: -1; position: sticky; top: 5rem; z-index: 10; display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 1rem; border-block: 1px solid #33415577; background: #0b1221; }
+.signal-output-strip .signal-meter > div:first-child { align-items: start; flex-direction: column; gap: .3rem; }
+.signal-meter-track { height: 5px; margin-top: .5rem; border-radius: 4px; overflow: hidden; background: #33415588; }
+.signal-meter-track > span { display: block; height: 100%; border-radius: 4px; background: #2dd4bf; transition: width .18s ease-out; }
+.signal-meter[data-tone='blue'] .signal-meter-track > span { background: #60a5fa; }
+.signal-meter[data-tone='purple'] .signal-meter-track > span { background: #c084fc; }
+.signal-meter[data-tone='rose'] .signal-meter-track > span { background: #fb7185; }
+.signal-meter-compact .signal-meter-track { height: 3px; margin-top: 3px; }
+.signal-mission-actions { padding: 1rem; border-top: 1px solid #33415555; background: #0f172a; }
+.signal-model-note { padding: 0 1rem; border-top: 1px solid #1e293b; }
+.signal-workbench-missions { display: flex; flex-direction: column-reverse; }
+@media (min-width: 640px) {
+  .signal-lab-toolbar, .signal-journey, .signal-mission-brief, .signal-controls-grid, .signal-output-strip, .signal-mission-actions { padding: 1.5rem; }
+  .signal-step-number { display: block; padding-top: .3rem; }
+  .signal-journey > [aria-live] { flex-basis: 0; }
+  .signal-controls-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+  .signal-map { max-width: 640px; margin-inline: auto; }
+  .signal-model-note { padding-inline: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .signal-map { grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: repeat(2, 124px); margin: 0 1rem; max-width: none; }
+  .signal-map-node { grid-row: 1; grid-column: var(--signal-step); height: 72px; }
+  .signal-map-node[data-node='monitor_branch'] { grid-column: 2; grid-row: 2; }
+  .signal-map-node[data-node='fx_branch'] { grid-column: 5; grid-row: 2; }
+  .signal-monitor-note { grid-column: 2; grid-row: 2; padding-bottom: 5px; font-size: 10px; }
+  .signal-fx-note { grid-column: 5; grid-row: 2; padding-bottom: 5px; font-size: 10px; }
+  .signal-connections-mobile { display: none; }
+  .signal-connections-desktop { display: block; }
+  .signal-workbench-missions { display: block; }
+  .signal-output-strip .signal-meter > div:first-child { flex-direction: row; }
+  .signal-output-strip { order: 0; position: static; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signal-travelling-line { animation: none; }
+}
