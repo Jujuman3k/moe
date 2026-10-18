@@ -43,7 +43,7 @@ test('disconnect, mute and infinite attenuation stop the appropriate paths', () 
 });
 
 test('Main assignment and FX return are independent routes', () => {
-  const unassigned = simulateSignal({ ...defaultSignalState, mainAssigned: false });
+  const unassigned = simulateSignal({ ...defaultSignalState, mainAssigned: false, fxType: 'reverb' });
   assert.equal(unassigned.main, null);
   assert.equal(unassigned.monitor, -24);
   assert.equal(unassigned.fxReturn, -30);
@@ -74,4 +74,36 @@ test('journey covers every existing detail module, with bounded readable meters'
   assert.equal(signalPercent(null), 0);
   assert.equal(formatSignalLevel(null), 'Stille');
   assert.equal(formatSignalLevel(-24), '-24 dBFS');
+});
+
+test('processing changes downstream paths and bypass restores the unprocessed signal', () => {
+  const filtered = simulateSignal({ ...defaultSignalState, hpf: true, hpfHz: 220 });
+  assert.ok(Math.abs(filtered.filterDb + 10 * Math.log10(2)) < 1e-9);
+  assert.ok(filtered.main < -21 && filtered.monitor < -27);
+  const gated = simulateSignal({ ...defaultSignalState, gate: true, gateThreshold: -12 });
+  assert.equal(gated.preamp, -18);
+  assert.equal(gated.processed, null);
+  assert.equal(gated.main, null);
+  assert.equal(gated.monitor, null);
+  const compressed = simulateSignal({ ...defaultSignalState, compressor: true });
+  assert.equal(compressed.reduction, 4.5);
+  assert.equal(compressed.processed, -22.5);
+  const bypass = simulateSignal({ ...defaultSignalState, gate: true, gateThreshold: -12, hpf: true, eq: 9, compressor: true, bypass: true });
+  assert.equal(bypass.processed, -18);
+});
+
+test('matrix, PA, Main, pan and wet return have independent effects', () => {
+  const signal = simulateSignal({ ...defaultSignalState, matrixLevel: -12 });
+  assert.equal(signal.mix, -18);
+  assert.equal(signal.matrix, -30);
+  assert.equal(signal.monitor, -24);
+  assert.equal(simulateSignal({ ...defaultSignalState, paEnabled: false }).pa, null);
+  const right = simulateSignal({ ...defaultSignalState, pan: 100 });
+  assert.equal(right.left, null);
+  assert.equal(right.right, -18);
+  const withFx = simulateSignal({ ...defaultSignalState, pan: 100, fxType: 'delay' });
+  assert.ok(withFx.left !== null && withFx.mix > right.mix);
+  const wetOnly = simulateSignal({ ...defaultSignalState, fxType: 'reverb', mainAssigned: false });
+  assert.equal(wetOnly.main, null);
+  assert.equal(wetOnly.mix, -30);
 });

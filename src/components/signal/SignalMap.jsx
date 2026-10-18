@@ -1,67 +1,34 @@
 import { useId } from 'react';
 import { signalPathData } from '../../data/signalPathData.js';
-import { IconHelper } from '../ui/IconHelper.jsx';
-import { SignalMeter } from './SignalMeter.jsx';
+import { signalPercent, formatSignalLevel } from '../../utils/signalSimulation.js';
 
-const shortLabels = { input: 'Mikrofon', preamp: 'Gain', processing: 'Processing', fader: 'Fader', mixbus: 'Main LR', matrix: 'Matrix', speakers: 'PA', monitor_branch: 'Monitor', fx_branch: 'FX' };
-const positions = { input: 1, preamp: 2, processing: 3, fader: 4, mixbus: 5, matrix: 6, speakers: 7 };
+const labels = { input: 'Kilde', preamp: 'Gain', processing: 'Prosess', fader: 'Fader', monitor_branch: 'Monitor', fx_branch: 'FX', mixbus: 'Main LR', matrix: 'Matrix', speakers: 'PA' };
+const positions = { input: [1, 1], preamp: [2, 1], processing: [3, 1], fader: [4, 1], monitor_branch: [2, 2], fx_branch: [4, 2], mixbus: [3, 3], matrix: [2, 3], speakers: [1, 3] };
 
-function FlowLine({ path, active, color, marker }) {
-  return <g>
-    <path d={path} stroke="#334155" strokeWidth="2" fill="none" markerEnd={`url(#${marker})`} />
-    {active && <path d={path} stroke={color} strokeWidth="3" fill="none" className="signal-travelling-line" />}
-  </g>;
-}
-
-function Connections({ mobile, state, signal }) {
+export function SignalMap({ state, signal, activeId, onSelectNode, animate }) {
   const marker = useId();
-  const color = signal.clipped ? '#fb7185' : '#2dd4bf';
-  const links = [
-    ['input', 'preamp'], ['preamp', 'processing'], ['processing', 'fader'], ['fader', 'mixbus'], ['mixbus', 'matrix'], ['matrix', 'speakers'],
+  const lines = [
+    ['M50,27 H150', signal.preamp, 'main'], ['M150,27 H250', signal.processed, 'main'],
+    ['M250,27 H350', signal.post, 'main'], ['M350,27 H398 V135 H250', signal.main, 'main'],
+    ['M250,135 H150', signal.matrix, 'main'], ['M150,135 H50', signal.pa, 'main'],
+    [state.monitorPre ? 'M250,27 V58 H150 V81' : 'M350,27 V55 H150 V81', signal.monitor, 'monitor'],
+    ['M350,27 V81', signal.fx, 'fx'], ['M350,81 H250 V135', signal.fxReturn, 'fx'],
   ];
-  return (
-    <svg aria-hidden="true" className={`signal-connections ${mobile ? 'signal-connections-mobile' : 'signal-connections-desktop'}`} viewBox={mobile ? '0 0 300 616' : '0 0 700 248'} preserveAspectRatio="none">
-      <defs><marker id={marker} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9" fill="none" stroke="#64748b" strokeWidth="2" /></marker></defs>
-      {links.map(([from, to]) => {
-        const a = positions[from]; const b = positions[to];
-        return <FlowLine key={to} marker={marker} color={color} active={signal.nodes[to] !== null}
-          path={mobile ? `M150,${(a - 1) * 88 + 80} V${(b - 1) * 88 + 8}` : `M${(a - 1) * 100 + 92},62 H${(b - 1) * 100 + 8}`} />;
-      })}
-      <FlowLine marker={marker} color={signal.clipped ? color : '#60a5fa'} active={signal.monitor !== null}
-        path={mobile ? (state.monitorPre ? 'M150,220 H50 V272' : 'M150,308 H92') : (state.monitorPre ? 'M250,62 V126 H150 V150' : 'M350,62 V126 H150 V150')} />
-      <FlowLine marker={marker} color={signal.clipped ? color : '#c084fc'} active={signal.fx !== null}
-        path={mobile ? 'M150,308 H250 V360' : 'M350,62 V186 H408'} />
-      <FlowLine marker={marker} color={signal.clipped ? color : '#c084fc'} active={signal.fxReturn !== null}
-        path={mobile ? 'M250,396 H192' : 'M450,186 H500 V62 H492'} />
+  return <div className={`signal-map ${animate ? '' : 'signal-motion-paused'}`} role="group" aria-label="Interaktivt signalveikart">
+    <svg viewBox="0 0 400 162" preserveAspectRatio="none" aria-hidden="true" className="signal-connections">
+      <defs><marker id={marker} viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#64748b" strokeWidth="2" /></marker></defs>
+      {lines.map(([path, level, type], index) => <g key={index} className={`signal-route route-${type}`}>
+        <path d={path} fill="none" stroke="#334155" strokeWidth="1.5" />
+        {level !== null && <path d={path} fill="none" stroke={signal.clipped ? '#fb7185' : type === 'fx' ? '#c084fc' : type === 'monitor' ? '#60a5fa' : '#2dd4bf'} strokeWidth="2.5" className="signal-travelling-line" />}
+      </g>)}
+      <path d="M98,27 h4 M198,27 h4 M298,27 h4 M202,135 h-4 M102,135 h-4 M350,54 v4 M250,108 v4" markerEnd={`url(#${marker})`} stroke="#64748b" fill="none" />
     </svg>
-  );
-}
-
-export function SignalMap({ state, signal, activeId, onOpenNode, animate }) {
-  return (
-    <div className={`signal-map-surface ${animate ? '' : 'signal-motion-paused'}`}>
-      <div className="flex flex-wrap items-center justify-between gap-2 px-4 pt-4 sm:px-6">
-        <p className="text-xs text-slate-400">Trykk på et ledd for verktøy og fordypning</p>
-        <div className="flex gap-3 text-[10px] font-medium sm:text-xs"><span className="text-teal-300">● Sal</span><span className="text-blue-300">● Monitor</span><span className="text-purple-300">● FX → retur</span></div>
-      </div>
-      <div className="signal-map" role="group" aria-label="Interaktivt signalveikart">
-        <Connections mobile state={state} signal={signal} />
-        <Connections state={state} signal={signal} />
-        {signalPathData.map(node => {
-          const level = signal.nodes[node.id];
-          const branch = node.id === 'monitor_branch' ? 'monitor' : node.id === 'fx_branch' ? 'fx' : null;
-          return <button type="button" key={node.id} aria-label={`${node.label} – åpne verktøy`} onClick={() => onOpenNode(node)}
-            className="signal-map-node" data-node={node.id} data-active={node.id === activeId} data-silent={level === null} data-clipped={signal.clipped && level !== null && node.id !== 'input'}
-            style={{ '--signal-step': positions[node.id] || 1 }}>
-            <span className="flex items-center justify-between gap-1"><IconHelper name={node.iconName} size={16} /><span className="signal-node-tag">{branch === 'monitor' ? state.monitorPre ? 'PRE' : 'POST' : branch === 'fx' ? 'POST' : `${positions[node.id]}`}</span></span>
-            <span className="block truncate text-[11px] font-semibold text-white sm:text-xs">{shortLabels[node.id]}</span>
-            {node.id === 'input' ? <span className="block text-[10px] text-slate-400">{state.connected ? 'Kilde tilkoblet' : 'Frakoblet'}</span> : <SignalMeter compact label={`${shortLabels[node.id]} signalnivå`} level={level} clipped={signal.clipped} tone={branch === 'monitor' ? 'blue' : branch === 'fx' ? 'purple' : 'teal'} />}
-          </button>;
-        })}
-        <span className="signal-map-note signal-monitor-note">{state.monitorPre ? 'Før faderen' : 'Etter faderen'}</span>
-        <span className="signal-map-note signal-fx-note">{state.fxReturn ? 'Retur til Main LR ↗' : 'Retur slått av'}</span>
-      </div>
-      <p className="px-4 pb-4 text-[10px] leading-relaxed text-slate-500 sm:px-6">Main → Matrix → PA viser den tørre stemmen. FX-returen er en egen vei inn i miksen.</p>
-    </div>
-  );
+    {signalPathData.map(node => <button type="button" key={node.id} aria-label={`${node.label} – velg ledd`} aria-pressed={activeId === node.id} onClick={() => onSelectNode(node.id)}
+      className="signal-map-node" data-node={node.id} data-active={activeId === node.id} data-silent={signal.nodes[node.id] === null} data-clipped={signal.clipped && signal.nodes[node.id] !== null && node.id !== 'input'}
+      style={{ gridColumn: positions[node.id][0], gridRow: positions[node.id][1] }}>
+      <span>{node.id === 'fx_branch' && state.fxType !== 'off' ? state.fxType === 'delay' ? 'Delay' : 'Klang' : labels[node.id]}{node.id === 'monitor_branch' && <small>{state.monitorPre ? 'PRE' : 'POST'}</small>}</span>
+      <span className="signal-node-value">{node.id === 'input' ? state.connected ? 'Tilkoblet' : 'Frakoblet' : formatSignalLevel(signal.nodes[node.id])}</span>
+      <span className="signal-node-meter" aria-hidden="true"><i style={{ width: `${signalPercent(signal.nodes[node.id])}%` }} /></span>
+    </button>)}
+  </div>;
 }

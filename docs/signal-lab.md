@@ -1,4 +1,6 @@
-# Interaktiv signalvei
+# Interaktiv signalvei – første versjon
+
+Denne rapporten dokumenterer første versjon. Se [Signalverkstedet](signal-workbench.md) for dagens arbeidsflate, modell og kontrollresultater.
 
 Signalveisiden har nå et responsivt, sammenhengende kart i stedet for en bred tegning med sideveis rulling og en seriell mobilliste. Monitor og FX vises som egne grener. FX har både send og retur. Alle ni opprinnelige detaljmoduler, videoene, processing-verktøyene og direkte node-lenker er bevart. Detaljer åpnes i den eksisterende native dialogen på alle skjermstørrelser.
 
