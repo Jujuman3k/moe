@@ -1,22 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { X } from 'lucide-react';
+import { useModalDialog } from '../../hooks/useModalDialog.js';
 
 export function Modal({ label, onClose, swipeHandlers, children }) {
   const ref = useRef(null);
-  useEffect(() => {
-    const dialog = ref.current;
-    const previousOverflow = document.body.style.overflow;
-    const previousFocus = document.activeElement;
-    dialog.showModal();
-    document.body.style.overflow = 'hidden';
-    return () => {
-      dialog.close();
-      document.body.style.overflow = previousOverflow;
-      // React removes the dialog before passive cleanup; native focus restoration
-      // alone is not reliable once the dialog has been disconnected.
-      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
-    };
-  }, []);
+  useModalDialog(ref);
   return (
     <dialog ref={ref} aria-label={label} onCancel={event => { event.preventDefault(); onClose(); }}
       onClick={event => { if (event.target === ref.current) onClose(); }}

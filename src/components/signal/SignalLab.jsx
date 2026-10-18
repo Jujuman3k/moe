@@ -1,31 +1,40 @@
 import { useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, CheckCircle2, CircleHelp, Compass, Pause, Play, RotateCcw, Target } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Grid2X2, Maximize2, Pause, Play, RotateCcw, Target, X } from 'lucide-react';
 import { signalJourney, signalMissions } from '../../data/signalJourney.js';
 import { signalPathData } from '../../data/signalPathData.js';
-import { checkSignalMission, defaultSignalState, simulateSignal } from '../../utils/signalSimulation.js';
+import { missionPanels, signalPanels } from '../../data/signalPanels.js';
+import { checkSignalMission, defaultSignalState, formatSignalLevel, signalDiagnosis, simulateSignal } from '../../utils/signalSimulation.js';
+import { Modal } from '../ui/Modal.jsx';
 import { SignalMap } from './SignalMap.jsx';
 import { SignalScope } from './SignalScope.jsx';
 import { SignalMeter } from './SignalMeter.jsx';
 import { SignalControls } from './SignalControls.jsx';
+import { SignalFullscreen } from './SignalFullscreen.jsx';
+import { SignalModelNote } from './SignalModelNote.jsx';
 import '../../styles/signal-lab.css';
+import '../../styles/signal-focus.css';
 
 const missionNodes = ['input', 'preamp', 'monitor_branch', 'fader', 'mixbus', 'fx_branch'];
 
 export function SignalLab({ onOpenNode, initialNodeId }) {
   const [state, setState] = useState({ ...defaultSignalState });
   const [step, setStep] = useState(() => Math.max(0, signalJourney.findIndex(item => item.id === (initialNodeId || 'fader'))));
+  const [panels, setPanels] = useState({});
+  const [fullscreen, setFullscreen] = useState(() => window.matchMedia('(max-width: 899px)').matches);
+  const [overlay, setOverlay] = useState(null);
   const [mode, setMode] = useState('explore');
   const [animate, setAnimate] = useState(true);
   const [missionIndex, setMissionIndex] = useState(0);
   const [feedback, setFeedback] = useState(null);
   const [showHint, setShowHint] = useState(false);
   const [completed, setCompleted] = useState([]);
-  const previewRef = useRef(null);
-  const controlsRef = useRef(null);
+  const fullscreenButton = useRef(null);
   const signal = simulateSignal(state);
   const journey = signalJourney[step];
   const node = signalPathData.find(item => item.id === journey.id);
+  const panel = panels[node.id] || signalPanels[node.id][0][0];
   const mission = signalMissions[missionIndex];
+  const diagnosis = signalDiagnosis(state, signal);
 
   function updateState(patch) {
     setState(previous => ({ ...previous, ...patch }));
@@ -33,50 +42,42 @@ export function SignalLab({ onOpenNode, initialNodeId }) {
   }
   function selectNode(id) {
     setStep(signalJourney.findIndex(item => item.id === id));
-    if (window.matchMedia('(max-width: 899px)').matches) requestAnimationFrame(() => {
-      if (!controlsRef.current || !previewRef.current) return;
-      const offset = controlsRef.current.getBoundingClientRect().top - 80 - previewRef.current.getBoundingClientRect().height;
-      window.scrollBy({ top: offset, behavior: 'instant' });
-    });
+    setOverlay(null);
   }
   function loadMission(index) {
+    setMode('missions');
     setMissionIndex(index);
     setState({ ...defaultSignalState, ...signalMissions[index].start });
     setStep(signalJourney.findIndex(item => item.id === missionNodes[index]));
+    setPanels(previous => ({ ...previous, [missionNodes[index]]: missionPanels[index] }));
     setFeedback(null);
     setShowHint(false);
   }
-  function changeMode(nextMode) {
-    if (nextMode === mode) return;
-    setMode(nextMode);
-    if (nextMode === 'missions') loadMission(missionIndex);
-    else { setState({ ...defaultSignalState }); setFeedback(null); }
+  function openMissions() {
+    if (mode !== 'missions') loadMission(missionIndex);
+    setOverlay('missions');
   }
   function checkMission() {
     const correct = checkSignalMission(mission.id, state);
     setFeedback(correct ? 'correct' : 'retry');
     if (correct) setCompleted(previous => previous.includes(mission.id) ? previous : [...previous, mission.id]);
   }
+  function closeFullscreen() {
+    setFullscreen(false);
+    requestAnimationFrame(() => fullscreenButton.current?.focus({ preventScroll: true }));
+  }
 
-  return <section className="signal-lab" aria-label="Signalveiens læringslab">
-    <div className="signal-lab-toolbar">
-      <div className="signal-mode-switch" role="group" aria-label="Læringsmodus">
-        <button type="button" aria-pressed={mode === 'explore'} onClick={() => changeMode('explore')}><Compass size={15} /> Utforsk</button>
-        <button type="button" aria-pressed={mode === 'missions'} onClick={() => changeMode('missions')}><Target size={15} /> 6 oppdrag</button>
-      </div>
-      <div className="flex gap-1">
-        <button type="button" className="signal-toolbar-button" aria-label={animate ? 'Pause signalbevegelse' : 'Start signalbevegelse'} aria-pressed={!animate} onClick={() => setAnimate(previous => !previous)}>{animate ? <Pause size={16} /> : <Play size={16} />}</button>
-        <button type="button" className="signal-toolbar-button" onClick={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState })}><RotateCcw size={15} /><span>Nullstill</span></button>
-      </div>
-    </div>
-    {mode === 'missions' && <div className="signal-mission-brief">
-      <label htmlFor="signal-mission">Feilsøk med hendene · {completed.length}/6 løst denne økten</label>
-      <select id="signal-mission" aria-label="Velg signaloppdrag" value={missionIndex} onChange={event => loadMission(Number(event.target.value))}>{signalMissions.map((item, index) => <option key={item.id} value={index}>{completed.includes(item.id) ? '✓ ' : ''}{item.title}</option>)}</select>
-      <p>{mission.intro}</p><strong>Mål: {mission.goal}</strong>
-    </div>}
+  const content = <section className="signal-lab signal-focus" aria-label="Signalveiens læringslab">
+    <header className="signal-focus-toolbar">
+      <span className="signal-focus-brand">Signalverksted<span>{mode === 'missions' ? `Oppdrag ${missionIndex + 1}/6` : 'Utforsk · visuell modell'}</span></span>
+      <button type="button" aria-label="6 oppdrag" className="signal-toolbar-button" data-active={mode === 'missions'} onClick={openMissions}><Target size={18} /></button>
+      <button type="button" className="signal-toolbar-button" aria-label={animate ? 'Pause signalbevegelse' : 'Start signalbevegelse'} aria-pressed={!animate} onClick={() => setAnimate(previous => !previous)}>{animate ? <Pause size={18} /> : <Play size={18} />}</button>
+      <button type="button" aria-label="Nullstill" className="signal-toolbar-button" onClick={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState })}><RotateCcw size={18} /></button>
+      <button ref={fullscreenButton} type="button" className="signal-toolbar-button signal-enter" aria-label={fullscreen ? 'Tilbake til portalen' : 'Åpne mikser i fullskjerm'} onClick={() => fullscreen ? closeFullscreen() : setFullscreen(true)}>{fullscreen ? <X size={20} /> : <Maximize2 size={18} />}</button>
+    </header>
     <div className="signal-workbench">
-      <div className="signal-preview" ref={previewRef}>
-        <div className="signal-preview-caption"><span>TRYKK PÅ ET LEDD</span><select className="signal-compact-picker" aria-label="Velg signalledd" value={node.id} onChange={event => selectNode(event.target.value)}>{signalPathData.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select><span><i /> Live respons · visuelt</span></div>
+      <div className="signal-preview">
+        <div className="signal-preview-caption"><span>VELG ET LEDD I KARTET</span><span><i /> Live respons</span></div>
         <SignalMap state={state} signal={signal} animate={animate} activeId={node.id} onSelectNode={selectNode} />
         <SignalScope state={state} signal={signal} node={node} animate={animate} />
         <div className="signal-output-strip" aria-label="Resultat av innstillingene">
@@ -85,30 +86,34 @@ export function SignalLab({ onOpenNode, initialNodeId }) {
           <SignalMeter label="PA" level={signal.pa} clipped={signal.clipped} />
         </div>
       </div>
-      <div className="signal-inspector" ref={controlsRef}>
-        <div className="signal-inspector-heading">
-          <div><p>LEDD {step + 1} / {signalJourney.length}</p><h2>{node.label}</h2></div>
-          <div><button type="button" aria-label="Forrige steg" disabled={step === 0} onClick={() => selectNode(signalJourney[step - 1].id)}><ArrowLeft size={18} /></button><button type="button" aria-label={step === signalJourney.length - 1 ? 'Fra starten' : 'Neste steg'} onClick={() => selectNode(signalJourney[(step + 1) % signalJourney.length].id)}><ArrowRight size={18} /></button></div>
-        </div>
-        <SignalControls state={state} signal={signal} onChange={updateState} node={node} animate={animate} onOpenNode={onOpenNode} />
-        <details className="signal-lesson"><summary>{journey.title}</summary><p>{journey.text}</p><p className="text-teal-300">Prøv: {journey.try}</p></details>
-        {mode === 'missions' && <div className="signal-mission-actions">
-          <div className="flex flex-wrap gap-2">
-            <button type="button" className="primary-button" onClick={checkMission}><CheckCircle2 size={17} /> Sjekk løsningen</button>
-            <button type="button" className="secondary-button" aria-expanded={showHint} onClick={() => setShowHint(previous => !previous)}><CircleHelp size={16} />{showHint ? 'Skjul hint' : 'Vis hint'}</button>
-            {feedback === 'correct' && <button type="button" className="secondary-button" onClick={() => loadMission((missionIndex + 1) % signalMissions.length)}>Neste oppdrag <ArrowRight size={16} /></button>}
-          </div>
-          {showHint && <p className="mt-3 text-sm text-amber-200">{mission.hint}</p>}
-          <div role="status" aria-atomic="true">{feedback && <div className={`signal-feedback ${feedback}`}><strong>{feedback === 'correct' ? 'Løst! Du fant sammenhengen.' : 'Ikke helt ennå. Følg signalet én gang til.'}</strong><p>{feedback === 'correct' ? mission.lesson : mission.goal}</p></div>}</div>
-        </div>}
+      <div className="signal-inspector">
+        <div className="signal-inspector-heading"><div><p>LEDD {step + 1} / {signalJourney.length}</p><h2>{node.label}</h2></div><button type="button" aria-label="Lær om valgt ledd" onClick={() => setOverlay('learn')}><BookOpen size={19} /></button></div>
+        <SignalControls state={state} signal={signal} onChange={updateState} node={node} animate={animate} panel={panel} onPanelChange={value => setPanels(previous => ({ ...previous, [node.id]: value }))} />
       </div>
     </div>
-    <details className="signal-model-note"><summary>Om modellen og dLive</summary>
-      <p>En visuell læringsmodell uten lydavspilling eller miksertilkobling. Bølgeformen er tegnet langsommere og med felles zoom for før/etter. Tonepulsen gjør refleksjoner og ekko synlige. Tidsforskyvningene er i millisekunder; bærebølgen er en skisse.</p>
-      <p>Nivåene beregnes for testfrekvensen. HPF er et ideelt 12 dB/oktav-filter, EQ er et løft/kutt ved testtonen, gate og kompressor er statiske modeller uten attack/release. Bypass lar deg sammenligne. Klang er en forenklet serie refleksjoner, ikke en kopi av en dLive-effekt.</p>
-      <p>Main LR summerer tørr kanal og FX-retur som tilnærmet effekt for ukorrelerte signaler. Meteret er ikke et nøyaktig peak-meter. Pan flytter den tørre kanalen; FX-returen fordeles likt til L/R. Matrix er én mulig distribusjonsvei, og PA viser elektrisk nivå, ikke lydtrykk. Ingen høyttaler- eller rommodell. Parameterendringer beregner en ny skisse; allerede eksisterende klanghaler beholdes ikke når en rute slås av.</p>
-      <p>Monitoruttaket er etter processing, med valgfri pre/post-fade. Mute stopper alle sends her; FX er post-fade. Kontroller faktisk Mix Source, routing og mute-oppsett i showet.</p>
-      <p>Kilder: <a href="https://support.allen-heath.com/hc/en-gb/articles/39795277687441-Routing" target="_blank" rel="noreferrer">Allen & Heath · Routing</a>, <a href="https://support.allen-heath.com/hc/en-gb/articles/39790636807825-Processing-Screen" target="_blank" rel="noreferrer">Processing</a> og <a href="https://support.allen-heath.com/hc/en-gb/articles/39793907886609-FX" target="_blank" rel="noreferrer">FX</a>.</p>
-    </details>
+    <nav className="signal-focus-navigation" aria-label="Navigasjon i signalveien">
+      <button type="button" disabled={step === 0} aria-label="Forrige steg" onClick={() => selectNode(signalJourney[step - 1].id)}><ArrowLeft size={18} /><span>Forrige</span></button>
+      <button type="button" onClick={() => setOverlay('overview')}><Grid2X2 size={17} /> Oversikt</button>
+      <button type="button" aria-label={step === signalJourney.length - 1 ? 'Fra starten' : 'Neste steg'} onClick={() => selectNode(signalJourney[(step + 1) % signalJourney.length].id)}><span>{step === signalJourney.length - 1 ? 'Start' : 'Neste'}</span><ArrowRight size={18} /></button>
+    </nav>
   </section>;
+
+  return <>
+    {fullscreen ? <SignalFullscreen onClose={closeFullscreen}>{content}</SignalFullscreen> : content}
+    {overlay && <Modal label={overlay === 'overview' ? 'Signaloversikt' : overlay === 'missions' ? 'Signaloppdrag' : `Lær: ${node.label}`} onClose={() => setOverlay(null)}>
+      {overlay === 'overview' && <div className="signal-overview"><h2>Hvor vil du utforske?</h2><p>Velg et ledd. Innstillingene og fanene dine beholdes.</p><div>{signalJourney.map((item, index) => { const entry = signalPathData.find(value => value.id === item.id); return <button key={item.id} type="button" aria-pressed={item.id === node.id} onClick={() => selectNode(item.id)}><span>{index + 1}. {entry.label}</span><small>{formatSignalLevel(signal.nodes[item.id])}</small></button>; })}</div></div>}
+      {overlay === 'learn' && <div className="signal-learn"><h2>{journey.title}</h2><p>{journey.text}</p><p className="text-teal-300">Prøv: {journey.try}</p><div className="node-result"><strong>{diagnosis.title}</strong><p>{diagnosis.text}</p></div><button type="button" className="signal-detail-link" onClick={() => { setOverlay(null); requestAnimationFrame(() => onOpenNode(node)); }}>Flere verktøy, teori og video →</button><SignalModelNote /></div>}
+      {overlay === 'missions' && <div className="signal-mission-brief">
+        <h2>Feilsøk med hendene</h2><p>{completed.length}/6 løst denne økten</p>
+        <label htmlFor="signal-mission">Velg signaloppdrag</label>
+        <select id="signal-mission" value={missionIndex} onChange={event => loadMission(Number(event.target.value))}>{signalMissions.map((item, index) => <option key={item.id} value={index}>{completed.includes(item.id) ? '✓ ' : ''}{item.title}</option>)}</select>
+        <p>{mission.intro}</p><strong>Mål: {mission.goal}</strong>
+        <div className="signal-mission-actions"><button type="button" className="primary-button" onClick={() => setOverlay(null)}>Til kontrollene</button><button type="button" className="secondary-button" onClick={checkMission}>Sjekk løsningen</button><button type="button" className="secondary-button" aria-expanded={showHint} onClick={() => setShowHint(previous => !previous)}>{showHint ? 'Skjul hint' : 'Vis hint'}</button></div>
+        {showHint && <p className="text-amber-200">{mission.hint}</p>}
+        <div role="status" aria-atomic="true">{feedback && <div className={`signal-feedback ${feedback}`}><strong>{feedback === 'correct' ? 'Løst! Du fant sammenhengen.' : 'Ikke helt ennå. Følg signalet én gang til.'}</strong><p>{feedback === 'correct' ? mission.lesson : mission.goal}</p></div>}</div>
+        {feedback === 'correct' && <button type="button" className="primary-button mt-3" onClick={() => loadMission((missionIndex + 1) % signalMissions.length)}>Neste oppdrag</button>}
+        <button type="button" className="signal-detail-link" onClick={() => { setMode('explore'); setOverlay(null); }}>Fortsett fri utforsking</button>
+      </div>}
+    </Modal>}
+  </>;
 }

@@ -1,20 +1,24 @@
-import { SignalSlider } from './SignalFields.jsx';
+import { useId } from 'react';
+import { signalPanels } from '../../data/signalPanels.js';
 import { SignalNodeControls } from './SignalNodeControls.jsx';
-import { signalDiagnosis } from '../../utils/signalSimulation.js';
 
-export function SignalControls({ state, signal, onChange, node, animate, onOpenNode }) {
-  const diagnosis = signalDiagnosis(state, signal);
+export function SignalControls({ state, signal, onChange, node, animate, panel, onPanelChange }) {
+  const id = useId();
+  const panels = signalPanels[node.id];
+  function navigateTabs(event) {
+    const index = panels.findIndex(([value]) => value === panel);
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? panels.length - 1 : event.key === 'ArrowRight' ? (index + 1) % panels.length : event.key === 'ArrowLeft' ? (index + panels.length - 1) % panels.length : null;
+    if (next === null) return;
+    event.preventDefault();
+    onPanelChange(panels[next][0]);
+    event.currentTarget.querySelectorAll('[role="tab"]')[next].focus();
+  }
   return <section className="signal-console" aria-label="Signalmikser">
-    <div className="signal-quickmix">
-      <SignalSlider label="Preamp-gain" shortLabel="Gain" min={0} max={60} value={state.gain} onChange={gain => onChange({ gain })} />
-      <SignalSlider label="Kanalfader i signalveien" shortLabel="Kanalfader" min={-60} max={0} infinity value={state.fader} onChange={fader => onChange({ fader })} />
+    <div className="signal-tabs" role="tablist" aria-label={`Kontrollfaner: ${node.label}`} onKeyDown={navigateTabs}>
+      {panels.map(([value, label]) => <button type="button" key={value} role="tab" id={`${id}-${value}`} aria-selected={panel === value} aria-controls={`${id}-panel`} tabIndex={panel === value ? 0 : -1} onClick={() => onPanelChange(value)}>{label}</button>)}
     </div>
-    <div className="signal-node-controls" role="region" aria-label={`Kontroller: ${node.label}`}>
-      <SignalNodeControls nodeId={node.id} state={state} signal={signal} onChange={onChange} animate={animate} />
+    <div key={`${node.id}-${panel}`} className="signal-panel-body" role="tabpanel" id={`${id}-panel`} aria-labelledby={`${id}-${panel}`} tabIndex={0}>
+      <div className="signal-node-controls"><SignalNodeControls nodeId={node.id} panel={panel} state={state} signal={signal} onChange={onChange} animate={animate} /></div>
     </div>
-    <details className="signal-diagnosis" data-tone={diagnosis.tone}>
-      <summary>{diagnosis.title}</summary><p>{diagnosis.text}</p>
-    </details>
-    <button type="button" className="signal-detail-link" onClick={() => onOpenNode(node)}>Flere verktøy, teori og video →</button>
   </section>;
 }
