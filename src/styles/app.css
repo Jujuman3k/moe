@@ -1,0 +1,44 @@
+  .eyebrow { @apply flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-teal-400; }
+  .page-title { @apply mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl; }
+  .primary-button { @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/15 transition-colors hover:bg-blue-500; }
+  .secondary-button { @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-2.5 text-xs font-semibold text-slate-300 transition-colors hover:border-slate-500 hover:text-white; }
+  .learning-card { @apply rounded-2xl border border-slate-800 bg-slate-900/60 p-6; }
+  .card-icon { @apply flex h-11 w-11 items-center justify-center rounded-xl border border-slate-700/70 bg-slate-800/50; }
+
+html { color-scheme: dark; }
+body { margin: 0; min-width: 320px; background: #020617; }
+button, a, input, select, [tabindex] { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid #60a5fa; outline-offset: 4px; }
+#main-content:focus { outline: none; }
+button:disabled { cursor: default; opacity: .5; }
+input[type='search']::-webkit-search-cancel-button { display: none; }
+.hero-surface { background: radial-gradient(ellipse at 90% 10%, #0d948811, transparent 55%), radial-gradient(ellipse at 10% 100%, #2563eb12, transparent 60%), #0b1221; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.custom-scrollbar { scrollbar-width: thin; scrollbar-color: #334155 transparent; }
+.pb-safe { padding-bottom: max(.5rem, env(safe-area-inset-bottom)); }
+.skip-link { position: fixed; left: 1rem; top: -5rem; z-index: 100; padding: .75rem 1rem; background: #2563eb; border-radius: .5rem; }
+.skip-link:focus { top: .5rem; }
+
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.animate-slide-up { animation: slideUp .3s cubic-bezier(.16, 1, .3, 1) forwards; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-fade-in { animation: fadeIn .3s ease-out; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in-up { animation: fadeInUp .2s ease-out; }
+@keyframes signalFlow {
+  0% { stroke-dasharray: 200, 2000; stroke-dashoffset: 1200; opacity: 0; }
+  10%, 90% { opacity: 1; }
+  100% { stroke-dasharray: 200, 2000; stroke-dashoffset: -200; opacity: 0; }
+}
+.animate-signal-pulse { animation: signalFlow 2s linear infinite; }
+@keyframes signalPulseVertical { from { background-position: 0% 250%; } to { background-position: 0% -150%; } }
+.animate-signal-pulse-vertical {
+  background: linear-gradient(to bottom, transparent 0%, #06b6d400 20%, #22d3ee 50%, #06b6d400 80%, transparent 100%);
+  background-size: 100% 300%; animation: signalPulseVertical 2s cubic-bezier(.4, 0, .6, 1) infinite;
+}
+@keyframes shootRight { 0% { left: -100%; opacity: 0; } 50% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
+.animate-shoot-right { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, transparent, currentColor, transparent); animation: shootRight 1.5s cubic-bezier(.4, 0, .2, 1) infinite; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

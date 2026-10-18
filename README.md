@@ -1,16 +1,65 @@
-# React + Vite
+# LydTeam Pro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Norsk læringsportal for lydteknikk og Allen & Heath dLive C3500. Bygget med React 19, Vite, Tailwind CSS og Lucide.
 
-Currently, two official plugins are available:
+## Kom i gang
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Bruk Node.js 22.12+ eller 24 og npm.
 
-## React Compiler
+```sh
+npm ci
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Kontroll før levering
 
-## Expanding the ESLint configuration
+```sh
+npm run lint
+npm test
+npm run build
+npx playwright install chromium
+npm run test:e2e
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på port 4173. Kjør `npm run build` først. YouTube-avspillere og miniatyrbilder erstattes med testresponser; reell avspilling må kontrolleres separat.
+
+## Kodestruktur
+
+| Mappe / fil | Ansvar |
+| --- | --- |
+| `src/App.jsx` | Laster sider og kobler navigasjon til læringsprogresjon |
+| `src/pages/` | Hjem, videoarkiv, signalvei og øvingsoppgaver |
+| `src/data/videoData.js` | 92 videoer fordelt på 8 kategorier |
+| `src/data/signalPathData.js` | Signalveiens 9 ledd, undertrinn, fagtekst og videolenker |
+| `src/data/practiceScenarios.js` | Øvingscase, svarforklaringer og fagkilder |
+| `src/components/video/` | Felles avspiller, søkefelt, videokort og videohøydepunkter |
+| `src/components/signal/` | Signalveikart, mobilkort og detaljpanel |
+| `src/components/visualizers/` | Én modul per eksisterende simulator eller visualisering |
+| `src/components/learning/` | Pre/post-lab og øvingskort |
+| `src/components/ui/` | Knapper, progresjonslinje, modal, ikoner og dreieknott |
+| `src/components/layout/` | Toppmeny, mobilmeny og sideramme |
+| `src/hooks/` | Navigasjon, mediespørring, sveiping og lagring |
+| `src/utils/` | Søk, validering av progresjon, frekvensskala og lab-beregning |
+| `src/styles/app.css` | Appens visuelle stil og animasjoner |
+| `tests/` | Logikktester og Playwright-tester |
+
+## Videreutvikle med KI
+
+- **Ny video:** legg den inn i riktig kategori i `videoData.js`. Behold stabile `id`- og `videoId`-verdier; progresjon og favoritter bruker `videoId`.
+- **Nytt øvingscase:** legg til et objekt i `practiceScenarios.js`. Bruk én korrekt valgmulighet, forklaring på hvert svar, en eksisterende `nodeId` og en relevant primærkilde.
+- **Endre en simulator:** arbeid i den aktuelle filen i `components/visualizers/`. Behold eksisterende props. Nye visualiseringer kobles til `DetailPanel.jsx` gjennom fagdataenes `viz`-verdi.
+- **Endre design:** arbeid i den relevante siden/komponenten eller `styles/app.css`; ikke legg fagdata tilbake i appskallet.
+- **Ny side:** legg til siden i `pages/`, ruten i `useNavigation.js`, menypunktet i `AppLayout.jsx` og den utsatte importen i `App.jsx`.
+
+Hold en endring avgrenset til relevant modul, og kjør kontrollene over. Det kreves ingen ny runtime-avhengighet for denne oppdelingen.
+
+## Bruk og lagring
+
+- Navigasjon bruker URL-fragmenter (`#home`, `#signal`, `#videos`, `#practice`), slik at frem/tilbake og direkte lenker fungerer på statisk hosting.
+- Eksempler: `#signal?node=preamp` og `#videos?video=q7BQkq6A5qc`.
+- Sett-markeringer, favoritter, løste oppgaver og sist åpnete video lagres i nettleserens `localStorage` under `lydteam.learning.v1`. Ingen konto eller synkronisering mellom enheter.
+- Sett-markering er manuell; avspilling alene fullfører ikke en video. «Fortsett» åpner sist valgte video, men lagrer ikke tidsposisjon inne i YouTube-videoen.
+- Hvis lagring er blokkert, fungerer appen videre i minnet og viser beskjed. Ødelagte eller utdaterte lagringsverdier valideres og ignoreres.
+- Pre/post-laben er en forenklet modell av nivåendringer, uten lyd, mute, DCA eller annen prosessering. Appen styrer ikke en fysisk mikser.
+
+Se [refaktoreringsrapporten](docs/refactoring.md) for omfang og verifikasjon.
