@@ -49,6 +49,7 @@ export const DetailPanel = ({ node, subItem, setSubItem }) => {
   return (
     <section aria-label={`Detaljer: ${node.label}`} className="animate-fade-in pb-20 md:pb-0 h-full flex flex-col">
 
+      <p className="mb-4 text-xs leading-relaxed text-slate-400">Disse fordypningsverktøyene har egne innstillinger. Lukk vinduet for å gå tilbake til signalverkstedet.</p>
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-4 border-b border-slate-700 pb-4 shrink-0">
         <div className="p-3 bg-blue-600 rounded-lg text-white shadow-lg shadow-blue-600/20">

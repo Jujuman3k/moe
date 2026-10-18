@@ -37,7 +37,8 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 | `src/components/video/` | Felles avspiller, søkefelt, videokort og videohøydepunkter |
 | `src/components/signal/` | Responsivt signalveikart, kontroller, målere, læringslab og detaljpanel |
 | `src/data/signalJourney.js` | Ni forklaringssteg og seks praktiske signaloppdrag |
-| `src/utils/signalSimulation.js` | Ren nivåmodell, feildiagnose og mål for signaloppdragene |
+| `src/utils/signalSimulation.js` | Sammenkoblet nivåmodell, processing, ruting og oppdragsmål |
+| `src/utils/signalWaves.js` | Illustrative før/etter-bølger, klangrefleksjoner og delay |
 | `src/components/visualizers/` | Én modul per eksisterende simulator eller visualisering |
 | `src/components/learning/` | Pre/post-lab og øvingskort |
 | `src/components/ui/` | Knapper, progresjonslinje, modal, ikoner og dreieknott |
@@ -52,7 +53,7 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 - **Ny video:** legg den inn i riktig kategori i `videoData.js`. Behold stabile `id`- og `videoId`-verdier; progresjon og favoritter bruker `videoId`.
 - **Nytt øvingscase:** legg til et objekt i relevant fagmodul under `data/practice/` og ID-en i `practiceCatalog.js`. Bruk tre svaralternativer med én korrekt valgmulighet, forklaring på hvert svar, `level` (1–3), `hint`, `lesson`, eksisterende `nodeId` og `sourceId` fra `sources.js`. Behold ID-er for eksisterende case. Se [scenarioarkivet](docs/practice-scenarios.md) for oversikt og verifikasjon.
 - **Endre en simulator:** arbeid i den aktuelle filen i `components/visualizers/`. Behold eksisterende props. Nye visualiseringer kobles til `DetailPanel.jsx` gjennom fagdataenes `viz`-verdi.
-- **Endre signalveiens lab:** bruk `utils/signalSimulation.js` for beregninger, `data/signalJourney.js` for læringsinnhold og `components/signal/` for visning. Se [modell og tester](docs/signal-lab.md).
+- **Endre signalveiens lab:** bruk `utils/signalSimulation.js` for beregninger, `data/signalJourney.js` for læringsinnhold og `components/signal/` for visning. Se [signalverkstedet og tester](docs/signal-workbench.md).
 - **Endre design:** arbeid i den relevante siden/komponenten eller `styles/app.css`; ikke legg fagdata tilbake i appskallet.
 - **Ny side:** legg til siden i `pages/`, ruten i `useNavigation.js`, menypunktet i `AppLayout.jsx` og den utsatte importen i `App.jsx`.
 

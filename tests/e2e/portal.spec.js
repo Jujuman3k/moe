@@ -75,7 +75,7 @@ test('practice feedback, saved progress and relevant signal link', async ({ page
   await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
   await page.getByLabel('Fagområde').selectOption('monitor');
   await page.getByRole('button', { name: 'Utforsk i signalveien' }).click();
-  await expect(page.getByRole('heading', { name: 'Aux Send (Monitor)', exact: true, level: 2 })).toBeVisible();
+  await expect(page.getByRole('dialog').getByRole('heading', { name: 'Aux Send (Monitor)', exact: true, level: 2 })).toBeVisible();
 });
 
 test('every signal node, processing tool and video tab remains reachable', async ({ page }) => {
@@ -83,8 +83,11 @@ test('every signal node, processing tool and video tab remains reachable', async
   test.setTimeout(60000);
   await page.goto('/#signal');
   for (const node of signalPathData) {
-    await page.getByRole('button', { name: node.label, exact: false }).first().click();
-    await expect(page.getByRole('heading', { name: node.label, exact: true, level: 2 })).toBeVisible();
+    const picker = page.getByLabel('Velg signalledd');
+    if (await picker.isVisible()) await picker.selectOption(node.id);
+    else await page.getByRole('button', { name: node.label + ' – velg ledd', exact: true }).click();
+    await page.getByRole('button', { name: 'Flere verktøy, teori og video →', exact: true }).click();
+    await expect(page.getByRole('dialog').getByRole('heading', { name: node.label, exact: true, level: 2 })).toBeVisible();
     const panel = page.getByRole('region', { name: `Detaljer: ${node.label}` });
     if (node.id === 'preamp') {
       const knob = panel.getByRole('slider', { name: 'Input Gain' });
