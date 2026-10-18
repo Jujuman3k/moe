@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, Grid2X2, Maximize2, Pause, Play, RotateCcw, Target, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, ChevronDown, Grid2X2, Headphones, Maximize2, Pause, Play, RotateCcw, Square, Target, X } from 'lucide-react';
 import { signalJourney, signalMissions } from '../../data/signalJourney.js';
 import { signalPathData } from '../../data/signalPathData.js';
 import { missionPanels, signalPanels } from '../../data/signalPanels.js';
@@ -11,8 +11,13 @@ import { SignalMeter } from './SignalMeter.jsx';
 import { SignalControls } from './SignalControls.jsx';
 import { SignalFullscreen } from './SignalFullscreen.jsx';
 import { SignalModelNote } from './SignalModelNote.jsx';
+import { SignalAudioDialog } from './SignalAudioDialog.jsx';
+import { SignalAudioScope } from './SignalAudioScope.jsx';
+import { useSignalAudio } from '../../hooks/useSignalAudio.js';
+import { audioLesson } from '../../data/audioSources.js';
 import '../../styles/signal-lab.css';
 import '../../styles/signal-focus.css';
+import '../../styles/signal-audio.css';
 
 const missionNodes = ['input', 'preamp', 'monitor_branch', 'fader', 'mixbus', 'fx_branch'];
 
@@ -29,12 +34,17 @@ export function SignalLab({ onOpenNode, initialNodeId }) {
   const [showHint, setShowHint] = useState(false);
   const [completed, setCompleted] = useState([]);
   const fullscreenButton = useRef(null);
-  const signal = simulateSignal(state);
+  const audio = useSignalAudio(state);
+  const modelSignal = simulateSignal(state);
+  const signal = audio.source ? { ...modelSignal, ...(audio.meters || simulateSignal({ ...state, connected: false })) } : modelSignal;
   const journey = signalJourney[step];
   const node = signalPathData.find(item => item.id === journey.id);
   const panel = panels[node.id] || signalPanels[node.id][0][0];
   const mission = signalMissions[missionIndex];
-  const diagnosis = signalDiagnosis(state, signal);
+  const diagnosis = audio.source && state.muted && signal.fxReturn !== null
+    ? { title: 'Kanalen er mutet, men effekthalen lever videre.', text: 'Mute stopper nytt signal til sendene. Klang og delay kan fortsatt komme tilbake via FX-returen. Slå av returen for å stoppe den veien.' }
+    : signalDiagnosis(state, signal);
+  const lesson = audio.source ? audioLesson(audio.source, node.id, panel) : null;
 
   function updateState(patch) {
     setState(previous => ({ ...previous, ...patch }));
@@ -69,26 +79,25 @@ export function SignalLab({ onOpenNode, initialNodeId }) {
 
   const content = <section className="signal-lab signal-focus" aria-label="Signalveiens læringslab">
     <header className="signal-focus-toolbar">
-      <span className="signal-focus-brand">Signalverksted<span>{mode === 'missions' ? `Oppdrag ${missionIndex + 1}/6` : 'Utforsk · visuell modell'}</span></span>
+      <button type="button" className="signal-source-button" aria-label="Velg lydkilde og lyttepunkt" onClick={() => setOverlay('audio')}><span><Headphones size={16} /><b>{audio.source?.label || 'Velg lyd'}</b><ChevronDown size={12} /></span><small>{audio.source ? audio.status === 'loading' ? 'Laster lyd…' : audio.error ? 'Lydfeil · åpne for å prøve igjen' : `${audio.listening.original ? 'Original' : audio.listening.target === 'main' ? 'Main LR' : audio.listening.target === 'pa' ? 'PA' : 'Monitor'} · ${audio.playing ? 'spiller' : 'stoppet'}` : 'Opptak du kan mikse'}</small></button>
       <button type="button" aria-label="6 oppdrag" className="signal-toolbar-button" data-active={mode === 'missions'} onClick={openMissions}><Target size={18} /></button>
-      <button type="button" className="signal-toolbar-button" aria-label={animate ? 'Pause signalbevegelse' : 'Start signalbevegelse'} aria-pressed={!animate} onClick={() => setAnimate(previous => !previous)}>{animate ? <Pause size={18} /> : <Play size={18} />}</button>
-      <button type="button" aria-label="Nullstill" className="signal-toolbar-button" onClick={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState })}><RotateCcw size={18} /></button>
+      {audio.source ? <><button type="button" className="signal-toolbar-button audio-play" aria-label={audio.playing || audio.status === 'loading' ? 'Stopp lyd' : 'Spill lyd'} onClick={() => audio.playing || audio.status === 'loading' ? audio.stop() : void audio.play()}>{audio.playing || audio.status === 'loading' ? <Square size={18} /> : <Play size={18} />}</button><button type="button" className="signal-toolbar-button audio-ab" aria-label="Sammenlign med original" aria-pressed={audio.listening.original} onClick={() => audio.setListening({ original: !audio.listening.original })}>{audio.listening.original ? 'Orig.' : 'A/B'}</button></> : <><button type="button" className="signal-toolbar-button" aria-label={animate ? 'Pause signalbevegelse' : 'Start signalbevegelse'} aria-pressed={!animate} onClick={() => setAnimate(previous => !previous)}>{animate ? <Pause size={18} /> : <Play size={18} />}</button><button type="button" aria-label="Nullstill" className="signal-toolbar-button" onClick={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState })}><RotateCcw size={18} /></button></>}
       <button ref={fullscreenButton} type="button" className="signal-toolbar-button signal-enter" aria-label={fullscreen ? 'Tilbake til portalen' : 'Åpne mikser i fullskjerm'} onClick={() => fullscreen ? closeFullscreen() : setFullscreen(true)}>{fullscreen ? <X size={20} /> : <Maximize2 size={18} />}</button>
     </header>
     <div className="signal-workbench">
       <div className="signal-preview">
-        <div className="signal-preview-caption"><span>VELG ET LEDD I KARTET</span><span><i /> Live respons</span></div>
+        <div className="signal-preview-caption"><span>{audio.source ? 'LYD · MÅLTE SIGNALNIVÅER' : 'VELG ET LEDD I KARTET'}</span><span><i /> {audio.source ? audio.playing ? 'Spiller' : 'Stoppet' : 'Live respons'}</span></div>
         <SignalMap state={state} signal={signal} animate={animate} activeId={node.id} onSelectNode={selectNode} />
-        <SignalScope state={state} signal={signal} node={node} animate={animate} />
+        {audio.source ? <SignalAudioScope audio={audio} node={node} animate={animate} /> : <SignalScope state={state} signal={signal} node={node} animate={animate} />}
         <div className="signal-output-strip" aria-label="Resultat av innstillingene">
-          <SignalMeter label="Main LR" level={signal.mix} clipped={signal.clipped} />
-          <SignalMeter label="Monitor" level={signal.monitor} tone="blue" clipped={signal.clipped} />
-          <SignalMeter label="PA" level={signal.pa} clipped={signal.clipped} />
+          <SignalMeter live={!audio.source} label="Main LR" level={signal.mix} clipped={signal.clipped} />
+          <SignalMeter live={!audio.source} label="Monitor" level={signal.monitor} tone="blue" clipped={signal.clipped} />
+          <SignalMeter live={!audio.source} label="PA" level={signal.pa} clipped={signal.clipped} />
         </div>
       </div>
       <div className="signal-inspector">
         <div className="signal-inspector-heading"><div><p>LEDD {step + 1} / {signalJourney.length}</p><h2>{node.label}</h2></div><button type="button" aria-label="Lær om valgt ledd" onClick={() => setOverlay('learn')}><BookOpen size={19} /></button></div>
-        <SignalControls state={state} signal={signal} onChange={updateState} node={node} animate={animate} panel={panel} onPanelChange={value => setPanels(previous => ({ ...previous, [node.id]: value }))} />
+        <SignalControls state={state} signal={signal} onChange={updateState} node={node} animate={animate} panel={panel} onPanelChange={value => setPanels(previous => ({ ...previous, [node.id]: value }))} audio={audio} onOpenAudio={() => setOverlay('audio')} />
       </div>
     </div>
     <nav className="signal-focus-navigation" aria-label="Navigasjon i signalveien">
@@ -100,9 +109,10 @@ export function SignalLab({ onOpenNode, initialNodeId }) {
 
   return <>
     {fullscreen ? <SignalFullscreen onClose={closeFullscreen}>{content}</SignalFullscreen> : content}
-    {overlay && <Modal label={overlay === 'overview' ? 'Signaloversikt' : overlay === 'missions' ? 'Signaloppdrag' : `Lær: ${node.label}`} onClose={() => setOverlay(null)}>
+    {overlay && <Modal label={overlay === 'audio' ? 'Lydvalg' : overlay === 'overview' ? 'Signaloversikt' : overlay === 'missions' ? 'Signaloppdrag' : `Lær: ${node.label}`} onClose={() => setOverlay(null)}>
+      {overlay === 'audio' && <SignalAudioDialog audio={audio} onClose={() => setOverlay(null)} onReset={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState })} animate={animate} onToggleAnimate={() => setAnimate(previous => !previous)} />}
       {overlay === 'overview' && <div className="signal-overview"><h2>Hvor vil du utforske?</h2><p>Velg et ledd. Innstillingene og fanene dine beholdes.</p><div>{signalJourney.map((item, index) => { const entry = signalPathData.find(value => value.id === item.id); return <button key={item.id} type="button" aria-pressed={item.id === node.id} onClick={() => selectNode(item.id)}><span>{index + 1}. {entry.label}</span><small>{formatSignalLevel(signal.nodes[item.id])}</small></button>; })}</div></div>}
-      {overlay === 'learn' && <div className="signal-learn"><h2>{journey.title}</h2><p>{journey.text}</p><p className="text-teal-300">Prøv: {journey.try}</p><div className="node-result"><strong>{diagnosis.title}</strong><p>{diagnosis.text}</p></div><button type="button" className="signal-detail-link" onClick={() => { setOverlay(null); requestAnimationFrame(() => onOpenNode(node)); }}>Flere verktøy, teori og video →</button><SignalModelNote /></div>}
+      {overlay === 'learn' && <div className="signal-learn"><h2>{journey.title}</h2><p>{journey.text}</p><p className="text-teal-300">Prøv: {journey.try}</p>{lesson && <div className="audio-lesson"><h3>Lytt etter · {audio.source.label}</h3><p>{lesson.text}</p>{lesson.patch && <button type="button" className="primary-button" onClick={() => { updateState(lesson.patch); setPanels(previous => ({ ...previous, [lesson.node]: lesson.panel })); selectNode(lesson.node); }}>{lesson.label}</button>}</div>}<div className="node-result"><strong>{diagnosis.title}</strong><p>{diagnosis.text}</p></div><button type="button" className="signal-detail-link" onClick={() => { audio.stop(); setOverlay(null); requestAnimationFrame(() => onOpenNode(node)); }}>Flere verktøy, teori og video →</button><SignalModelNote audio={Boolean(audio.source)} /></div>}
       {overlay === 'missions' && <div className="signal-mission-brief">
         <h2>Feilsøk med hendene</h2><p>{completed.length}/6 løst denne økten</p>
         <label htmlFor="signal-mission">Velg signaloppdrag</label>

@@ -3,7 +3,7 @@ export const defaultSignalState = Object.freeze({
   gain: 30, fader: 0, monitorSend: -6, fxSend: -12,
   monitorPre: true, connected: true, muted: false, mainAssigned: true, fxReturn: true,
   sourceLevel: -48, sourceKind: 'pulse', frequency: 220,
-  hpf: false, hpfHz: 100, eq: 0, gate: false, gateThreshold: -35,
+  hpf: false, hpfHz: 100, eq: 0, eqHz: 1000, gate: false, gateThreshold: -35,
   compressor: false, threshold: -24, ratio: 4, bypass: false,
   fxType: 'off', decay: 1.4, delayMs: 350, feedback: 35, returnLevel: 0,
   pan: 0, mainLevel: 0, matrixLevel: 0, paEnabled: true,

@@ -2,6 +2,8 @@
 
 Signalverkstedet bruker nå et avgrenset mikserpanel. Kart, bølge, utgangsmålere og navigasjon har faste plasser, mens små faner viser kontrollene for valgt ledd. Parameterendringer flytter ikke siden.
 
+Lydvalg og ekte avspilling er senere lagt til uten å endre den faste plasseringen; se [lyd i signalverkstedet](signal-audio.md).
+
 ## Bruk
 
 - På skjermer under 900 px bredde åpnes mikseren i en egen fullskjermdialog. Dette er fullskjerm innenfor nettsiden, uten krav til nettleserens Fullscreen API. `100dvh` og safe-area-innrykk tar hensyn til mobilens tilgjengelige plass.
