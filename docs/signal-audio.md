@@ -1,5 +1,7 @@
 # Lyd i signalverkstedet
 
+Denne siden beskriver den opprinnelige lydmotoren i Enkel-modus. Se [Enkel og Pro](signal-pro.md) for den utvidede PEQ-en, filtre, gate og kompressor.
+
 «Velg lyd» øverst åpner sju opptak: mannsvokal, kvinnevokal, piano, bass, akustisk gitar, kick og skarptromme. Velg et opptak og trykk «Spill og miks». Én kilde spilles i loop gjennom kanalens signalkjede. Opptakene er uavhengige øvingsklipp; dette er ikke en flersporslåt eller DAW.
 
 Spill/stopp og Original/Mikset ligger i den faste verktøylinjen. Lydvalg inneholder lyttepunkt (Main LR, monitor eller PA), separat lyttevolum, animasjonsvalg og nullstilling. Valg av lyd eller fullskjerm endrer ikke parameterne. Bok-knappen viser lyttetips for kilden og valgt ledd, med avgrensede forslag man kan prøve. Overgang til eldre fordypningsverktøy stopper opptaket, slik at det ikke spiller over videoer eller andre verktøy.

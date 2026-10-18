@@ -1,3 +1,4 @@
+import { createProSettings } from '../data/proAudioSettings.js';
 // Visual teaching model. null means silence; levels are not acoustic SPL.
 export const defaultSignalState = Object.freeze({
   gain: 30, fader: 0, monitorSend: -6, fxSend: -12,
@@ -7,6 +8,7 @@ export const defaultSignalState = Object.freeze({
   compressor: false, threshold: -24, ratio: 4, bypass: false,
   fxType: 'off', decay: 1.4, delayMs: 350, feedback: 35, returnLevel: 0,
   pan: 0, mainLevel: 0, matrixLevel: 0, paEnabled: true,
+  proMode: false, pro: createProSettings(),
 });
 
 export const attenuate = (level, db) => level === null || db <= -60 ? null : level + db;
