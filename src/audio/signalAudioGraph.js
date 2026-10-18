@@ -1,4 +1,5 @@
 import { defaultSignalState } from '../utils/signalSimulation.js';
+import { createProAudioGraph } from './proAudioGraph.js';
 
 export const dbGain = db => 10 ** (db / 20);
 const faderGain = db => db <= -60 ? 0 : dbGain(db);
@@ -21,7 +22,10 @@ export function roomImpulse(context, seconds) {
 
 export async function loadGate(context) {
   if (!context.audioWorklet) throw new Error('Nettleseren støtter ikke lydbehandlingen. Prøv en oppdatert nettleser.');
-  await context.audioWorklet.addModule(new URL('./gate.worklet.js', import.meta.url));
+  await Promise.all([
+    context.audioWorklet.addModule(new URL('./gate.worklet.js', import.meta.url)),
+    context.audioWorklet.addModule(new URL('./proDynamics.worklet.js', import.meta.url)),
+  ]);
 }
 
 export function createSignalAudioGraph(context, initialState = {}, initialListening = {}) {
@@ -56,6 +60,8 @@ export function createSignalAudioGraph(context, initialState = {}, initialListen
   // output even when bypassed, which would otherwise change the centre pan law.
   processed.channelCount = 1; processed.channelCountMode = 'explicit';
   chain(compMix, processWet, processed); chain(clipper, processDry, processed);
+  const proChannel = createProAudioGraph(context, own, tap);
+  clipper.connect(proChannel.input); proChannel.output.connect(processed);
   const mute = tap('channel', gain()); const fader = tap('post', gain());
   chain(processed, mute, fader);
   const preMonitor = gain(); const postMonitor = gain(0); const monitor = tap('monitor', gain());
@@ -103,7 +109,8 @@ export function createSignalAudioGraph(context, initialState = {}, initialListen
     set(eq.frequency, state.eqHz || 1000, immediate); set(eq.gain, state.eq, immediate);
     set(compressor.threshold, state.threshold, immediate); set(compressor.ratio, state.ratio, immediate);
     level(compDry, state.compressor ? 0 : 1); level(compWet, state.compressor ? 1 : 0);
-    level(processWet, state.bypass ? 0 : 1); level(processDry, state.bypass ? 1 : 0);
+    level(processWet, !state.proMode && !state.bypass ? 1 : 0); level(processDry, !state.proMode && state.bypass ? 1 : 0);
+    proChannel.update(state.pro, state.proMode, state.bypass, (param, value, discrete = false) => set(param, value, immediate || discrete));
     level(mute, state.muted ? 0 : 1); level(fader, faderGain(state.fader));
     level(preMonitor, state.monitorPre ? 1 : 0); level(postMonitor, state.monitorPre ? 0 : 1); level(monitor, faderGain(state.monitorSend));
     set(panner.pan, state.pan / 100, immediate); level(assigned, state.mainAssigned ? 1 : 0);
@@ -130,17 +137,19 @@ export function createSignalAudioGraph(context, initialState = {}, initialListen
       peaks[name] = peak < 0.000001 ? null : 20 * Math.log10(peak);
     }
     return { ...peaks, clipped: peaks.requested !== null && peaks.requested > 0, gateClosed: state.gate && !state.bypass && gateClosed,
-      reduction: state.compressor && !state.bypass ? -compressor.reduction : 0,
+      reduction: state.compressor && !state.bypass ? -compressor.reduction : 0, ...(state.proMode ? proChannel.levels() : {}),
       fxReturn: peaks.wet,
-      nodes: { input: peaks.input, preamp: peaks.preamp, processing: peaks.processed, fader: peaks.post, monitor_branch: peaks.monitor, fx_branch: peaks.fx, mixbus: peaks.mix, matrix: peaks.matrix, speakers: peaks.pa } };
+      nodes: { input: peaks.input, preamp: state.proMode ? peaks.proTrim : peaks.preamp, processing: peaks.processed, fader: peaks.post, monitor_branch: peaks.monitor, fx_branch: peaks.fx, mixbus: peaks.mix, matrix: peaks.matrix, speakers: peaks.pa } };
   }
   function scope(node) {
     const pair = { input: ['input','input'], preamp: ['input','preamp'], processing: ['preamp','processed'], fader: ['channel','post'], monitor_branch: [state.monitorPre ? 'channel' : 'post','monitor'], fx_branch: ['fx','wet'], mixbus: ['post','mix'], matrix: ['mix','matrix'], speakers: ['matrix','pa'] }[node];
-    return { before: read(pair[0]), after: read(pair[1]), wet: read('wet'), duration: 4096 / context.sampleRate };
+    return { before: read(pair[0]), after: read(state.proMode && node === 'preamp' ? 'proTrim' : pair[1]), wet: read('wet'), duration: 4096 / context.sampleRate };
   }
-  return { input, output, taps, update, levels, scope,
+  const spectrum = new Float32Array(taps.proEqualized.analyser.frequencyBinCount);
+  function readSpectrum() { taps.proEqualized.analyser.getFloatFrequencyData(spectrum); return { values: spectrum, sampleRate: context.sampleRate }; }
+  return { input, output, taps, update, levels, scope, readSpectrum,
     start: () => set(output.gain, 1, false),
     silence: () => { output.gain.cancelScheduledValues(context.currentTime); output.gain.value = 0; },
-    dispose: () => { gate.port.close(); for (const node of nodes) node.disconnect(); },
+    dispose: () => { gate.port.close(); proChannel.dispose(); for (const node of nodes) node.disconnect(); },
   };
 }

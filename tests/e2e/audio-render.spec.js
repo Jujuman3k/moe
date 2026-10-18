@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { createProSettings } from '../../src/data/proAudioSettings.js';
 
 test.describe.configure({ timeout: 60000 });
 test.beforeEach(async ({ page }) => {
@@ -21,16 +22,18 @@ async function render(page, options = {}) {
     const context = new OfflineAudioContext(2, Math.ceil(rate * seconds), rate);
     // Worklet requests bypass Playwright's page routes. Fetch the exact worklet
     // through our fixture route, then register it as a module with a blob URL.
-    const gateSource = await (await fetch('/__audio_source/audio/gate.worklet.js')).text();
-    const gateUrl = URL.createObjectURL(new Blob([gateSource], { type: 'text/javascript' }));
-    await context.audioWorklet.addModule(gateUrl); URL.revokeObjectURL(gateUrl);
+    for (const file of ['gate.worklet.js', 'proDynamics.worklet.js']) {
+      const gateSource = await (await fetch('/__audio_source/audio/' + file)).text();
+      const gateUrl = URL.createObjectURL(new Blob([gateSource], { type: 'text/javascript' }));
+      await context.audioWorklet.addModule(gateUrl); URL.revokeObjectURL(gateUrl);
+    }
     const graph = createSignalAudioGraph(context, options.settings || {}, options.listening || {});
     const buffer = context.createBuffer(1, Math.ceil(rate * seconds), rate);
     const values = buffer.getChannelData(0);
     for (let i = 0; i < values.length; i++) {
       const t = i / rate;
       const envelope = options.kind === 'burst' ? (t < 0.04 ? Math.sin(Math.PI * t / 0.04) : 0) : options.kind === 'steps' ? (t < 0.6 ? 0.1 : 1) : 1;
-      values[i] = envelope * Math.sin(2 * Math.PI * (options.frequency || 1000) * t);
+      values[i] = (options.amplitude ?? 1) * envelope * Math.sin(2 * Math.PI * (options.frequency || 1000) * t);
     }
     const source = context.createBufferSource(); source.buffer = buffer; source.connect(graph.input);
     if (options.tap === 'output') { graph.output.connect(context.destination); graph.start(); }
@@ -41,7 +44,8 @@ async function render(page, options = {}) {
       const data = result.getChannelData(channel);
       const rms = (start, end) => { let power = 0; let count = 0; for (let i = Math.floor(start * rate); i < Math.min(data.length, end * rate); i++) { power += data[i] ** 2; count++; } return Math.sqrt(power / Math.max(1, count)); };
       let peak = 0; for (const value of data) peak = Math.max(peak, Math.abs(value));
-      return { peak, rms: rms(0.2, seconds), quiet: rms(0.2, 0.5), loud: rms(1, seconds), windows: Array.from({ length: Math.floor(seconds * 10) }, (_, i) => rms(i / 10, (i + 1) / 10)), flat: Array.from(data).filter(value => Math.abs(value) > peak * 0.99).length / data.length };
+      let correlation = 0; for (let i = Math.floor(rate / 2); i < data.length; i++) correlation += data[i] * values[i];
+      return { peak, correlation, rms: rms(0.2, seconds), quiet: rms(0.2, 0.5), loud: rms(1, seconds), windows: Array.from({ length: Math.floor(seconds * 10) }, (_, i) => rms(i / 10, (i + 1) / 10)), flat: Array.from(data).filter(value => Math.abs(value) > peak * 0.99).length / data.length };
     });
     graph.dispose(); return channels;
   }, options);
@@ -104,4 +108,83 @@ test('listening volume, A/B and output ceiling are outside the mix', async ({ pa
   expect(original.rms / normal.rms).toBeCloseTo(1, 3);
   const extreme = (await render(page, { tap: 'output', settings: { gain: 60, sourceLevel: -24, eq: 12, fxType: 'delay', fxSend: 0, feedback: 75, returnLevel: 6 }, listening: { volume: 100 } }))[0];
   expect(extreme.peak).toBeLessThanOrEqual(0.70001);
+});
+
+test('Pro four-band response matches actual Web Audio filters including shelves and cut slopes', async ({ page }) => {
+  const pro = createProSettings();
+  pro.filters = { hpf: true, hpfHz: 80, slope: 24, lpf: true, lpfHz: 15000 };
+  pro.eq.bands = pro.eq.bands.map((band, i) => ({ ...band, gain: [-3, 4, -6, 3][i], width: [0.5, 1, 0.2, 1.5][i], type: ['lowshelf', 'peaking', 'peaking', 'highshelf'][i] }));
+  const response = await page.evaluate(async pro => {
+    const { proFilterSpecs, responseDb } = await import('/__audio_source/audio/proFilters.js');
+    const ctx = new OfflineAudioContext(1, 1, 48000);
+    const frequencies = new Float32Array([30, 80, 300, 2500, 12000, 18000]);
+    const specs = proFilterSpecs(pro); const actual = new Array(frequencies.length).fill(0);
+    for (const spec of specs.filter(spec => spec.enabled)) {
+      const filter = ctx.createBiquadFilter(); filter.type = spec.type; filter.frequency.value = spec.frequency; filter.Q.value = spec.Q; filter.gain.value = spec.gain;
+      const magnitude = new Float32Array(frequencies.length); filter.getFrequencyResponse(frequencies, magnitude, new Float32Array(frequencies.length));
+      magnitude.forEach((value, index) => { actual[index] += 20 * Math.log10(value); });
+    }
+    return actual.map((value, i) => ({ actual: value, drawn: responseDb(specs, frequencies[i]) }));
+  }, pro);
+  for (const result of response) expect(result.drawn).toBeCloseTo(result.actual, 3);
+  const neutral = createProSettings();
+  for (const [index, frequency] of [[0, 100], [1, 400], [2, 2500], [3, 10000]]) {
+    const settings = structuredClone(neutral); settings.eq.bands[index].gain = -9;
+    const a = (await render(page, { frequency, settings: { proMode: true, pro: neutral } }))[0].rms;
+    const b = (await render(page, { frequency, settings: { proMode: true, pro: settings } }))[0].rms;
+    expect(b / a).toBeCloseTo(10 ** (-9 / 20), 3);
+  }
+  const narrow = structuredClone(neutral); narrow.eq.bands[1] = { ...narrow.eq.bands[1], frequency: 1000, gain: -12, width: 0.11 };
+  const wide = structuredClone(narrow); wide.eq.bands[1].width = 1.5;
+  const a = (await render(page, { frequency: 1400, settings: { proMode: true, pro: narrow } }))[0].rms;
+  const b = (await render(page, { frequency: 1400, settings: { proMode: true, pro: wide } }))[0].rms;
+  expect(b / a).toBeLessThan(0.5);
+});
+
+test('Pro filters, trim, polarity, bypass and mode isolation change real samples', async ({ page }) => {
+  const pro = createProSettings();
+  const base = (await render(page, { settings: { proMode: true, pro } }))[0];
+  const trimmed = (await render(page, { settings: { proMode: true, pro: { ...pro, trim: 6, polarity: true } } }))[0];
+  expect(trimmed.rms / base.rms).toBeCloseTo(10 ** (6 / 20), 3);
+  expect(trimmed.correlation).toBeLessThan(0); expect(base.correlation).toBeGreaterThan(0);
+  pro.filters.hpf = true; pro.filters.hpfHz = 400;
+  const twelve = (await render(page, { frequency: 80, settings: { proMode: true, pro } }))[0].rms;
+  pro.filters.slope = 24;
+  const twentyFour = (await render(page, { frequency: 80, settings: { proMode: true, pro } }))[0].rms;
+  expect(twentyFour / twelve).toBeLessThan(0.06);
+  pro.filters.hpf = false; pro.filters.lpf = true; pro.filters.lpfHz = 500;
+  expect((await render(page, { frequency: 5000, settings: { proMode: true, pro } }))[0].rms / base.rms).toBeLessThan(0.02);
+  pro.gate.enabled = true; pro.gate.threshold = 0; pro.eq.bands[1].gain = -15; pro.comp.enabled = true;
+  const bypass = (await render(page, { settings: { proMode: true, pro, bypass: true } }))[0].rms;
+  const easy = (await render(page, { settings: { proMode: false, pro } }))[0].rms;
+  expect(bypass / base.rms).toBeCloseTo(1, 3); expect(easy / base.rms).toBeCloseTo(1, 3);
+});
+
+test('Pro gate depth and sidechain affect audio without filtering the audible path', async ({ page }) => {
+  const pro = createProSettings(); pro.gate = { ...pro.gate, enabled: true, threshold: -10, depth: 20, release: 10, hold: 10 };
+  const base = (await render(page, { settings: { proMode: true } }))[0].loud;
+  const closed = (await render(page, { settings: { proMode: true, pro } }))[0].loud;
+  expect(closed / base).toBeCloseTo(0.1, 3);
+  pro.gate.threshold = -30;
+  const open = (await render(page, { frequency: 80, settings: { proMode: true, pro } }))[0].loud;
+  pro.gate.keyEnabled = true; pro.gate.keyHPF = 3000;
+  const keyed = (await render(page, { frequency: 80, settings: { proMode: true, pro } }))[0].loud;
+  expect(keyed / open).toBeCloseTo(0.1, 3);
+  pro.gate.enabled = false;
+  expect((await render(page, { frequency: 80, settings: { proMode: true, pro } }))[0].loud / open).toBeCloseTo(1, 3);
+});
+
+test('Pro compressor makeup, parallel mix and detector filters affect the rendered sound', async ({ page }) => {
+  const pro = createProSettings(); pro.comp = { ...pro.comp, enabled: true, threshold: -36, ratio: 4, knee: 0, attack: 1, release: 100 };
+  const compressed = (await render(page, { settings: { proMode: true, pro } }))[0].loud;
+  pro.comp.makeup = 6;
+  const makeup = (await render(page, { settings: { proMode: true, pro } }))[0].loud;
+  expect(makeup / compressed).toBeCloseTo(10 ** (6 / 20), 3);
+  pro.comp.mix = 0;
+  const dry = (await render(page, { settings: { proMode: true, pro } }))[0].loud;
+  expect(dry / compressed).toBeGreaterThan(3);
+  pro.comp.mix = 50;
+  expect((await render(page, { settings: { proMode: true, pro } }))[0].loud).toBeCloseTo((dry + makeup) / 2, 4);
+  pro.comp.mix = 100; pro.comp.makeup = 0; pro.comp.keyEnabled = true; pro.comp.keyHPF = 3000;
+  expect((await render(page, { frequency: 80, settings: { proMode: true, pro } }))[0].loud / dry).toBeCloseTo(1, 2);
 });
