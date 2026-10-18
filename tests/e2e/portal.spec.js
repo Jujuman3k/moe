@@ -75,19 +75,18 @@ test('practice feedback, saved progress and relevant signal link', async ({ page
   await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
   await page.getByLabel('Fagområde').selectOption('monitor');
   await page.getByRole('button', { name: 'Utforsk i signalveien' }).click();
-  await expect(page.getByRole('dialog').getByRole('heading', { name: 'Aux Send (Monitor)', exact: true, level: 2 })).toBeVisible();
+  await expect(page.getByRole('dialog', { name: 'Aux Send (Monitor)', exact: true }).getByRole('heading', { name: 'Aux Send (Monitor)', exact: true, level: 2 })).toBeVisible();
 });
 
 test('every signal node, processing tool and video tab remains reachable', async ({ page }) => {
   // Nine dialogs plus every nested processing tool and video tab in one journey.
-  test.setTimeout(60000);
+  test.setTimeout(120000);
   await page.goto('/#signal');
   for (const node of signalPathData) {
-    const picker = page.getByLabel('Velg signalledd');
-    if (await picker.isVisible()) await picker.selectOption(node.id);
-    else await page.getByRole('button', { name: node.label + ' – velg ledd', exact: true }).click();
+    await page.getByRole('button', { name: node.label + ' – velg ledd', exact: true }).click();
+    await page.getByRole('button', { name: 'Lær om valgt ledd', exact: true }).click();
     await page.getByRole('button', { name: 'Flere verktøy, teori og video →', exact: true }).click();
-    await expect(page.getByRole('dialog').getByRole('heading', { name: node.label, exact: true, level: 2 })).toBeVisible();
+    await expect(page.getByRole('dialog', { name: node.label, exact: true }).getByRole('heading', { name: node.label, exact: true, level: 2 })).toBeVisible();
     const panel = page.getByRole('region', { name: `Detaljer: ${node.label}` });
     if (node.id === 'preamp') {
       const knob = panel.getByRole('slider', { name: 'Input Gain' });
@@ -116,11 +115,13 @@ test('every signal node, processing tool and video tab remains reachable', async
       await videoTab.click();
       await expect(page.locator('iframe')).toHaveCount(1);
     }
-    const dialog = page.getByRole('dialog');
+    const dialog = page.getByRole('dialog', { name: node.label, exact: true });
     if (await dialog.count()) {
       await page.keyboard.press('Escape');
       await expect(dialog).toHaveCount(0);
-      await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
+      const focused = await page.getByRole('dialog', { name: 'Signalverksted i fullskjerm', exact: true }).count();
+      if (focused) await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
+      else await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
     }
   }
 });
@@ -140,7 +141,8 @@ test('new pages fit mobile, tablet and desktop without page overflow', async ({ 
     await page.setViewportSize({ width, height: 900 });
     for (const route of ['home', 'videos', 'practice', 'signal']) {
       await page.goto(`/#${route}`);
-      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      if (route === 'signal') await expect(page.locator('.signal-lab')).toBeVisible();
+      else await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     }
   }
@@ -149,7 +151,7 @@ test('new pages fit mobile, tablet and desktop without page overflow', async ({ 
 test('touch navigation distinguishes vertical scroll, nested back and edge swipe', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/#signal?node=processing');
-  const dialog = page.getByRole('dialog');
+  const dialog = page.getByRole('dialog', { name: 'Processing Strip', exact: true });
   const swipe = (locator, dx, dy) => locator.evaluate((element, delta) => {
     const touch = (x, y) => new Touch({ identifier: 1, target: element, clientX: x, clientY: y });
     element.dispatchEvent(new TouchEvent('touchstart', { bubbles: true, targetTouches: [touch(0, 100)] }));

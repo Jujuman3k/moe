@@ -1,6 +1,6 @@
 # Signalverkstedet – sammenhengende læring
 
-Denne versjonen erstatter plasseringen fra den første signal-laben. Kontroller og tilbakemelding hører nå sammen i én arbeidsflate.
+Denne rapporten beskriver modellen og den første samlede arbeidsflaten. Dagens plassering bruker [fast mikservisning med kontrollfaner](signal-focus.md). Layout- og testbeskrivelsen nedenfor dokumenterer forrige versjon.
 
 ## Bruk
 
