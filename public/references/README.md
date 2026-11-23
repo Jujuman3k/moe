@@ -1,6 +1,6 @@
 # Referansebilder i øvingsmikseren
 
-Dette er utsnitt fra de fire skjermbildene som ble sendt inn til Lydteam-portalen. De viser deler av Allen & Heath dLive-grensesnittet. Ingen av skjermbildene fungerer som betjening av en fysisk mikser. Utsnittene er lagret lokalt som WebP og lastes bare når brukeren åpner bildeatlaset og velger hvert bilde.
+Dette er utsnitt fra de fire skjermbildene som ble sendt inn til Lydteam-portalen. De viser deler av Allen & Heath dLive-grensesnittet. Ingen av skjermbildene fungerer som betjening av en fysisk mikser. Utsnittene er lagret lokalt som WebP. Bildeguiden laster valgt utsnitt når den åpnes. Kanaloversikten brukes også som inngang til pulten på forsiden.
 
 | Fil | Innsendt bilde | Utsnitt (venstre, topp, høyre, bunn) |
 | --- | --- | --- |

@@ -73,3 +73,17 @@ test('the console reaches all 24 faders, fits the viewport and meters real playb
   await page.getByRole('button',{name:'Stopp miks',exact:true}).click();
   await expect.poll(()=>left.evaluate(e=>Number(e.style.getPropertyValue('--c35-level')))).toBe(0);
 });
+
+test('peking på en fysisk fader oppdaterer hurtigfaderen på samme kanal',async({page,isMobile})=>{
+  await page.goto(route(1,'bank'));
+  const physical=page.getByRole('slider',{name:'Fader IP 1',exact:true});
+  await physical.scrollIntoViewIfNeeded();
+  const rect=await physical.boundingBox();
+  const pos={x:rect.x+rect.width/2,y:rect.y+rect.height*.79};
+  if(isMobile) await page.touchscreen.tap(pos.x,pos.y);
+  else await page.mouse.click(pos.x,pos.y);
+  await expect(physical).not.toHaveAttribute('aria-valuenow','-2');
+  const newValue=await physical.getAttribute('aria-valuenow');
+  await expect(page.getByRole('slider',{name:'Hurtigfader for valgt IP 1'})).toHaveAttribute('aria-valuenow',newValue);
+  await expect(page.getByRole('slider',{name:'Fader IP 2',exact:true})).toHaveAttribute('aria-valuenow','-6');
+});
