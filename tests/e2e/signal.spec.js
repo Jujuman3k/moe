@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { expectFullyInViewport, expectPanelFits } from './helpers/viewport.js';
 import { signalJourney } from '../../src/data/signalJourney.js';
 import { signalPanels } from '../../src/data/signalPanels.js';
 
@@ -53,12 +54,11 @@ test('every control panel fits without scrolling on small phones, tablet and lan
       if (node === 'fx_branch') { await tab(page, 'Effekt'); await page.getByRole('button', { name: 'Delay', exact: true }).click(); }
       for (const [, label] of panels) {
         await tab(page, label);
-        const metrics = await page.locator('.signal-panel-body').evaluate(element => ({ height:element.clientHeight, content:element.scrollHeight, width:element.clientWidth, contentWidth:element.scrollWidth }));
-        expect(metrics.content, `${width}×${height}: ${node}/${label}`).toBeLessThanOrEqual(metrics.height + 1);
-        expect(metrics.contentWidth).toBeLessThanOrEqual(metrics.width + 1);
-        for (const control of await page.getByRole('tabpanel').locator('input,button').all()) await expect(control).toBeInViewport({ ratio:1 });
-        await expect(page.locator('.signal-scope')).toBeInViewport({ ratio:1 });
-        expect(await full(page).evaluate(element => element.scrollHeight <= element.clientHeight + 1)).toBe(true);
+        const context = `${width}×${height}: Enkel / ${node} / ${label}`;
+        await expectPanelFits(page.locator('.signal-panel-body'), context, true);
+        for (const control of await page.getByRole('tabpanel').locator('input,button').all()) await expectFullyInViewport(control, context);
+        await expectFullyInViewport(page.locator('.signal-scope'), `${context} / waveform`);
+        await expectPanelFits(full(page), `${context} / fullscreen`);
       }
     }
   }

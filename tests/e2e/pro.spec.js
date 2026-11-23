@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { expectFullyInViewport, expectPanelFits } from './helpers/viewport.js';
 import { proPages, proPanels } from '../../src/data/proAudioSettings.js';
 
 test.describe.configure({ timeout: 90000 });
@@ -100,14 +101,15 @@ test('all Pro parameter groups fit small phone, portrait, tablet and landscape',
       const groups = proPages[panel].length ? proPages[panel] : [[null, null]];
       for (const [, group] of groups) {
         if (group) await page.getByRole('group', { name: 'Parametergruppe' }).getByRole('button', { name: group, exact: true }).click();
-        expect(await page.locator('.pro-panel-body').evaluate(el => el.scrollHeight <= el.clientHeight + 1), `${width}/${panel}/${group}`).toBe(true);
-        await expect(page.locator('.pro-graph')).toBeInViewport({ ratio: 1 });
-        for (const control of await page.locator('.pro-panel-body :is(input,button,select)').all()) await expect(control).toBeInViewport({ ratio: 1 });
+        const context = `${width}×${height}: Pro / processing / ${panel} / ${group ?? 'main'}`;
+        await expectPanelFits(page.locator('.pro-panel-body'), context);
+        await expectFullyInViewport(page.locator('.pro-graph'), `${context} / graph`);
+        for (const control of await page.locator('.pro-panel-body :is(input,button,select)').all()) await expectFullyInViewport(control, context);
       }
     }
     await page.getByRole('button', { name: 'Forrige steg', exact: true }).click();
-    expect(await page.locator('.pro-panel-body').evaluate(el => el.scrollHeight <= el.clientHeight + 1), `${width}/preamp`).toBe(true);
-    expect(await page.locator('.signal-preview').evaluate(el => el.scrollHeight <= el.clientHeight + 1), `${width}/preamp preview`).toBe(true);
+    await expectPanelFits(page.locator('.pro-panel-body'), `${width}×${height}: Pro / preamp`);
+    await expectPanelFits(page.locator('.signal-preview'), `${width}×${height}: Pro / preamp / preview`);
     await page.locator('[data-node="processing"]').click();
   }
 });

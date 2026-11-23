@@ -27,7 +27,7 @@ export function LearningShelf({ navigate, progress, onOpenVideo }) {
       <ShelfCard tone="green" category="Gehør" Icon={Headphones} title="Hør hva som endret seg"
         description="Bytt mellom A og B på samme opptak. Kan du høre hvilket grep som ble gjort i miksen?"
         onClick={() => navigate('listen')} action="Start lyttetest" ActionIcon={Headphones}>
-        <div className="studio-ab-mark" aria-hidden="true"><span>A</span><i/><span>B</span></div>
+        <div className="studio-home-ab-mark" aria-hidden="true"><span>A</span><i/><span>B</span></div>
       </ShelfCard>
       <ShelfCard tone="amber" category="Lydsjekk" Icon={SlidersHorizontal} title="Løs et problem på scenen"
         description={`${practiceScenarioCount} situasjoner i ${practiceTopics.length} fagområder. Finn årsaken, prøv et tiltak og få forklart svaret.`}

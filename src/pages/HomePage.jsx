@@ -13,7 +13,7 @@ export function HomePage({ navigate, learning, onOpenVideo }) {
   return <div className="studio-home animate-fade-in">
     <section className="studio-hero" aria-labelledby="studio-hero-heading">
       <div className="studio-hero-copy">
-        <p className="studio-kicker"><AudioWaveform size={16} aria-hidden="true"/> Lydteknikk i praksis</p>
+        <p className="studio-home-kicker"><AudioWaveform size={16} aria-hidden="true"/> Lydteknikk i praksis</p>
         <h1 id="studio-hero-heading">Forstå signalet.<br/><em>Hør forskjellen.</em></h1>
         <p className="studio-lede">Velg et opptak, form lyden med EQ og hør hva som skjer. Øv på dLive C3500 i ditt eget tempo.</p>
       </div>

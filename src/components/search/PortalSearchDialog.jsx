@@ -12,6 +12,13 @@ export default function PortalSearchDialog({ onClose, onSelect }) {
   useEffect(() => { field.current.focus(); }, []);
   const results = searchPortal(query, kind), suggestions = !query.trim() && kind === 'Alle';
   function advance(event) {
+    // A native search input can consume Escape just to clear its text.
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      onClose();
+      return;
+    }
     if (!['ArrowDown','ArrowUp'].includes(event.key)) return;
     if (event.target !== field.current && !list.current.contains(event.target)) return;
     const items = [...list.current.querySelectorAll('[data-result]')];
