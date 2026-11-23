@@ -8,7 +8,7 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 1000 } } },
     // WebKit on an emulated tablet exercises touch layouts, Web Audio and deep links.
     // The long viewport matrix already runs in the Chromium desktop profile.
-    { name: 'ipad-webkit', testMatch: /(?:band-render|bandroom|learning-paths|listen|pro-notebook|home-studio)\.spec\.js$/, use: { ...devices['iPad (gen 7)'], browserName: 'webkit' } },
+    { name: 'ipad-webkit', testMatch: /(?:band-render|bandroom|learning-paths|listen|pro-notebook|home-studio|c3500-[\w-]+|signal-wayfinding|signal-depth)\.spec\.js$/, use: { ...devices['iPad (gen 7)'], browserName: 'webkit' } },
     { name: 'mobile', use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' } },
   ],
   webServer: { command: 'npm run preview -- --host 127.0.0.1 --port 4173 --strictPort', url: 'http://127.0.0.1:4173', reuseExistingServer: false },

@@ -1,0 +1,32 @@
+import { expect, test } from '@playwright/test';
+
+test('inspect a monitor tap, keep the comparison while reading, then return to the unchanged mix', async ({ page }) => {
+  await page.goto('/#signal?node=monitor_branch');
+  const dialog = page.getByRole('dialog', { name: 'Aux Send (Monitor)' });
+  const lesson = dialog.getByRole('region', { name: 'Spor signalet inni leddet' });
+  const stage = lesson.getByRole('group', { name: 'Målepunkter i eksemplet' });
+  const points = stage.getByRole('button');
+  await expect(points.nth(2)).toContainText('-24 dBFS');
+  await lesson.getByRole('button', { name: 'Post-fade', exact: true }).click();
+  await expect(points.nth(2)).toContainText('-42 dBFS');
+  await expect(points.nth(1)).toContainText('-36 dBFS');
+  await points.nth(1).focus();
+  await page.keyboard.press('Enter');
+  await expect(lesson.getByRole('heading', { name: 'Sal', exact: true })).toBeVisible();
+  await dialog.getByRole('button', { name: 'Verktøy', exact: true }).click();
+  await expect(lesson).toBeHidden();
+  await dialog.getByRole('button', { name: 'Oversikt', exact: true }).click();
+  await expect(points.nth(1)).toHaveAttribute('aria-pressed', 'true');
+  await expect(points.nth(2)).toContainText('-42 dBFS');
+  await lesson.getByText('Test deg selv · lydsjekk', { exact: true }).click();
+  const exercise = lesson.getByRole('group', { name: /^Gitaristen mister/ });
+  await exercise.getByRole('button', { name: /Øk bare nivået/ }).click();
+  await expect(lesson.getByText(/neste faderbevegelse/)).toBeVisible();
+  await exercise.getByRole('button', { name: /Velg pre-fade/ }).click();
+  await expect(lesson.getByText(/Avstem deretter send-nivået/)).toBeVisible();
+  await lesson.getByRole('button', { name: 'Prøv i egen miks' }).click();
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole('tab', { name: 'Sammenlign', exact: true })).toHaveAttribute('aria-selected', 'true');
+  await page.getByRole('tab', { name: 'Monitor', exact: true }).click();
+  await expect(page.getByRole('group', { name: 'Monitorens uttak' }).getByRole('button', { name: 'Pre-fade' })).toHaveAttribute('aria-pressed', 'true');
+});

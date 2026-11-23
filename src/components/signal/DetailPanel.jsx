@@ -1,8 +1,10 @@
 import { VideoPlayer } from '../video/VideoPlayer.jsx';
 import { useState } from 'react';
+import { SignalDepth } from './depth/SignalDepth.jsx';
+import { signalJourney } from '../../data/signalJourney.js';
 import { useSwipe } from '../../hooks/useSwipe.js';
 import { IconHelper } from '../ui/IconHelper.jsx';
-import { ArrowLeft, ChevronRight, GraduationCap, Layers, Layout, Lightbulb, Play, Youtube } from 'lucide-react';
+import { ArrowLeft, ChevronRight, GraduationCap, Layers, Layout, Lightbulb, Play, SlidersHorizontal, Youtube } from 'lucide-react';
 import { FXInfoVisualizer } from '../visualizers/FXInfoVisualizer.jsx';
 import { GainStructureVisualizer } from '../visualizers/GainStructureVisualizer.jsx';
 import { FaderSectionVisualizer } from '../visualizers/FaderSectionVisualizer.jsx';
@@ -19,8 +21,7 @@ import { PEQVisualizer } from '../visualizers/PEQVisualizer.jsx';
 import { DeEsserVisualizer } from '../visualizers/DeEsserVisualizer.jsx';
 import { InsertsVisualizer } from '../visualizers/InsertsVisualizer.jsx';
 
-export const DetailPanel = ({ node, subItem, setSubItem }) => {
-  // Nå med 4 faner: 'overview', 'theory', 'tips', 'video'
+export const DetailPanel = ({ node, subItem, setSubItem, onClose, onTry, onConsole, onVideoTab }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const swipeSubItem = useSwipe(() => setSubItem(null));
@@ -47,80 +48,36 @@ export const DetailPanel = ({ node, subItem, setSubItem }) => {
   if (!node) return null;
 
   return (
-    <section aria-label={`Detaljer: ${node.label}`} className="animate-fade-in pb-20 md:pb-0 h-full flex flex-col">
-
-      <p className="mb-4 text-xs leading-relaxed text-slate-400">Disse fordypningsverktøyene har egne innstillinger. Lukk vinduet for å gå tilbake til signalverkstedet.</p>
-      {/* HEADER */}
-      <div className="flex items-center gap-3 mb-4 border-b border-slate-700 pb-4 shrink-0">
-        <div className="p-3 bg-blue-600 rounded-lg text-white shadow-lg shadow-blue-600/20">
-          <IconHelper name={node.iconName} size={28} />
-        </div>
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold text-white">{node.label}</h2>
-          <p className="text-xs text-blue-300 uppercase tracking-wide">Info & Verktøy</p>
-        </div>
+    <section aria-label={`Detaljer: ${node.label}`} className="sd-panel animate-fade-in">
+      <nav className="sd-crumb" aria-label="Plassering i signalveien">
+        {onClose ? <button type="button" onClick={onClose}>Signalveien</button> : <span>Signalveien</span>}
+        <ChevronRight size={13} aria-hidden="true"/>
+        {subItem ? <><button type="button" onClick={() => setSubItem(null)}>{node.label}</button><ChevronRight size={13} aria-hidden="true"/><span aria-current="page">{subItem.label}</span></>
+          : <span aria-current="page">Ledd {signalJourney.findIndex(item => item.id === node.id) + 1} av {signalJourney.length} · {node.label}</span>}
+      </nav>
+      <header className="sd-frame-title"><span className="sd-title-icon"><IconHelper name={node.iconName} size={24} /></span>
+        <div><h2>{node.label}</h2><p>{subItem ? subItem.label : 'Følg forbindelsen fra inngang til utgang'}</p></div>
+      </header>
+      <div className="sd-tabbar" role="group" aria-label="Velg innhold i leddet">
+        <button type="button" aria-pressed={activeTab === 'overview'} onClick={()=>setActiveTab('overview')}><Layout size={16}/>Oversikt</button>
+        {!subItem && (node.viz || node.subChain) && <button type="button" aria-pressed={activeTab === 'tools'} onClick={()=>setActiveTab('tools')}><SlidersHorizontal size={16}/>Verktøy</button>}
+        {hasDeepDive && <button type="button" aria-pressed={activeTab === 'theory'} onClick={()=>setActiveTab('theory')}><GraduationCap size={17}/>Fordypning</button>}
+        {hasTips && <button type="button" aria-pressed={activeTab === 'tips'} onClick={()=>setActiveTab('tips')}><Lightbulb size={16}/>Tips &amp; Triks</button>}
+        {hasVideos && <button type="button" aria-pressed={activeTab === 'video'} onClick={()=>{ if (activeTab !== 'video') onVideoTab?.(); setActiveTab('video'); }}><Youtube size={17}/>Video {videos.length > 1 && <span>{videos.length}</span>}</button>}
       </div>
-
-      {/* --- FANE-MENY (4 FANER) --- */}
-      <div className="flex gap-4 mb-6 border-b border-slate-800 shrink-0 overflow-x-auto pb-1 scrollbar-hide">
-
-        {/* 1. Oversikt */}
-        <button
-          onClick={() => setActiveTab("overview")}
-          className={`pb-2 text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
-            activeTab === "overview" ? "border-blue-500 text-white" : "border-transparent text-slate-500 hover:text-slate-300"
-          }`}
-        >
-          <Layout size={16}/> Oversikt
-        </button>
-
-        {/* 2. Fordypning (Teori) */}
-        {hasDeepDive && (
-          <button
-            onClick={() => setActiveTab("theory")}
-            className={`pb-2 text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
-              activeTab === "theory" ? "border-green-500 text-white" : "border-transparent text-slate-500 hover:text-green-400"
-            }`}
-          >
-            <GraduationCap size={18}/> Fordypning
-          </button>
-        )}
-
-        {/* 3. Pro Tips (NY!) */}
-        {hasTips && (
-          <button
-            onClick={() => setActiveTab("tips")}
-            className={`pb-2 text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
-              activeTab === "tips" ? "border-yellow-500 text-white" : "border-transparent text-slate-500 hover:text-yellow-400"
-            }`}
-          >
-            <Lightbulb size={18}/> Tips & Triks
-          </button>
-        )}
-
-        {/* 4. Video */}
-        {hasVideos && (
-          <button
-            onClick={() => setActiveTab("video")}
-            className={`pb-2 text-sm font-bold border-b-2 flex items-center gap-2 transition-colors whitespace-nowrap ${
-              activeTab === "video" ? "border-red-500 text-white" : "border-transparent text-slate-500 hover:text-red-400"
-            }`}
-          >
-            <Youtube size={18}/> Video {videos.length > 1 && <span className="bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded text-[10px] ml-1">{videos.length}</span>}
-          </button>
-        )}
-      </div>
-
-      {/* CONTENT AREA */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2">
-
+      <div>
+        {!subItem && <div hidden={activeTab !== 'overview'} className="mb-5">
+          <SignalDepth nodeId={node.id} onTry={onTry} onConsole={onConsole}/>
+        </div>}
         {/* --- FANE 1: OVERSIKT --- */}
-        {activeTab === "overview" && (
-          <div className="space-y-6 animate-fade-in">
+        {(activeTab === 'overview' || activeTab === 'tools') && (
+          <div className="space-y-5 animate-fade-in">
             <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
-              <p className="text-slate-300 leading-relaxed text-sm md:text-base">
+              <h3 className="font-semibold text-slate-100">{subItem ? 'Modulverksted' : 'Prøv verktøyene'}</h3>
+              <p className="mt-1 text-slate-300 leading-relaxed text-sm md:text-base">
                  {subItem ? subItem.desc : node.details}
               </p>
+              <p className="mt-2 text-xs text-slate-400">Disse illustrasjonene har egne innstillinger og endrer ikke miksen din.</p>
             </div>
 
             {/* Visualizers */}
@@ -188,19 +145,20 @@ export const DetailPanel = ({ node, subItem, setSubItem }) => {
                 {subItem.deepDive && subItem.deepDive.some(d => d.interactive) && !subItem.interactive && !subItem.viz && (
                   <div className="space-y-2 mt-4">
                       <h5 className="text-[10px] uppercase font-bold text-slate-500">Tilgjengelige Moduler:</h5>
-                      {subItem.deepDive.map((d, i) => (
-                        <div
+                      {subItem.deepDive.map((d, i) => {
+                        const Item = d.interactive ? 'button' : 'div';
+                        return <Item
                            key={i}
-                           onClick={() => d.interactive ? setSubItem(d) : null}
-                           className={`bg-slate-900 p-3 rounded border border-slate-700 flex justify-between items-center transition-colors ${d.interactive ? 'cursor-pointer hover:border-blue-500 hover:bg-slate-800' : ''}`}
+                           {...(d.interactive ? { type: 'button', onClick: () => setSubItem(d) } : {})}
+                           className={`w-full text-left bg-slate-900 p-3 rounded border border-slate-700 flex justify-between items-center transition-colors ${d.interactive ? 'cursor-pointer hover:border-blue-500 hover:bg-slate-800' : ''}`}
                         >
                           <div>
                             <span className="font-bold text-xs text-slate-200 block">{d.name}</span>
                             <span className="text-[10px] text-slate-500">{d.info}</span>
                           </div>
                           {d.interactive ? <ChevronRight size={14} className="text-blue-500"/> : (d.tag && <span className="text-[9px] bg-blue-900 text-blue-200 px-1.5 py-0.5 rounded">{d.tag}</span>)}
-                        </div>
-                      ))}
+                        </Item>;
+                      })}
                   </div>
                 )}
               </div>

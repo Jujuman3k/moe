@@ -7,7 +7,7 @@ import { portalPages } from '../../data/portalPages.js';
 const pageIcons = {home:House, signal:Activity, bandroom:SlidersVertical, listen:Headphones, practice:BookOpen, videos:Video};
 
 export function AppLayout({ page, navigate, searchButton, children }) {
-  const navLinks = () => portalPages.map(item => (
+  const navLinks = () => portalPages.filter(item => item.id !== 'c3500').map(item => (
     <NavButton key={item.id} active={page === item.id} onClick={() => navigate(item.id)}
       icon={pageIcons[item.id]} text={item.label} />
   ));
@@ -21,10 +21,10 @@ export function AppLayout({ page, navigate, searchButton, children }) {
             <span>LydTeam</span><b>PRO</b>
           </button>
           <nav aria-label="Hovedmeny" className="studio-nav-desktop">{navLinks()}</nav>
-          <div className={searchButton ? "studio-top-actions with-search" : "studio-top-actions"}>{searchButton}<span className="studio-console-badge"><SlidersHorizontal size={14} aria-hidden="true" /> dLive C3500</span></div>
+          <div className={searchButton ? "studio-top-actions with-search" : "studio-top-actions"}>{searchButton}<button type="button" className="studio-console-launch" aria-label={page === 'signal' ? 'Åpne kanalbanken på C3500' : 'Åpne C3500-pulten'} aria-current={page === 'c3500' ? 'page' : undefined} onClick={()=>navigate('c3500')}><SlidersHorizontal size={15} aria-hidden="true" /> C3500</button></div>
         </div>
       </header>
-      <main id="main-content" tabIndex={-1} className="studio-main">{children}</main>
+      <main id="main-content" tabIndex={-1} className={page === 'c3500' ? 'studio-main desk-main' : 'studio-main'}>{children}</main>
       <nav aria-label="Mobilmeny" className="studio-nav-mobile">{navLinks()}</nav>
     </div>
   );

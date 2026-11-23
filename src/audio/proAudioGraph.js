@@ -48,6 +48,6 @@ export function createProAudioGraph(context, own, tap) {
   }
   return { input, output, update,
     levels: () => ({ gateReduction: gate.levels().reduction, gateClosed: gate.levels().closed && gate.levels().reduction > 1, reduction: comp.levels().reduction }),
-    dispose: () => { gate.node.port.close(); comp.node.port.close(); },
+    dispose: () => { for (const {node} of [gate, comp]) { node.port.postMessage('dispose'); node.port.close(); } },
   };
 }

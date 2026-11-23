@@ -1,34 +1,48 @@
-import { useId } from 'react';
+import { ChevronDown, Cable, AudioLines, SlidersHorizontal, SlidersVertical, Headphones, Waves, Combine, Network, Speaker, Route } from 'lucide-react';
 import { signalPathData } from '../../data/signalPathData.js';
+import { signalMapStops, signalEdges, routeNames, traceCaption, traceStops } from '../../data/signalRoutes.js';
 import { signalPercent, formatSignalLevel } from '../../utils/signalSimulation.js';
+import '../../styles/signal-routes.css';
 
-const labels = { input: 'Kilde', preamp: 'Gain', processing: 'Prosess', fader: 'Fader', monitor_branch: 'Monitor', fx_branch: 'FX', mixbus: 'Main LR', matrix: 'Matrix', speakers: 'PA' };
-const positions = { input: [1, 1], preamp: [2, 1], processing: [3, 1], fader: [4, 1], monitor_branch: [2, 2], fx_branch: [4, 2], mixbus: [3, 3], matrix: [2, 3], speakers: [1, 3] };
+const icons = { input: Cable, preamp: AudioLines, processing: SlidersHorizontal, fader: SlidersVertical, monitor_branch: Headphones, fx_branch: Waves, mixbus: Combine, matrix: Network, speakers: Speaker };
 
-export function SignalMap({ state, signal, activeId, onSelectNode, animate }) {
-  const marker = useId();
-  const lines = [
-    ['M50,27 H150', signal.preamp, 'main'], ['M150,27 H250', signal.processed, 'main'],
-    ['M250,27 H350', signal.post, 'main'], ['M350,27 H398 V135 H250', signal.main, 'main'],
-    ['M250,135 H150', signal.matrix, 'main'], ['M150,135 H50', signal.pa, 'main'],
-    [state.monitorPre ? 'M250,27 V58 H150 V81' : 'M350,27 V55 H150 V81', signal.monitor, 'monitor'],
-    ['M350,27 V81', signal.fx, 'fx'], ['M350,81 H250 V135', signal.fxReturn, 'fx'],
-  ];
-  return <div className={`signal-map ${animate ? '' : 'signal-motion-paused'}`} role="group" aria-label="Interaktivt signalveikart">
+export function SignalMap({ state, signal, activeId, onSelectNode, onOpenDepth, animate, route, onRouteChange }) {
+  const stops = traceStops(route, state.monitorPre);
+  return <div className={`signal-map flow-map ${animate ? '' : 'signal-motion-paused'}`} role="group" aria-label="Interaktivt signalveikart" data-route={route}>
     <svg viewBox="0 0 400 162" preserveAspectRatio="none" aria-hidden="true" className="signal-connections">
-      <defs><marker id={marker} viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M1,1 L9,5 L1,9" fill="none" stroke="#64748b" strokeWidth="2" /></marker></defs>
-      {lines.map(([path, level, type], index) => <g key={index} className={`signal-route route-${type}`}>
-        <path d={path} fill="none" stroke="#334155" strokeWidth="1.5" />
-        {level !== null && <path d={path} fill="none" stroke={signal.clipped ? '#fb7185' : type === 'fx' ? '#c084fc' : type === 'monitor' ? '#60a5fa' : '#2dd4bf'} strokeWidth="2.5" className="signal-travelling-line" />}
-      </g>)}
-      <path d="M98,27 h4 M198,27 h4 M298,27 h4 M202,135 h-4 M102,135 h-4 M350,54 v4 M250,108 v4" markerEnd={`url(#${marker})`} stroke="#64748b" fill="none" />
+      {signalEdges(signal, state).map(([id, path, [x,y,angle], level, tone, routes]) => {
+        const traced = route === 'all' || routes === 'all' || routes.split(' ').includes(route);
+        return <g key={id} data-edge={id} data-traced={traced} data-live={level != null} className={`flow-wire flow-wire-${tone}`}>
+          <path className="flow-wire-base" d={path} />
+          {level != null && traced && <path d={path} className="signal-travelling-line" />}
+          <g transform={`translate(${x} ${y}) rotate(${angle})`}><path className="flow-wire-arrow" d="M-2 -2.6L1 0l-3 2.6" /></g>
+        </g>;
+      })}
     </svg>
-    {signalPathData.map(node => <button type="button" key={node.id} aria-label={`${node.label} – velg ledd`} aria-pressed={activeId === node.id} onClick={() => onSelectNode(node.id)}
-      className="signal-map-node" data-node={node.id} data-active={activeId === node.id} data-silent={signal.nodes[node.id] === null} data-clipped={signal.clipped && signal.nodes[node.id] !== null && node.id !== 'input'}
-      style={{ gridColumn: positions[node.id][0], gridRow: positions[node.id][1] }}>
-      <span>{node.id === 'fx_branch' && state.fxType !== 'off' ? state.fxType === 'delay' ? 'Delay' : 'Klang' : labels[node.id]}{node.id === 'monitor_branch' && <small>{state.monitorPre ? 'PRE' : 'POST'}</small>}</span>
-      <span className="signal-node-value">{node.id === 'input' ? state.connected ? 'Tilkoblet' : 'Frakoblet' : formatSignalLevel(signal.nodes[node.id])}</span>
-      <span className="signal-node-meter" aria-hidden="true"><i style={{ width: `${signalPercent(signal.nodes[node.id])}%` }} /></span>
-    </button>)}
+    <div className="flow-map-annotations" aria-hidden="true">
+      <span className="flow-band-input">01 / Kanal →</span><span className="flow-band-branches">02 / Avgreninger</span><span className="flow-band-house">03 / Ut til salen ←</span>
+      <span className="flow-tag-send">Send</span><span className="flow-tag-return" data-live={signal.fxReturn !== null}>FX-retur</span>
+    </div>
+    <label className="flow-route-picker"><span className="flow-route-eyebrow"><Route size={12} aria-hidden="true" /> Spor ruten</span>
+      <b className="flow-route-visible" aria-hidden="true">{routeNames[route]}<ChevronDown size={12} /></b>
+      <select aria-label="Fremhev signalvei" value={route} onChange={event => onRouteChange(event.target.value)}>
+        {Object.entries(routeNames).map(([id, label]) => <option value={id} key={id}>{label}</option>)}
+      </select>
+      <small aria-hidden="true">{traceCaption(route, state, signal)}</small>
+    </label>
+    {signalPathData.map(node => {
+      const { cell, label } = signalMapStops[node.id]; const Icon = icons[node.id]; const active = activeId === node.id;
+      const level = signal.nodes[node.id]; const clipped = node.id === 'preamp' && signal.clipped;
+      const name = node.id === 'fx_branch' && state.fxType !== 'off' ? state.fxType === 'delay' ? 'Delay' : 'Klang' : node.id === 'fx_branch' ? 'FX-send' : label;
+      return <button type="button" key={node.id} aria-label={`${node.label} – ${active ? 'se inni leddet' : 'velg ledd'}`} aria-pressed={active}
+        title={active ? `Se inni ${node.label}` : node.label} onClick={() => active ? onOpenDepth(node) : onSelectNode(node.id)}
+        className="signal-map-node flow-stop" data-node={node.id} data-active={active} data-traced={stops.includes(node.id)} data-silent={level === null} data-clipped={clipped}
+        style={{ gridColumn: cell[0], gridRow: cell[1] }}>
+        <span className="flow-node-plate"><span className="flow-node-name"><Icon aria-hidden="true" />{name}</span>
+          <span className="signal-node-value">{clipped ? 'KLIPP' : node.id === 'monitor_branch' ? <><em>{state.monitorPre ? 'PRE' : 'POST'}</em> {level === null ? 'Stille' : `${Math.round(level)} dBFS`}</> : formatSignalLevel(level)}</span>
+          <span className="signal-node-meter" aria-hidden="true"><i style={{ width: `${signalPercent(level)}%` }} /></span>
+        </span>
+      </button>;
+    })}
   </div>;
 }

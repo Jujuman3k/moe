@@ -38,3 +38,9 @@
 .studio-load-error p { margin:.6rem 0 1rem; }
 .studio-load-error :is(button,a) { display:inline-flex; align-items:center; min-height:44px; padding:.55rem .85rem; border-radius:.5rem; color:#a9efcf; border:1px solid #54796a; }
 @media (max-width:360px) { .studio-nav-mobile .studio-nav-link { font-size:.67rem; } }
+
+.studio-console-launch { display:inline-flex; align-items:center; justify-content:center; gap:.35rem; min-height:44px; padding:.3rem .65rem; border-radius:.5rem; font:700 .83rem/1.15 ui-monospace,monospace; background:#182e25; color:#bdedcc; border:1px solid #3b5e49; }
+.studio-console-launch[aria-current=page],.studio-console-launch:hover { background:#284735; border-color:#83ad92; color:white; }
+.studio-main.desk-main { max-width:112rem; padding-inline:clamp(.4rem,1.65vw,1.75rem); padding-top:clamp(.6rem,1.3vw,1.2rem); }
+@media(min-width:880px) and (max-width:1150px) { .studio-topbar-inner{gap:.45rem;padding-inline:1rem}.studio-top-actions{gap:.35rem}.studio-top-actions .portal-search-launch kbd{display:none}.studio-nav-desktop .studio-nav-link{padding-inline:.45rem} }
+@media(max-width:480px) { .studio-topbar-inner { gap:.35rem; }.studio-top-actions{gap:.25rem}.studio-console-launch{padding:.28rem .55rem}.studio-top-actions .portal-search-launch span,.studio-top-actions .portal-search-launch kbd{display:none}.studio-top-actions .portal-search-launch{width:44px;padding:0} }

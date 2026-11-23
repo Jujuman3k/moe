@@ -2,7 +2,7 @@
 
 Norsk læringsportal for lydteknikk og Allen & Heath dLive C3500. Bygget med React 19, Vite, Tailwind CSS og Lucide.
 
-[Åpne LydTeam Pro](https://lydteam-portal-duzy.vercel.app/) · [Bandrommet](https://lydteam-portal-duzy.vercel.app/#bandroom?scene=grunnmur) · [Lyttetest](https://lydteam-portal-duzy.vercel.app/#listen)
+[Åpne LydTeam Pro](https://lydteam-portal-duzy.vercel.app/) · [C3500-pulten](https://lydteam-portal-duzy.vercel.app/#c3500?ch=1&panel=bank) · [Bandrommet](https://lydteam-portal-duzy.vercel.app/#bandroom?scene=grunnmur) · [Lyttetest](https://lydteam-portal-duzy.vercel.app/#listen)
 
 I **Bandrommet** mikser du tre samtidige kanaler. Standardøkten kombinerer en bassloop med et trommemønster ved 110 BPM. Vokaløktene bruker uavhengige opptak til å øve nivåbalanse og panorering, ikke synkroniserte spor fra én innspilling. Enkeltkanalen åpner de sju originalopptakene i Enkel eller Pro. I **Lyttetest** sammenligner du original og bearbeidet versjon på samme sted. **Øv selv** har en guidet lydsjekk og hele scenarioarkivet. Søkeknappen (eller Ctrl/⌘ K) finner en video, en oppgave eller et verktøy på tvers av portalen.
 
@@ -33,6 +33,8 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 | --- | --- |
 | `src/App.jsx` | Laster sider og kobler navigasjon til læringsprogresjon |
 | `src/pages/` | Hjem, Bandrommet, lyttetest, videoarkiv, signalvei og øvingsoppgaver |
+| `src/components/c3500/`, `src/audio/c3500*.js`, `src/data/c3500Model.js` | Pultens faderbanker, skjermbilder, kanalpatch og lydmotor; se [C3500-verkstedet](docs/c3500.md) |
+| `src/data/signalRoutes.js`, `src/data/signalDepth.js`, `src/components/signal/depth/` | Rutene på signalkartet og øvelsene bak hvert av de ni leddene |
 | `src/audio/bandRoom*.js` og `src/components/bandroom/` | Flerkanals signalgraf, stereomåling, kanalstriper og sceneøvelser |
 | `src/data/learningPaths.js` | Tre praktiske løp som kobler en bestemt leksjon, mikserøvelse og feilsøkingsoppgave |
 | `src/data/practice/diagnostic*.js` | Seks feilsaker, kontrollpunkter, tiltak og modell for undersøkelsene |
@@ -72,7 +74,7 @@ Hold en endring avgrenset til relevant modul, og kjør kontrollene over. Det kre
 
 ## Bruk og lagring
 
-- Navigasjon bruker URL-fragmenter (`#home`, `#bandroom`, `#signal`, `#listen`, `#videos`, `#practice`), slik at frem/tilbake og direkte lenker fungerer på statisk hosting.
+- Navigasjon bruker URL-fragmenter (`#home`, `#c3500`, `#bandroom`, `#signal`, `#listen`, `#videos`, `#practice`), slik at frem/tilbake og direkte lenker fungerer på statisk hosting.
 - Eksempler: `#signal?node=preamp` (teori), `#signal?node=processing&source=kick&mode=pro&tool=hpf` (stille mikser med riktig kontroll), `#practice?scenario=eq-hpf-rumble` og `#videos?video=q7BQkq6A5qc`.
 - Lyttetest bruker de samme krediterte lydfilene som mikseren, med 23 kildebaserte oppgaver om høypass, lavpass, mellomtone-EQ, kompressor, gate, delay og romklang. Velg Blandet, EQ og filter, Dynamikk eller Rom og ekko. Hver runde har tre oppgaver. DSP-en lager to synkrone løkker med tilpasset RMS og felles toppgrense. Resultatet gjelder den aktuelle runden.
 - Bandrommet starter først ved trykk på Spill. Hver scene husker sin miks i samme fane. Målerne viser faktiske sample-topper; en godkjent øvelse betyr at de konkrete øvingsmålene for fader/pan er nådd, ikke at det bare finnes én god miks.
