@@ -1,9 +1,20 @@
-import { Activity } from 'lucide-react';
+import { AudioLines } from 'lucide-react';
 import { SignalFlowDiagram } from '../components/signal/SignalFlowDiagram.jsx';
+import { audioSources } from '../data/audioSources.js';
+import { signalToolEntry } from '../data/signalToolLinks.js';
+import { signalJourney } from '../data/signalJourney.js';
+import '../styles/signal-studio.css';
 
-export default function SignalPage({ initialNodeId }) {
-  return <div className="animate-fade-in space-y-4">
-    <div><p className="eyebrow"><Activity size={15} /> Signalverkstedet</p><h1 className="mt-2 text-2xl font-bold tracking-tight text-white md:text-3xl">Se det. Skru på det. Forstå det.</h1><p className="mt-2 text-xs text-slate-400 md:text-sm">Velg et ledd. Kart, bølger og målere følger justeringene dine.</p></div>
-    <SignalFlowDiagram initialNodeId={initialNodeId} />
+export default function SignalPage({ initialNodeId, initialSourceId, initialMode, initialTool }) {
+  const source = audioSources.find(item => item.id === initialSourceId);
+  const nodeId = signalJourney.find(item => item.id === initialNodeId)?.id;
+  const tool = signalToolEntry(initialTool, initialNodeId);
+  const mode = tool?.proPanel ? 'pro' : ['pro', 'easy'].includes(initialMode) ? initialMode : null;
+  return <div className="animate-fade-in signal-studio-page">
+    <header className="signal-studio-intro">
+      <div><p className="eyebrow"><AudioLines size={16} /> Miksebord · dLive C3500</p><h1>Signalverkstedet</h1></div>
+      <p>Velg et opptak og trykk <b>Spill</b>. I <b>Enkel</b> følger du lyden fra kilde til PA. I <b>Pro</b> former du lyden med EQ, gate og kompressor.</p>
+    </header>
+    <SignalFlowDiagram initialTool={tool} initialNodeId={nodeId || tool?.node} initialSourceId={source?.id} initialMode={mode} />
   </div>;
 }

@@ -2,6 +2,10 @@
 
 Norsk læringsportal for lydteknikk og Allen & Heath dLive C3500. Bygget med React 19, Vite, Tailwind CSS og Lucide.
 
+[Åpne LydTeam Pro](https://lydteam-portal-duzy.vercel.app/) · [Lyttetest](https://lydteam-portal-duzy.vercel.app/#listen)
+
+Velg et ekte opptak på forsiden og åpne det i mikseren. I **Lyttetest** sammenligner du original og bearbeidet versjon på samme sted. **Øv selv** har en guidet lydsjekk og hele scenarioarkivet. Søkeknappen (eller Ctrl/⌘ K) finner en video, en oppgave eller et verktøy på tvers av portalen.
+
 ## Kom i gang
 
 Bruk Node.js 22.12+ eller 24 og npm.
@@ -28,10 +32,10 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 | Mappe / fil | Ansvar |
 | --- | --- |
 | `src/App.jsx` | Laster sider og kobler navigasjon til læringsprogresjon |
-| `src/pages/` | Hjem, videoarkiv, signalvei og øvingsoppgaver |
+| `src/pages/` | Hjem, lyttetest, videoarkiv, signalvei og øvingsoppgaver |
 | `src/data/videoData.js` | 92 videoer fordelt på 8 kategorier |
 | `src/data/signalPathData.js` | Signalveiens 9 ledd, undertrinn, fagtekst og videolenker |
-| `src/data/practiceScenarios.js` | Samler 72 scenarioer fra fagmodulene; lastes med øvingssiden |
+| `src/data/practiceScenarios.js` | Samler 72 scenarioer fra fagmodulene; lastes ved øving eller når portalsøket åpnes |
 | `src/data/practice/` | 12 fagmoduler med 6 scenarioer hver, og felles kilderegister |
 | `src/data/practiceCatalog.js` | Lett katalog med temaer, nivåer og stabile ID-er for progresjon |
 | `src/components/video/` | Felles avspiller, søkefelt, videokort og videohøydepunkter |
@@ -65,8 +69,10 @@ Hold en endring avgrenset til relevant modul, og kjør kontrollene over. Det kre
 
 ## Bruk og lagring
 
-- Navigasjon bruker URL-fragmenter (`#home`, `#signal`, `#videos`, `#practice`), slik at frem/tilbake og direkte lenker fungerer på statisk hosting.
-- Eksempler: `#signal?node=preamp` og `#videos?video=q7BQkq6A5qc`.
+- Navigasjon bruker URL-fragmenter (`#home`, `#signal`, `#listen`, `#videos`, `#practice`), slik at frem/tilbake og direkte lenker fungerer på statisk hosting.
+- Eksempler: `#signal?node=preamp` (teori), `#signal?node=processing&source=kick&mode=pro&tool=hpf` (stille mikser med riktig kontroll), `#practice?scenario=eq-hpf-rumble` og `#videos?video=q7BQkq6A5qc`.
+- Lyttetest bruker de samme krediterte lydfilene som mikseren, med ti kildebaserte oppgaver om høypass, lavpass, delay og romklang. Tre ulike grep per runde. DSP-en lager to synkrone løkker med tilpasset RMS og felles toppgrense. Resultatet gjelder den aktuelle runden.
+- Lydsjekken i fire trinn kan gjenopptas i samme fane (sessionStorage). Riktig løste case inngår også i ordinær oppgaveprogresjon.
 - Sett-markeringer, favoritter, løste oppgaver og sist åpnete video lagres i nettleserens `localStorage` under `lydteam.learning.v1`. Ingen konto eller synkronisering mellom enheter.
 - Sett-markering er manuell; avspilling alene fullfører ikke en video. «Fortsett» åpner sist valgte video, men lagrer ikke tidsposisjon inne i YouTube-videoen.
 - Hvis lagring er blokkert, fungerer appen videre i minnet og viser beskjed. Ødelagte eller utdaterte lagringsverdier valideres og ignoreres.

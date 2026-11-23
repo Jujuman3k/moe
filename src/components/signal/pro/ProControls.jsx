@@ -1,7 +1,17 @@
 import { useId } from 'react';
-import { BookOpen, Undo2 } from 'lucide-react';
+import { BookOpen, Ear, Undo2 } from 'lucide-react';
 import { SignalSlider, SignalToggle } from '../SignalFields.jsx';
 import { frequencyLabel, frequencyPosition, positionFrequency, proBands, proPages, proPanels } from '../../../data/proAudioSettings.js';
+
+const listeningPrompts = {
+  preamp: 'Øk gain litt. Se på inngangsmåleren før du kompenserer med faderen.',
+  lpf: 'Slå på lavpassfilteret og senk grensefrekvensen fra toppen. Når blir anslaget mykere, og hvor mye diskant vil du beholde?',
+  hpf: 'Slå på høypassfilteret og flytt grensefrekvensen sakte opp fra bunnen. Når begynner du å savne kroppen i lyden?',
+  peq: 'Løft ett bånd noen desibel, og sveip til du kjenner igjen området. Sammenlign med båndet av.',
+  gate: 'Slå inn gaten og løft terskelen. Hører du hvor halen eller den svakeste tonen blir borte?',
+  comp: 'Senk terskelen mens du ser på GR. Lytt til anslaget før du endrer attack.',
+  bypass: 'Bytt mellom aktiv og bypass. Hvilken forskjell kan du beskrive uten å se på grafen?',
+};
 
 function Frequency({ label, value, min = 20, max = 20000, onChange }) {
   const id = useId();
@@ -15,6 +25,7 @@ function Options({ label, value, options, onChange }) {
 
 export function ProControls({ nodeId, state, onChange, panel, onPanelChange, page, onPageChange, bandIndex, audio, onHelp, onUndo, canUndo }) {
   const id = useId(); const pro = state.pro;
+  const promptKey = nodeId === 'preamp' ? 'preamp' : panel === 'filter' ? page : panel;
   const change = (section, patch) => onChange({ pro: { ...pro, [section]: { ...pro[section], ...patch } } });
   const slider = (section, key, label, min, max, unit = 'ms', step = 1) => <SignalSlider label={label} value={pro[section][key]} min={min} max={max} step={step} unit={unit} onChange={value => change(section, { [key]: value })} />;
   const keyControls = section => <><SignalToggle label="Sidechain-filter" value={pro[section].keyEnabled} onChange={keyEnabled => change(section, { keyEnabled })} /><div className="pro-key-fields"><Frequency label="Key HPF" value={pro[section].keyHPF} max={5000} onChange={keyHPF => change(section, { keyHPF })} /><Frequency label="Key LPF" value={pro[section].keyLPF} min={120} onChange={keyLPF => change(section, { keyLPF })} /></div></>;
@@ -54,6 +65,7 @@ export function ProControls({ nodeId, state, onChange, panel, onPanelChange, pag
       {pages.length > 0 && <div className="pro-subpages" role="group" aria-label="Parametergruppe">{pages.map(([value, label]) => <button key={value} type="button" aria-pressed={page === value} onClick={() => onPageChange(value)}>{label}</button>)}</div>}
       <div className="pro-fields">{controls}</div>
       <div className="pro-help-actions"><button type="button" onClick={onHelp}><BookOpen size={14} /> Forklaring{audio.source ? ` · ${audio.source.label}` : ' og startforslag'}</button>{canUndo && <button type="button" aria-label="Angre startforslag" onClick={onUndo}><Undo2 size={14} /> Angre</button>}</div>
+      <aside className="studio-listening-cue"><span><Ear size={16} /> {audio.source ? `Lytt etter · ${audio.source.label}` : 'Fra graf til lyd'}</span><p>{!audio.source ? 'Velg et opptak øverst. Da kan du høre akkurat de samme endringene som du ser i grafen.' : nodeId === 'processing' && panel === 'peq' ? audio.source.focus : listeningPrompts[promptKey]}</p></aside>
     </div>
   </section>;
 }

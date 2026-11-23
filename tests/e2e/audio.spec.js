@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { expectFullyInViewport, expectPanelFits } from './helpers/viewport.js';
 import { audioSources } from '../../src/data/audioSources.js';
 import { signalPanels } from '../../src/data/signalPanels.js';
 
@@ -71,16 +72,18 @@ test('audio panels and transport fit small phones and landscape without scrollin
   await start(page, 'Kvinnevokal');
   for (const [width, height] of [[320,568], [390,664], [844,390]]) {
     await page.setViewportSize({ width, height });
+    let context;
     for (const [id, panels] of Object.entries(signalPanels)) {
       await node(page, id);
       if (id === 'fx_branch') { await page.getByRole('tab', { name: 'Effekt', exact: true }).click(); await page.getByRole('button', { name: 'Delay', exact: true }).click(); }
       for (const [, label] of panels) {
         await page.getByRole('tab', { name: label, exact: true }).click();
-        expect(await page.locator('.signal-panel-body').evaluate(element => element.scrollHeight <= element.clientHeight + 1), `${width}/${id}/${label}`).toBe(true);
-        for (const control of await page.locator('.signal-panel-body input, .signal-panel-body button, .signal-focus-toolbar button').all()) await expect(control).toBeInViewport({ ratio: 1 });
+        context = `${width}×${height}: audio / ${id} / ${label}`;
+        await expectPanelFits(page.locator('.signal-panel-body'), context);
+        for (const control of await page.locator('.signal-panel-body input, .signal-panel-body button, .signal-focus-toolbar button').all()) await expectFullyInViewport(control, context);
       }
     }
-    await expect(page.locator('.signal-audio-scope')).toBeInViewport({ ratio: 1 });
+    await expectFullyInViewport(page.locator('.signal-audio-scope'), `${context} / waveform`);
   }
 });
 

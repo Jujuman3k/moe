@@ -48,7 +48,7 @@ export const InputConnectorsVisualizer = () => {
            </div>
         </div>
         <div>
-          <span className="text-xs font-bold text-white block">Jack (6.3mm)</span>
+          <span className="text-xs font-bold text-white block">Jack (6,35 mm)</span>
           <span className="text-[9px] text-slate-400">Instrumenter (Inn)</span>
         </div>
       </div>
@@ -73,7 +73,7 @@ export const InputConnectorsVisualizer = () => {
                <span className="text-[8px] text-slate-500">XLR</span>
             </div>
         </div>
-        <span className="text-[9px] text-slate-400 mt-2">Konverterer Jack til XLR</span>
+        <span className="text-[9px] text-slate-400 mt-2">Ubalansert inn · balansert ut</span>
       </div>
 
       {/* 4. SPEAKON (Blå/Svart) */}

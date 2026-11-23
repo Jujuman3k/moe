@@ -1,0 +1,31 @@
+import { expect, test } from '@playwright/test';
+
+test('listen: original and processed play on demand, grading and reveal complete a round, followed by a silent mixer', async ({page}) => {
+  const audioRequests = []; const errors = [];
+  page.on('request', request => { if (/\.mp3(?:\?|$)/.test(request.url())) audioRequests.push(request.url()); });
+  page.on('pageerror', err => errors.push(err.message));
+  await page.goto('/#listen');
+  await expect(page.getByRole('heading',{name:'Lyttetest',exact:true})).toBeVisible();
+  const a = page.getByRole('button',{name:'Spill A · Original'}); const b = page.getByRole('button',{name:'Spill B · Bearbeidet'});
+  const answers = page.getByRole('group',{name:'Svaralternativer'}).getByRole('button');
+  await expect(answers.first()).toBeDisabled(); expect(audioRequests.length).toBe(0);
+  await a.click(); await expect(a).toHaveAttribute('aria-pressed','true'); await expect(answers.first()).toBeDisabled();
+  await a.focus(); await page.keyboard.press('ArrowRight'); await expect(b).toHaveAttribute('aria-pressed','true');
+  await expect(answers.first()).toBeEnabled(); expect(audioRequests.length).toBe(1);
+  await page.getByRole('button',{name:'Spill fra start'}).click(); await expect(b).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('button',{name:'Gi meg et lyttetips'}).click(); await expect(page.locator('#listen-tip')).toBeVisible();
+  await answers.first().click(); await expect(answers.first()).toBeDisabled(); await expect(answers.filter({hasText:'riktig svar'})).toHaveCount(1);
+  await page.getByRole('button',{name:'Neste oppgave'}).click(); await expect(a).toHaveAttribute('aria-pressed','false');
+  await page.getByRole('button',{name:'Vis fasit uten poeng'}).click(); await page.getByRole('button',{name:'Neste oppgave'}).click();
+  await page.getByRole('button',{name:'Vis fasit uten poeng'}).click(); await page.getByRole('button',{name:'Se rundens resultat'}).click();
+  await expect(page.getByRole('heading',{name:/[01] av 3 riktige/})).toBeVisible();
+  await page.getByRole('button',{name:'Start ny runde'}).click(); await expect(answers.first()).toBeDisabled();
+  await page.getByRole('button',{name:'Vis fasit uten poeng'}).click();
+  const match = await page.locator('.listen-feedback h3').textContent();
+  const tools = { 'Lavpass ved 1,3 kHz':'lpf', 'Høypass ved 350 Hz':'hpf', 'Ekko etter 200 og 400 ms':'delay', 'Kort, diffus klanghale':'reverb' };
+  expect(tools[match]).toBeTruthy();
+  await page.getByRole('button',{name:'Prøv selv i mikseren'}).click();
+  await expect(page).toHaveURL(/#signal\?.*source=/); await expect(page.getByRole('button',{name:'Spill lyd',exact:true})).toBeVisible();
+  expect(new URLSearchParams(new URL(page.url()).hash.split('?')[1]).get('tool')).toBe(tools[match]);
+  expect(audioRequests.length).toBe(1); expect(errors).toEqual([]);
+});

@@ -2,10 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { SignalAudioEngine } from '../audio/SignalAudioEngine.js';
 import { audioSources } from '../data/audioSources.js';
 
-export function useSignalAudio(state) {
+export function useSignalAudio(state, initialSourceId) {
   const engine = useRef(null);
   const sequence = useRef(0);
-  const [sourceId, setSourceId] = useState(null);
+  const [sourceId, setSourceId] = useState(initialSourceId || null);
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
   const [meters, setMeters] = useState(null);
@@ -50,6 +50,9 @@ export function useSignalAudio(state) {
       setStatus('error'); return false;
     }
   }
+  function cue(id) {
+    stop(); setSourceId(id); setError('');
+  }
   function select(id) {
     setSourceId(id); setError('');
     if (status === 'playing' || status === 'loading') void play(id);
@@ -57,7 +60,7 @@ export function useSignalAudio(state) {
   const readScope = useCallback(node => engine.current?.graph?.scope(node), []);
   const readSpectrum = useCallback(() => engine.current?.graph?.readSpectrum(), []);
   return { sourceId, source: audioSources.find(item => item.id === sourceId), status, playing: status === 'playing', error, meters, listening, readScope, readSpectrum,
-    play, stop, select, setListening: patch => setListening(previous => ({ ...previous, ...patch })),
-    useSketch: () => { stop(); setSourceId(null); setError(''); setListening(previous => ({ ...previous, original: false })); },
+    play, stop, select, cue, setListening: patch => setListening(previous => ({ ...previous, ...patch })),
+    useSketch: () => { cue(null); setListening(previous => ({ ...previous, original: false })); },
   };
 }
