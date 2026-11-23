@@ -78,13 +78,13 @@ function ClipPlayer({ source }) {
   </>;
 }
 
-export function SourcePreview({ source, onSelect }) {
+export function SourcePreview({ source, onSelect, selectRef }) {
   const id = useId();
   return <section className="studio-sampler" aria-label="Opptak til mikseren">
     <div className="studio-sampler-head">
       <span className="studio-channel-index" aria-hidden="true">CH<span>{String(audioSources.findIndex(s => s.id === source.id) + 1).padStart(2,'0')}</span></span>
       <div><label htmlFor={id}>Velg lyd til mikseren</label><div className="studio-source-select">
-        <select value={source.id} id={id} onChange={e => onSelect(e.target.value)}>{audioSources.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select><ChevronDown size={19} aria-hidden="true"/>
+        <select ref={selectRef} value={source.id} id={id} onChange={e => onSelect(e.target.value)}>{audioSources.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select><ChevronDown size={19} aria-hidden="true"/>
       </div></div>
     </div>
     <div className="studio-clip"><ClipPlayer key={source.id} source={source} /></div>

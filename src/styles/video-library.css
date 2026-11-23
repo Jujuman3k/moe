@@ -35,3 +35,19 @@
 .vl-empty {display:grid;justify-items:center;gap:.5rem;text-align:center;padding:2rem 1rem;border:1px dashed var(--vl-line);border-radius:.75rem}.vl-empty h3 {font-size:1.1rem;font-weight:650}.vl-empty p {color:var(--vl-sub);max-width:42ch}
 @media(min-width:700px){.vl-header {grid-template-columns:minmax(0,1.7fr) minmax(15rem,1fr)}.vl-inputs {grid-template-columns:minmax(12rem,1.5fr) minmax(0,1fr) minmax(8rem,.65fr)}.vl-search {grid-column:auto}.vl-grid {grid-template-columns:repeat(2,minmax(0,1fr))}.vl-card-main {padding:1rem}}
 @media(min-width:950px){.vl-classroom {grid-template-columns:minmax(0,2.2fr) minmax(14rem,1fr);gap:1.4rem}.vl-lesson-notes {padding:0 .3rem}}
+
+.vl-paths { padding:clamp(.9rem,2.4vw,1.5rem); margin-block:1.4rem; border-radius:1rem; border:1px solid #334c57; background:linear-gradient(108deg,#142830,#121c2b); color:#d9e7ec; }
+.vl-paths-top { display:flex; align-items:center; gap:.85rem; }.vl-paths-top>svg { color:#8ddccc; flex:none; }
+.vl-paths h2 { font-size:clamp(1.08rem,2.5vw,1.35rem); font-weight:700; color:#eef6f8; }
+.vl-paths-top button { display:flex; gap:.35rem; align-items:center; justify-content:center; margin-left:auto; min-height:44px; padding:.4rem .9rem; border:1px solid #426470; border-radius:.6rem; color:#bce9e0; font-size:.875rem; }
+.vl-paths-top button[aria-expanded=true] svg { transform:rotate(180deg); }
+.vl-path-picks { display:flex; flex-wrap:wrap; gap:.4rem; margin:1.15rem 0; }
+.vl-path-picks button { min-height:42px; padding:.5rem .85rem; border-radius:.45rem; border:1px solid #3c525d; color:#c1d0d9; font-size:.875rem; }
+.vl-path-picks button[aria-pressed=true] { color:#0e2822; border-color:#9ed9c8; background:#a8e7d1; font-weight:700; }
+.vl-paths h3 { font-size:1.45rem; font-weight:700; }.vl-path-goal { color:#c5d5d9; margin:.3rem 0 1rem; }
+.vl-path-steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.6rem; }
+.vl-path-steps li { display:flex; flex-direction:column; align-items:flex-start; gap:.55rem; border:1px solid #304851; padding:1rem; border-radius:.55rem; background:#0f1b26; }
+.vl-path-step-type,.vl-path-step-type span { display:flex; align-items:center; gap:.4rem; } .vl-path-step-type { font-weight:700; color:#9ae5cf; }.vl-path-step-type span { font-size:.8rem; color:#b3c6cc; }
+.vl-path-steps p { color:#bdced4; font-size:1rem; line-height:1.55; }
+.vl-path-steps button { margin-top:auto; min-height:44px; color:#c5f5df; text-align:left; font-size:.95rem; text-decoration:underline; text-underline-offset:.22rem; }
+@media(max-width:680px) { .vl-path-steps { grid-template-columns:1fr; }.vl-paths-top { flex-wrap:wrap; gap:.45rem; }.vl-paths-top button { padding:.4rem .55rem; }.vl-paths-top>svg{display:none;} }

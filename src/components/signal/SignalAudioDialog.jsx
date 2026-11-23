@@ -2,7 +2,7 @@ import { Check, Headphones, Play, Square } from 'lucide-react';
 import { audioSources } from '../../data/audioSources.js';
 import { SignalSlider } from './SignalFields.jsx';
 
-export function SignalAudioDialog({ audio, onClose, onReset, animate, onToggleAnimate }) {
+export function SignalAudioDialog({ audio, onClose, onReset, animate, onToggleAnimate, notebook }) {
   return <div className="signal-audio-picker">
     <p className="audio-eyebrow"><Headphones size={16} /> LYTT. SKRU. LÆR.</p>
     <h2>Velg lyden du vil mikse</h2>
@@ -15,6 +15,7 @@ export function SignalAudioDialog({ audio, onClose, onReset, animate, onToggleAn
       {audioSources.map(source => <button key={source.id} type="button" aria-pressed={audio.sourceId === source.id} onClick={() => audio.select(source.id)} style={{ '--source-color': source.color }}><span>{source.label}{audio.sourceId === source.id && <Check size={15} />}</span><small>{source.detail}</small></button>)}
     </div>
     {audio.source && <p className="audio-source-focus">{audio.source.focus}</p>}
+    {notebook}
     <label className="audio-listen-label" htmlFor="audio-listen-target">Lytt til</label>
     <select id="audio-listen-target" value={audio.listening.target} onChange={event => audio.setListening({ target: event.target.value, original: false })}><option value="main">Main LR · salen</option><option value="monitor">Monitor · pre/post-fade</option><option value="pa">PA · etter matrix og utgang</option></select>
     <SignalSlider label="Lyttevolum" min={0} max={100} value={audio.listening.volume} unit="%" onChange={volume => audio.setListening({ volume })} />

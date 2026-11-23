@@ -22,13 +22,13 @@ async function preparePair(context, url, effect, signal) {
   const decoded = await context.decodeAudioData(await response.arrayBuffer());
   if (signal.aborted) throw cancelError();
   // All seven credited local clips are mono. Transfer a copy, never AudioBuffer's own storage.
-  const { dry, changed, peaks, duration } = await renderInWorker(decoded.getChannelData(0).slice(), decoded.sampleRate, effect, signal);
+  const { dry, changed, peaks, evidence, duration } = await renderInWorker(decoded.getChannelData(0).slice(), decoded.sampleRate, effect, signal);
   if (signal.aborted) throw cancelError();
   const buffers = [dry, changed].map(samples => {
     const buffer = context.createBuffer(1, samples.length, decoded.sampleRate);
     buffer.copyToChannel(samples, 0); return buffer;
   });
-  return { buffers, preview: { peaks, duration } };
+  return { buffers, preview: { peaks, evidence, duration } };
 }
 
 export class ListenEngine {

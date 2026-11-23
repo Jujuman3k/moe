@@ -16,5 +16,5 @@ export function PortalSearch({ navigate, onOpenVideo }) {
     return ()=>{document.removeEventListener('keydown',shortcut);window.removeEventListener('hashchange',close);};
   },[open]);
   return <><button type="button" className="portal-search-launch" aria-label="Søk i portalen" aria-haspopup="dialog" onClick={()=>setOpen(true)}><Search size={18}/><span>Søk</span><kbd aria-hidden="true">⌘/Ctrl K</kbd></button>
-    {open && <Suspense fallback={<span role="status" className="sr-only">Åpner søket …</span>}><Dialog onClose={()=>setOpen(false)} onSelect={item=>{setOpen(false);if(item.page==='videos')onOpenVideo(item.params.video);else navigate(item.page,item.params);}}/></Suspense>}</>;
+    {open && <Suspense fallback={<span role="status" className="sr-only">Åpner søket …</span>}><Dialog onClose={()=>setOpen(false)} onSelect={item=>{setOpen(false);if(item.page==='videos' && item.params.video)onOpenVideo(item.params.video);else navigate(item.page,item.params);}}/></Suspense>}</>;
 }

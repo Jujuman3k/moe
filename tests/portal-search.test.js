@@ -13,5 +13,11 @@ test('portal result links map to individual content and search suggestions span 
   assert.equal(new Set(scenarios.map(row=>row.params.scenario)).size,72);
   assert.equal(searchPortal('', 'Video').length,92);
   assert.equal(searchPortal('monitor','Oppgave').some(row=>row.params.scenario==='monitor-pre-fade'),true);
-  assert.deepEqual(new Set(searchPortal('').map(row=>row.kind)),new Set(['Verktøy','Video','Oppgave','Signalvei']));
+  assert.deepEqual(new Set(searchPortal('').map(row=>row.kind)),new Set(['Verktøy','Video','Oppgave','Signalvei','Feilsak','Læringsløp']));
+});
+
+test('scenes, case files and learning paths keep distinct shareable destinations', () => {
+  assert.deepEqual(searchPortal('kick og bass','Verktøy')[0].params, {scene:'grunnmur'});
+  assert.deepEqual(searchPortal('piano i øret','Feilsak')[0].params, {fault:'piano-lr'});
+  assert.deepEqual(searchPortal('bevar slaget','Læringsløp')[0].params, {track:'skarptromme'});
 });

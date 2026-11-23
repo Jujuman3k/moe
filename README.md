@@ -2,9 +2,9 @@
 
 Norsk læringsportal for lydteknikk og Allen & Heath dLive C3500. Bygget med React 19, Vite, Tailwind CSS og Lucide.
 
-[Åpne LydTeam Pro](https://lydteam-portal-duzy.vercel.app/) · [Lyttetest](https://lydteam-portal-duzy.vercel.app/#listen)
+[Åpne LydTeam Pro](https://lydteam-portal-duzy.vercel.app/) · [Bandrommet](https://lydteam-portal-duzy.vercel.app/#bandroom?scene=grunnmur) · [Lyttetest](https://lydteam-portal-duzy.vercel.app/#listen)
 
-Velg et ekte opptak på forsiden og åpne det i mikseren. I **Lyttetest** sammenligner du original og bearbeidet versjon på samme sted. **Øv selv** har en guidet lydsjekk og hele scenarioarkivet. Søkeknappen (eller Ctrl/⌘ K) finner en video, en oppgave eller et verktøy på tvers av portalen.
+I **Bandrommet** mikser du tre samtidige kanaler. Standardøkten kombinerer en bassloop med et trommemønster ved 110 BPM. Vokaløktene bruker uavhengige opptak til å øve nivåbalanse og panorering, ikke synkroniserte spor fra én innspilling. Enkeltkanalen åpner de sju originalopptakene i Enkel eller Pro. I **Lyttetest** sammenligner du original og bearbeidet versjon på samme sted. **Øv selv** har en guidet lydsjekk og hele scenarioarkivet. Søkeknappen (eller Ctrl/⌘ K) finner en video, en oppgave eller et verktøy på tvers av portalen.
 
 ## Kom i gang
 
@@ -21,7 +21,7 @@ npm run dev
 npm run lint
 npm test
 npm run build
-npx playwright install chromium
+npx playwright install --with-deps chromium webkit
 npm run test:e2e
 ```
 
@@ -32,7 +32,10 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 | Mappe / fil | Ansvar |
 | --- | --- |
 | `src/App.jsx` | Laster sider og kobler navigasjon til læringsprogresjon |
-| `src/pages/` | Hjem, lyttetest, videoarkiv, signalvei og øvingsoppgaver |
+| `src/pages/` | Hjem, Bandrommet, lyttetest, videoarkiv, signalvei og øvingsoppgaver |
+| `src/audio/bandRoom*.js` og `src/components/bandroom/` | Flerkanals signalgraf, stereomåling, kanalstriper og sceneøvelser |
+| `src/data/learningPaths.js` | Tre praktiske løp som kobler en bestemt leksjon, mikserøvelse og feilsøkingsoppgave |
+| `src/data/practice/diagnostic*.js` | Seks feilsaker, kontrollpunkter, tiltak og modell for undersøkelsene |
 | `src/data/videoData.js` | 92 videoer fordelt på 8 kategorier |
 | `src/data/signalPathData.js` | Signalveiens 9 ledd, undertrinn, fagtekst og videolenker |
 | `src/data/practiceScenarios.js` | Samler 72 scenarioer fra fagmodulene; lastes ved øving eller når portalsøket åpnes |
@@ -63,15 +66,18 @@ Nettlesertestene starter en lokal forhåndsvisning av **produksjonsbygget** på 
 - **Endre en simulator:** arbeid i den aktuelle filen i `components/visualizers/`. Behold eksisterende props. Nye visualiseringer kobles til `DetailPanel.jsx` gjennom fagdataenes `viz`-verdi.
 - **Endre signalveiens lab:** bruk `utils/signalSimulation.js` for beregninger, `data/signalJourney.js` for læringsinnhold og `components/signal/` for visning. Se [fast mikservisning og tester](docs/signal-focus.md), [signalmodellen](docs/signal-workbench.md) og [Enkel/Pro med interaktiv PEQ og dynamikk](docs/signal-pro.md). Ekte lydavspilling og bruksrett er dokumentert i [lyd i signalverkstedet](docs/signal-audio.md).
 - **Endre design:** arbeid i den relevante siden/komponenten eller `styles/app.css`; ikke legg fagdata tilbake i appskallet.
-- **Ny side:** legg til siden i `pages/`, ruten i `useNavigation.js`, menypunktet i `AppLayout.jsx` og den utsatte importen i `App.jsx`.
+- **Ny side:** legg til siden i `pages/`, navn og tittel i `portalPages.js`, ikon i `AppLayout.jsx` og den utsatte importen i `App.jsx`.
 
 Hold en endring avgrenset til relevant modul, og kjør kontrollene over. Det kreves ingen ny runtime-avhengighet for denne oppdelingen.
 
 ## Bruk og lagring
 
-- Navigasjon bruker URL-fragmenter (`#home`, `#signal`, `#listen`, `#videos`, `#practice`), slik at frem/tilbake og direkte lenker fungerer på statisk hosting.
+- Navigasjon bruker URL-fragmenter (`#home`, `#bandroom`, `#signal`, `#listen`, `#videos`, `#practice`), slik at frem/tilbake og direkte lenker fungerer på statisk hosting.
 - Eksempler: `#signal?node=preamp` (teori), `#signal?node=processing&source=kick&mode=pro&tool=hpf` (stille mikser med riktig kontroll), `#practice?scenario=eq-hpf-rumble` og `#videos?video=q7BQkq6A5qc`.
-- Lyttetest bruker de samme krediterte lydfilene som mikseren, med ti kildebaserte oppgaver om høypass, lavpass, delay og romklang. Tre ulike grep per runde. DSP-en lager to synkrone løkker med tilpasset RMS og felles toppgrense. Resultatet gjelder den aktuelle runden.
+- Lyttetest bruker de samme krediterte lydfilene som mikseren, med 23 kildebaserte oppgaver om høypass, lavpass, mellomtone-EQ, kompressor, gate, delay og romklang. Velg Blandet, EQ og filter, Dynamikk eller Rom og ekko. Hver runde har tre oppgaver. DSP-en lager to synkrone løkker med tilpasset RMS og felles toppgrense. Resultatet gjelder den aktuelle runden.
+- Bandrommet starter først ved trykk på Spill. Hver scene husker sin miks i samme fane. Målerne viser faktiske sample-topper; en godkjent øvelse betyr at de konkrete øvingsmålene for fader/pan er nådd, ikke at det bare finnes én god miks.
+- Under Pro → Tips → Miksminne og kildekort kan du lagre to navngitte mikser per opptak, se forskjellene og hente tilbake egen miks. De lagres lokalt; referansen til originalopptaket er separat.
+- Videoløp kan deles som `#videos?track=trygg-monitor`; feilsaker som `#practice?fault=monitor-follows`; gehørtrening som `#listen?track=dynamics`. Diagnosebenken bruker simulerte observasjoner, og lar deg åpne tilsvarende ledd med lyd.
 - Lydsjekken i fire trinn kan gjenopptas i samme fane (sessionStorage). Riktig løste case inngår også i ordinær oppgaveprogresjon.
 - Sett-markeringer, favoritter, løste oppgaver og sist åpnete video lagres i nettleserens `localStorage` under `lydteam.learning.v1`. Ingen konto eller synkronisering mellom enheter.
 - Sett-markering er manuell; avspilling alene fullfører ikke en video. «Fortsett» åpner sist valgte video, men lagrer ikke tidsposisjon inne i YouTube-videoen.

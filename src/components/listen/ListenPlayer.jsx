@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { AudioLines, Pause, Play, RotateCcw, Volume2 } from 'lucide-react';
 import { sourceWaveforms } from '../../data/sourceWaveforms.js';
 import { ListenEngine } from '../../audio/listenEngine.js';
@@ -25,11 +25,12 @@ function SampleDisplay({ preview, playing, engineRef }) {
   </div>;
 }
 
-export function ListenPlayer({ source, question, heard, onHeard }) {
+export function ListenPlayer({ source, question, heard, onHeard, onReady, transportRef, onPlayback }) {
   const engineRef = useRef(null); const ticket = useRef(0); const buttons = useRef({});
   const [status, setStatus] = useState('idle'); const [active, setActive] = useState(null);
   const [preview, setPreview] = useState(() => { const wave = sourceWaveforms[source.id]; return wave && { duration:wave.duration, peaks:wave.peaks.map(value => value / 100) }; }); const [error, setError] = useState('');
   const loading = status === 'loading'; const playing = status === 'playing';
+  useEffect(() => { onPlayback({ side: playing ? active : null, busy: loading }); }, [active, loading, playing, onPlayback]);
   useEffect(() => {
     const invalidate = () => { ticket.current += 1; };
     const halt = () => { invalidate(); engineRef.current?.stop(); setStatus('idle'); setActive(null); };
@@ -51,7 +52,7 @@ export function ListenPlayer({ source, question, heard, onHeard }) {
       const started = await engine.play({ url: source.file, effect: question.effect }, side);
       if (current !== ticket.current) return;
       if (!started) { setActive(null); setStatus('idle'); return; }
-      setPreview(engine.preview); setStatus('playing'); onHeard(side);
+      setPreview(engine.preview); onReady(engine.preview); setStatus('playing'); onHeard(side);
     } catch (err) {
       if (current !== ticket.current) return;
       engineRef.current?.stop(); setActive(null); setStatus('idle');
@@ -63,6 +64,7 @@ export function ListenPlayer({ source, question, heard, onHeard }) {
     event.preventDefault(); const side = event.key === 'ArrowLeft' ? 'A' : 'B';
     buttons.current[side]?.focus(); void play(side);
   }
+  useImperativeHandle(transportRef, () => ({ play, stop }));
   return <section aria-label="Lytt til A og B" className="listen-player">
     <div className="listen-player-top"><span className="listen-small-label"><Volume2 size={15} /> Lydkilde</span><span className="listen-loop-label">Opptak i sløyfe</span></div>
     <h2>{source.label}</h2>
@@ -77,7 +79,7 @@ export function ListenPlayer({ source, question, heard, onHeard }) {
       <button type="button" disabled={!playing && !loading} onClick={stop} aria-label="Stopp lyd"><Pause size={17}/><span>Stopp</span></button>
     </div></div>
     {error && <p role="alert" className="listen-error">{error}</p>}
-    <p className="listen-player-note">Bytt mellom A og B på samme sted i opptaket. Nivåene er tilpasset, så du kan lytte etter klangforskjellen.</p>
+    <p className="listen-player-note">Bytt mellom A og B på samme sted i opptaket. Nivåene er tilpasset, så du kan lytte etter selve miksegrepet.</p>
     <p className="listen-credit">Opptak: <a href={source.sourceUrl} target="_blank" rel="noreferrer">{source.author} · Freesound</a></p>
   </section>;
 }

@@ -1,19 +1,15 @@
-import { Activity, BookOpen, Headphones, House, SlidersHorizontal, Video } from 'lucide-react';
+import { Activity, BookOpen, Headphones, House, SlidersHorizontal, SlidersVertical, Video } from 'lucide-react';
 import { NavButton } from '../ui/NavButton.jsx';
 import '../../styles/studio-shell.css';
 
-const navigation = [
-  { id: 'home', text: 'Hjem', icon: House },
-  { id: 'signal', text: 'Signalvei', icon: Activity },
-  { id: 'listen', text: 'Lyttetest', icon: Headphones },
-  { id: 'practice', text: 'Øv selv', icon: BookOpen },
-  { id: 'videos', text: 'Videoer', icon: Video },
-];
+import { portalPages } from '../../data/portalPages.js';
+
+const pageIcons = {home:House, signal:Activity, bandroom:SlidersVertical, listen:Headphones, practice:BookOpen, videos:Video};
 
 export function AppLayout({ page, navigate, searchButton, children }) {
-  const navLinks = () => navigation.map(item => (
+  const navLinks = () => portalPages.map(item => (
     <NavButton key={item.id} active={page === item.id} onClick={() => navigate(item.id)}
-      icon={item.icon} text={item.text} />
+      icon={pageIcons[item.id]} text={item.label} />
   ));
   return (
     <div className="studio-shell min-h-screen text-slate-200">

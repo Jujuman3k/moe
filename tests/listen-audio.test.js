@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { renderListenPair } from '../src/audio/listenRender.js';
+import { listenChanges } from '../src/data/listenRounds.js';
 import { ListenEngine } from '../src/audio/listenEngine.js';
 
 const rate = 24000;
@@ -21,7 +22,7 @@ function amplitude(samples, hz) {
 test('A/B renders preserve sample timing, RMS level, peak headroom and a neutral waveform for every effect', () => {
   const low = tone(100), high = tone(6000);
   const input = low.map((value, i) => 0.4 * (value + high[i]));
-  for (const effect of ['dark', 'thin', 'echo', 'room']) {
+  for (const effect of Object.keys(listenChanges)) {
     const { dry, changed, peaks, duration } = renderListenPair(input, rate, effect);
     assert.equal(dry.length, changed.length);
     assert.equal(dry.length, input.length + rate * 0.65);
@@ -54,6 +55,30 @@ test('identical isolated transients gain two spaced repeats for echo, or a dense
   assert.ok(rms(late) < rms(early) / 25, 'short room decays instead of sustaining');
   assert.throws(() => renderListenPair(new Float32Array(20), rate, 'room'), /brukbar lyd/);
   assert.throws(() => renderListenPair(impulse, rate, 'missing'), /Ukjent/);
+});
+
+test('presence boost changes the middle band without rolling off the treble or bass', () => {
+  const bass=tone(100), middle=tone(1600), high=tone(6000);
+  const input=bass.map((v,i) => 0.22 * (v+middle[i]+high[i]));
+  const {dry,changed}=renderListenPair(input,rate,'presence');
+  const relative = hz => 20 * Math.log10(amplitude(changed,hz) / amplitude(dry,hz));
+  assert.ok(relative(1600)-relative(100)>8.5);
+  assert.ok(relative(1600)-relative(6000)>8);
+  assert.ok(Math.abs(relative(6000)-relative(100))<1);
+});
+
+test('after RMS matching compression narrows dynamic range; a gate removes the quiet sustain and leaves the loud onset in place', () => {
+  const sine=Float32Array.from({length:rate},(_,i)=>Math.sin(2*Math.PI*440*i/rate)*(i<rate/3 ? 0.55 : 0.025));
+  const strong = samples=>rms(samples.slice(rate/8,rate/4)), weak = samples=>rms(samples.slice(rate*0.7,rate*0.9));
+  const comp=renderListenPair(sine,rate,'pressed'),gate=renderListenPair(sine,rate,'gated');
+  const range = samples => 20 * Math.log10(strong(samples)/weak(samples));
+  assert.ok(range(comp.dry)-range(comp.changed)>10, 'strong part is reduced compared to quiet part');
+  assert.ok(range(gate.changed)-range(gate.dry)>32, 'quiet sustain is strongly attenuated');
+  for(const pair of [comp,gate]) {
+    assert.equal(pair.dry.findIndex(v=>v!==0),pair.changed.findIndex(v=>v!==0));
+    assert.equal(pair.evidence.dry.length, pair.evidence.changed.length);
+    assert.ok(Math.abs(Math.max(...pair.evidence.dry)/Math.max(...pair.evidence.changed)-peak(pair.dry)/peak(pair.changed))<1e-5);
+  }
 });
 
 // Verify Web Audio scheduling/lifecycle separately from the rendered samples.

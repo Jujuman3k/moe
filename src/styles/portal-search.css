@@ -13,3 +13,5 @@
 .portal-search-icon{display:grid;place-items:center;flex:none;width:2.3rem;height:2.3rem;color:#8dd6c8;background:#182c31;border-radius:.5rem}
 .portal-search-list small,.portal-search-list strong,.portal-search-list span>span{display:block}.portal-search-list small{font-size:.72rem;color:#94b3b3}.portal-search-list strong{font-size:1rem;line-height:1.3}.portal-search-list span>span,.portal-search-list>p{font-size:.87rem;color:#b4c2c8}.portal-search-list .portal-search-more{justify-content:center;color:#83dbca;font-weight:600}
 @media(max-width:1120px){.portal-search-launch kbd{display:none}}@media(max-width:870px){.portal-search-launch span{display:none}.portal-search-launch{width:44px}}@media(max-height:540px){.portal-search-surface{max-height:94dvh;gap:.35rem;padding:.6rem}.portal-search-overline{display:none}}
+.portal-search-filters { flex-wrap:wrap; }
+@media(max-height:520px){.portal-search-surface{gap:.3rem;max-height:94dvh;padding:.6rem}.portal-search-dialog{max-height:96dvh}.portal-search-filters button{min-height:30px}}

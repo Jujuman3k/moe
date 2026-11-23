@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { AudioLines, BookOpen, Film, Headphones, Search, X } from 'lucide-react';
+import { AudioLines, BookOpen, Film, Headphones, Map, ScanLine, Search, X } from 'lucide-react';
 import { searchPortal, searchKinds } from '../../utils/portalSearch.js';
 import { useModalDialog } from '../../hooks/useModalDialog.js';
 
-const icons = { Verktøy: Headphones, Signalvei: AudioLines, Oppgave: BookOpen, Video: Film };
+const icons = { Verktøy: Headphones, Signalvei: AudioLines, Oppgave: BookOpen, Video: Film, Feilsak: ScanLine, Læringsløp: Map };
 
 export default function PortalSearchDialog({ onClose, onSelect }) {
   const dialog = useRef(null), field = useRef(null), list = useRef(null);

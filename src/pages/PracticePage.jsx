@@ -11,15 +11,18 @@ import { ProgressBar } from '../components/ui/ProgressBar.jsx';
 
 import { SoundcheckLaunch, SoundcheckSession } from '../components/learning/Soundcheck.jsx';
 import { useSoundcheck } from '../components/learning/useSoundcheck.js';
+import { DiagnosticBench, DiagnosticLaunch } from '../components/learning/diagnostics/DiagnosticBench.jsx';
+import { diagnosticCases } from '../data/practice/diagnosticCases.js';
 import '../styles/practice-studio.css';
 
 const defaultFilters = { topic: 'all', level: 'all', status: 'all', query: '' };
 
-export default function PracticePage({ learning, onExplore, initialScenarioId }) {
+export default function PracticePage({ learning, onExplore, initialScenarioId, initialFaultId, onFault }) {
   const [filters, setFilters] = useState(defaultFilters);
   const linkedScenario = practiceScenarios.find(item => item.id === initialScenarioId);
   const [activeId, setActiveId] = useState(linkedScenario?.id ?? null);
   const [inSession, setInSession] = useState(false);
+  const fault = diagnosticCases.find(item => item.id === initialFaultId);
   const session = useSoundcheck();
   const launchRef = useRef(null);
   const archiveRef = useRef(null);
@@ -71,6 +74,7 @@ export default function PracticePage({ learning, onExplore, initialScenarioId })
     }
   }, [inSession]);
 
+  if (fault) return <DiagnosticBench key={fault.id} item={fault} onFault={onFault} onExplore={onExplore} />;
   if (inSession && session.round) return <SoundcheckSession session={session} onSolve={learning.solveScenario} onExplore={onExplore}
     onPause={() => { returnFocus.current = true; setInSession(false); }} />;
 
@@ -80,6 +84,7 @@ export default function PracticePage({ learning, onExplore, initialScenarioId })
         <div className="sc-overall"><ProgressBar value={solved.length} max={practiceScenarioCount} label="Oppgaver løst" /><p>Progresjon lagres i denne nettleseren.</p></div>
       </header>
       <SoundcheckLaunch round={session.round} launchRef={launchRef} onStart={() => { if (!session.round) session.start(); setInSession(true); }} onArchive={() => archiveRef.current?.focus()} />
+      <DiagnosticLaunch onStart={() => onFault(diagnosticCases[0].id)} />
       <div className="sc-archive-heading"><h2 ref={archiveRef} tabIndex={-1}>Oppgavearkivet</h2><p>{practiceScenarioCount} situasjoner fordelt på {practiceTopics.length} fagområder. Velg hva du vil øve på.</p></div>
       <PracticeFilters filters={filters} onChange={changeFilters} onReset={() => changeFilters(defaultFilters)} solved={solved}
         canRandom={matching.some(item => item.id !== currentId)} onRandom={() => { const picked = pickScenario(matching, currentId, solved); if (picked) choose(picked.id); }} />
