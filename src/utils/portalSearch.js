@@ -18,6 +18,11 @@ const result = (kind, title, detail, page, params, keywords = '') => ({
 });
 const index = [
   result('Verktøy','Lyttetest','Sammenlign opptak A og B med ørene.','listen',{},'blindtest lyttetrening øretrening'),
+  result('Verktøy','C3500-pulten','24 inngangsstriper, kildevalg og processing.','c3500',{ch:1,panel:'bank'},'dLive Allen Heath fader bank miksepult'),
+  result('Verktøy','C3500 Overview','Fra kanaloversikt til riktig prosessor.','c3500',{ch:1,panel:'overview'},'dLive oversikt signalvei kanal signal flyt'),
+  result('Verktøy','C3500 PEQ','Fire EQ-bånd på kickkanalen.','c3500',{ch:1,panel:'peq'},'dLive equalizer parametrisk frekvens'),
+  result('Verktøy','C3500 Gate','Terskel og lukketid på skarptromma.','c3500',{ch:3,panel:'gate'},'dLive skarp gate attack threshold release'),
+  result('Verktøy','C3500 Comp','Kompressor på basskanalen.','c3500',{ch:2,panel:'comp'},'dLive bass kompressor kompresjon threshold ratio attack release'),
   ...Object.entries(listenTracks).filter(([id])=>id!=='mixed').map(([id,t]) => result('Verktøy','Hør forskjell: ' + t.label,t.cue,'listen',{track:id},'lyttetest gehør øretrening ' + id)),
   ...bandScenes.map(s => result('Verktøy',s.title,'Bandrommet · ' + s.topic,'bandroom',{scene:s.id},'bandrom kanalstriper bandmiks flerkanal solo mute panorama ' + s.id)),
   ...diagnosticIndex.map(d => result('Feilsak',d.title,d.context + ' · ' + d.station,'practice',{fault:d.id},'diagnose feilsøking feilsøk ' + d.station)),
@@ -31,7 +36,7 @@ export const searchKinds = ['Verktøy','Signalvei','Oppgave','Feilsak','Video','
 export function searchPortal(input = '', kind = 'Alle') {
   const query = fold(input), terms = query.split(' ').filter(Boolean);
   if (!terms.length && kind === 'Alle') return [
-    index.find(i => i.params.scene==='vokalplass'), index.find(i=>i.kind==='Feilsak'), index.find(i=>i.kind==='Læringsløp'), index[0], index.find(i => i.params.source === 'kick'), index.find(i => i.params.node === 'preamp'),
+    index.find(i => i.page === 'c3500'), index.find(i => i.params.scene==='vokalplass'), index.find(i=>i.kind==='Feilsak'), index.find(i=>i.kind==='Læringsløp'), index[0], index.find(i => i.params.source === 'kick'), index.find(i => i.params.node === 'preamp'),
     index.find(i => i.params.scenario === 'monitor-pre-fade'), index.find(i => i.kind === 'Video'),
   ];
   const score = entry => (entry.name === query ? 100 : 0) + (query && entry.name.includes(query) ? 24 : 0)

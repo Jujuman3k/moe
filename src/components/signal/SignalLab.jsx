@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, ChevronRight } from 'lucide-react';
 import { signalJourney, signalMissions } from '../../data/signalJourney.js';
 import { signalPathData } from '../../data/signalPathData.js';
 import { missionPanels, signalPanels } from '../../data/signalPanels.js';
@@ -7,6 +7,9 @@ import { checkSignalMission, defaultSignalState, signalDiagnosis, simulateSignal
 import { Modal } from '../ui/Modal.jsx';
 import { SignalTransport } from './SignalTransport.jsx';
 import { SignalJourneyNav, SignalOverview } from './SignalJourneyNav.jsx';
+import { defaultChannelForSource } from '../../data/c3500Model.js';
+import { signalMapStops } from '../../data/signalRoutes.js';
+import { SignalNodeDetail } from './SignalNodeDetail.jsx';
 import { SignalMap } from './SignalMap.jsx';
 import { SignalScope } from './SignalScope.jsx';
 import { SignalMeter } from './SignalMeter.jsx';
@@ -30,12 +33,14 @@ import '../../styles/signal-pro.css';
 
 const missionNodes = ['input', 'preamp', 'monitor_branch', 'fader', 'mixbus', 'fx_branch'];
 
-export function SignalLab({ onOpenNode, initialNodeId, initialSourceId, initialMode, initialTool }) {
+export function SignalLab({ onConsole, initialNodeId, initialSourceId, initialMode, initialTool }) {
   const [state, setState] = useState(() => ({ ...defaultSignalState, proMode: initialMode === 'pro', fxType: initialTool?.fxType || defaultSignalState.fxType }));
   const [step, setStep] = useState(() => Math.max(0, signalJourney.findIndex(item => item.id === (initialNodeId || (initialMode === 'pro' ? 'processing' : 'fader')))));
   const [panels, setPanels] = useState(() => initialTool?.panel ? { [initialTool.node]: initialTool.panel } : {});
   const [fullscreen, setFullscreen] = useState(() => window.matchMedia('(max-width: 899px)').matches);
-  const [overlay, setOverlay] = useState(null);
+  const [overlay, setOverlay] = useState(() => initialNodeId && !initialSourceId && !initialMode && !initialTool ? 'depth' : null);
+  const [route, setRoute] = useState('all');
+  const inspector = useRef(null);
   const [mode, setMode] = useState('explore');
   const [animate, setAnimate] = useState(true);
   const [missionIndex, setMissionIndex] = useState(0);
@@ -110,6 +115,28 @@ export function SignalLab({ onOpenNode, initialNodeId, initialSourceId, initialM
     setStep(signalJourney.findIndex(item => item.id === id));
     setOverlay(null);
   }
+  function tryPanel(panelId) {
+    const target = signalPanels[node.id].some(([id]) => id === panelId) ? panelId : signalPanels[node.id][0][0];
+    setPanels(previous => ({ ...previous, [node.id]: target }));
+    if (state.proMode && node.id === 'processing') {
+      const id = { hpf: 'filter', eq: 'peq', gate: 'gate', comp: 'comp', ratio: 'comp', bypass: 'bypass' }[target];
+      setProPanel(id);
+      setProPageSelections(previous => ({ ...previous, [id]: proPages[id][0]?.[0] }));
+    }
+    setOverlay(null);
+    requestAnimationFrame(() => {
+      const el = inspector.current?.querySelector('.pro-fields input, .pro-fields button, .signal-node-controls input, .signal-node-controls button') || inspector.current?.querySelector('[role="tab"][aria-selected="true"]');
+      el?.focus({ preventScroll: true });
+    });
+  }
+  function consolePanel() {
+    if (node.id === 'preamp' || node.id === 'input') return 'preamp';
+    if (node.id === 'processing') return (state.proMode ? proPanel : { hpf: 'filter', eq: 'peq', gate: 'gate', comp: 'comp', ratio: 'comp' }[panel]) || 'overview';
+    return 'bank';
+  }
+  function openConsole(panelId = consolePanel()) {
+    onConsole?.(defaultChannelForSource(audio.sourceId), panelId === 'bypass' ? 'overview' : panelId, audio.sourceId);
+  }
   function loadMission(index) {
     setMemoryOrigin(null);
     audio.useSketch();
@@ -139,35 +166,39 @@ export function SignalLab({ onOpenNode, initialNodeId, initialSourceId, initialM
     requestAnimationFrame(() => fullscreenButton.current?.focus({ preventScroll: true }));
   }
 
+  // A covered graph does not need to redraw. Audio and mixer state continue.
+  const showMotion = animate && overlay !== 'depth';
   const content = <section className={`signal-lab signal-focus ${state.proMode ? 'signal-pro' : ''} ${state.proMode && node.id === 'processing' ? 'signal-pro-editing' : ''}`} aria-label="Signalveiens læringslab">
     <SignalTransport audio={audio} animate={animate} onAnimate={() => setAnimate(value => !value)} onChoose={() => setOverlay('audio')} onMissions={openMissions} missionMode={mode === 'missions'} onReset={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState, proMode: state.proMode })} fullscreen={fullscreen} onFullscreen={() => fullscreen ? closeFullscreen() : setFullscreen(true)} fullscreenButton={fullscreenButton} />
     <div className="signal-workbench">
-      {state.proMode && node.id === 'processing' ? <ProPreview state={state} signal={signal} panel={proPanel} bandIndex={bandIndex} onBandChange={setBandIndex} onChange={updateState} audio={audio} animate={animate} /> : <div className="signal-preview">
-        <div className="signal-preview-caption"><span>{audio.source ? 'LYD · MÅLTE SIGNALNIVÅER' : 'SIGNALKART · TRYKK PÅ ET LEDD'}</span><span>{audio.playing && <i />} {audio.source ? audio.playing ? 'Spiller' : 'Stoppet' : state.proMode ? 'Ingen lydkilde' : 'Lydløs skisse'}</span></div>
-        <SignalMap state={state} signal={signal} animate={animate} activeId={node.id} onSelectNode={selectNode} />
-        {audio.source || state.proMode ? <SignalAudioScope audio={audio} node={node} animate={animate} /> : <SignalScope state={state} signal={signal} node={node} animate={animate} />}
+      {state.proMode && node.id === 'processing' ? <ProPreview state={state} signal={signal} panel={proPanel} bandIndex={bandIndex} onBandChange={setBandIndex} onChange={updateState} audio={audio} animate={showMotion} /> : <div className="signal-preview">
+        <div className="signal-preview-caption"><span>{audio.source ? 'LYD · MÅLTE SIGNALNIVÅER' : 'SIGNALKART · TRYKK FOR Å UTFORSKE'}</span><span>{audio.playing && <i />} {audio.source ? audio.playing ? 'Spiller' : 'Stoppet' : state.proMode ? 'Ingen lydkilde' : 'Lydløs skisse'}</span></div>
+        <SignalMap state={state} signal={signal} animate={showMotion} activeId={node.id} onSelectNode={selectNode} onOpenDepth={() => setOverlay('depth')} route={route} onRouteChange={setRoute} />
+        {audio.source || state.proMode ? <SignalAudioScope audio={audio} node={node} animate={showMotion} /> : <SignalScope state={state} signal={signal} node={node} animate={showMotion} />}
         <div className="signal-output-strip" aria-label="Resultat av innstillingene">
           <SignalMeter live={!audio.source} label="Main LR" level={signal.mix} clipped={signal.clipped} />
           <SignalMeter live={!audio.source} label="Monitor" level={signal.monitor} tone="blue" clipped={signal.clipped} />
           <SignalMeter live={!audio.source} label="PA" level={signal.pa} clipped={signal.clipped} />
         </div>
       </div>}
-      <div className="signal-inspector">
-        <div className="signal-inspector-heading"><div><p>LEDD {step + 1} / {signalJourney.length}{state.proMode && ' · PRO'}</p><h2>{node.label}</h2></div><div className="signal-mode-switch" role="group" aria-label="Visningsmodus"><button type="button" aria-label="Enkel modus" aria-pressed={!state.proMode} onClick={() => changeMode(false)}>Enkel</button><button type="button" aria-label="Pro-modus" aria-pressed={state.proMode} onClick={() => changeMode(true)}>Pro</button></div><button type="button" className="studio-guide-button" aria-label="Lær om valgt ledd" aria-haspopup="dialog" title={audio.source ? 'Lyttetips og forklaring' : 'Forklaring og tips'} onClick={() => setOverlay('learn')}><BookOpen size={17} /><span>Tips</span></button></div>
+      <div className="signal-inspector" ref={inspector}>
+        <div className="signal-inspector-heading"><div className="flow-inspector-locator"><h2 aria-label={node.label}><button className="flow-depth-button" type="button" aria-label={`Se inni ${node.label}`} aria-haspopup="dialog" onClick={() => setOverlay('depth')}><span className="flow-depth-copy"><span className="flow-depth-meta">{signalMapStops[node.id].zone} · {step + 1}/{signalJourney.length} · Se inni</span><span className="flow-depth-name">{node.label}</span></span><ChevronRight size={14} /></button></h2></div><div className="signal-mode-switch" role="group" aria-label="Visningsmodus"><button type="button" aria-label="Enkel modus" aria-pressed={!state.proMode} onClick={() => changeMode(false)}>Enkel</button><button type="button" aria-label="Pro-modus" aria-pressed={state.proMode} onClick={() => changeMode(true)}>Pro</button></div><button type="button" className="studio-guide-button" aria-label="Lær om valgt ledd" aria-haspopup="dialog" title={audio.source ? 'Lyttetips og forklaring' : 'Forklaring og tips'} onClick={() => setOverlay('learn')}><BookOpen size={17} /><span>Tips</span></button></div>
         {proControls ? <ProControls nodeId={node.id} state={state} onChange={updateState} panel={proPanel} onPanelChange={setProPanel} page={proPage} onPageChange={value => setProPageSelections(previous => ({ ...previous, [proPanel]: value }))} bandIndex={bandIndex} audio={audio} onHelp={() => setOverlay('learn')} onUndo={() => updateState(lastPreset)} canUndo={Boolean(lastPreset)} /> : <SignalControls state={state} signal={signal} onChange={updateState} node={node} animate={animate} panel={panel} onPanelChange={value => setPanels(previous => ({ ...previous, [node.id]: value }))} audio={audio} onOpenAudio={() => setOverlay('audio')} />}
       </div>
     </div>
-    <SignalJourneyNav step={step} selectNode={selectNode} onOverview={() => setOverlay('overview')} />
+    <SignalJourneyNav step={step} selectNode={selectNode} onOverview={() => setOverlay('overview')} onConsole={onConsole ? () => openConsole() : undefined} />
   </section>;
 
   return <>
     {fullscreen ? <SignalFullscreen onClose={closeFullscreen}>{content}</SignalFullscreen> : content}
-    {overlay && <Modal key={overlay} label={overlay === 'notebook' ? 'Miksminne og kildekort' : overlay === 'audio' ? 'Lydvalg' : overlay === 'overview' ? 'Signaloversikt' : overlay === 'missions' ? 'Signaloppdrag' : `Lær: ${node.label}`} onClose={() => setOverlay(null)}>
+    {overlay === 'depth' && <SignalNodeDetail onVideoTab={audio.stop} node={node} onClose={() => setOverlay(null)} onTry={tryPanel} onConsole={onConsole ? openConsole : undefined} />}
+    {overlay && overlay !== 'depth' && <Modal key={overlay} label={overlay === 'notebook' ? 'Miksminne og kildekort' : overlay === 'audio' ? 'Lydvalg' : overlay === 'overview' ? 'Signaloversikt' : overlay === 'missions' ? 'Signaloppdrag' : `Lær: ${node.label}`} onClose={() => setOverlay(null)}>
       {overlay === 'notebook' && audio.source && <ProNotebook source={audio.source} audio={audio} state={state} onRecall={recallMemory} canRestore={memoryOrigin?.source === audio.sourceId} onRestore={restoreMemory} onJump={openGuideStep} onClose={() => setOverlay(null)} />}
+      {overlay === 'learn' && proControls && <button type="button" className="flow-inside-link" aria-haspopup="dialog" onClick={() => setOverlay('depth')}><BookOpen size={17} /> Se inni {node.label}<ChevronRight size={16} /></button>}
       {overlay === 'learn' && state.proMode && audio.source && <NotebookEntry onOpen={() => setOverlay('notebook')} />}
       {overlay === 'audio' && <SignalAudioDialog notebook={state.proMode && audio.source ? <NotebookEntry onOpen={() => setOverlay('notebook')} /> : null} audio={audio} onClose={() => setOverlay(null)} onReset={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState, proMode: state.proMode })} animate={animate} onToggleAnimate={() => setAnimate(previous => !previous)} />}
       {overlay === 'overview' && <SignalOverview current={node.id} signal={signal} selectNode={selectNode} />}
-      {overlay === 'learn' && (proControls ? <ProLearn panel={node.id === 'preamp' ? 'preamp' : proPanel} source={audio.source} onApply={applyProPreset} onClose={() => setOverlay(null)} onOpenAudio={() => setOverlay('audio')} /> : <div className="signal-learn"><h2>{journey.title}</h2><p>{journey.text}</p><p className="text-teal-300">Prøv: {journey.try}</p>{lesson && <div className="audio-lesson"><h3>Lytt etter · {audio.source.label}</h3><p>{lesson.text}</p>{lesson.patch && <button type="button" className="primary-button" onClick={() => { updateState(lesson.patch); setPanels(previous => ({ ...previous, [lesson.node]: lesson.panel })); selectNode(lesson.node); }}>{lesson.label}</button>}</div>}<div className="node-result"><strong>{diagnosis.title}</strong><p>{diagnosis.text}</p></div><button type="button" className="signal-detail-link" onClick={() => { audio.stop(); setOverlay(null); requestAnimationFrame(() => onOpenNode(node)); }}>Flere verktøy, teori og video →</button><SignalModelNote audio={Boolean(audio.source)} pro={state.proMode} /></div>)}
+      {overlay === 'learn' && (proControls ? <ProLearn panel={node.id === 'preamp' ? 'preamp' : proPanel} source={audio.source} onApply={applyProPreset} onClose={() => setOverlay(null)} onOpenAudio={() => setOverlay('audio')} /> : <div className="signal-learn"><h2>{journey.title}</h2><p>{journey.text}</p><p className="text-teal-300">Prøv: {journey.try}</p>{lesson && <div className="audio-lesson"><h3>Lytt etter · {audio.source.label}</h3><p>{lesson.text}</p>{lesson.patch && <button type="button" className="primary-button" onClick={() => { updateState(lesson.patch); setPanels(previous => ({ ...previous, [lesson.node]: lesson.panel })); selectNode(lesson.node); }}>{lesson.label}</button>}</div>}<div className="node-result"><strong>{diagnosis.title}</strong><p>{diagnosis.text}</p></div><button type="button" className="signal-detail-link" onClick={() => { setOverlay('depth'); }}>Flere verktøy, teori og video →</button><SignalModelNote audio={Boolean(audio.source)} pro={state.proMode} /></div>)}
       {overlay === 'missions' && <div className="signal-mission-brief">
         <h2>Feilsøk med hendene</h2><p>{completed.length}/6 løst denne økten</p>
         <label htmlFor="signal-mission">Velg signaloppdrag</label>

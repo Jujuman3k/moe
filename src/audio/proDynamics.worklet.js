@@ -44,8 +44,11 @@ if (typeof registerProcessor === 'function') {
   function processor(Envelope, descriptors, isGate) {
     return class extends AudioWorkletProcessor {
       static get parameterDescriptors() { return descriptors; }
-      constructor() { super(); this.envelope = new Envelope(sampleRate); this.frames = 0; this.values = {}; }
+      constructor() { super(); this.envelope = new Envelope(sampleRate); this.frames = 0; this.values = {}; this.finished = false;
+        this.port.onmessage = ({data}) => { if (data === 'dispose') this.finished = true; };
+      }
       process(inputs, outputs, parameters) {
+        if (this.finished) return false;
         for (const [name, values] of Object.entries(parameters)) this.values[name] = values[0];
         this.envelope.configure(this.values);
         const output = outputs[0][0]; const input = inputs[0]?.[0]; const key = inputs[1]?.[0];

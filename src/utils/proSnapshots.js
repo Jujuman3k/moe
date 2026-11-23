@@ -43,6 +43,7 @@ function walk(spec, value, visitor, path = []) {
   return Object.fromEntries(Object.entries(spec).map(([key,item])=>[key,walk(item,value[key],visitor,[...path,key])]));
 }
 export function captureProMix(state) { return walk(schema,state); }
+export function captureProSettings(settings) { return walk(schema.pro,settings); }
 function format(value, spec, path) {
   if (typeof value === 'boolean') return value ? 'På' : 'Av';
   if (typeof value === 'string') return names[value] || value;

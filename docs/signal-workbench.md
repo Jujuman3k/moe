@@ -1,5 +1,10 @@
 # Signalverkstedet – sammenhengende læring
 
+**Spor en rute:** Velg «Til salen», «Til monitor» eller «Gjennom FX» i selve kartet. Valget fremhever kablene uten å endre hva du hører. PRE og POST flytter monitorens uttak. FX-send og effektretur har hvert sitt nivå: en åpen send er ikke i seg selv bevis på at effekten høres i salen. Main LR og PA viser alltid summen av rutene som faktisk er åpne.
+
+**Se inni:** Første trykk på et nytt ledd viser kontrollene. Trykk på det valgte leddet igjen, eller på navnet ved «Se inni», for å utforske tre signalpunkter. «Prøv i egen miks» åpner den relevante kontrollfanen og lar innstillingene og opptaket fortsette. «C3500» i bunnlinjen åpner samme lydkilde på øvingspulten når den er patchet.
+
+
 Denne rapporten beskriver modellen og den første samlede arbeidsflaten. Dagens plassering bruker [fast mikservisning med kontrollfaner](signal-focus.md). Layout- og testbeskrivelsen nedenfor dokumenterer forrige versjon.
 
 ## Bruk

@@ -4,6 +4,7 @@ import { audioSources } from '../data/audioSources.js';
 import { bandScenes } from '../data/bandScenes.js';
 import { SourcePreview } from '../components/home/SourcePreview.jsx';
 import { SessionDeck } from '../components/home/SessionDeck.jsx';
+import { ConsoleEntry } from '../components/home/ConsoleEntry.jsx';
 import { LearningShelf } from '../components/home/LearningShelf.jsx';
 import { RoutingLab } from '../components/learning/RoutingLab.jsx';
 import '../styles/studio-home.css';
@@ -34,6 +35,8 @@ export function HomePage({ navigate, learning, onOpenVideo }) {
       </div>
       <SessionDeck scenes={bandScenes} scene={scene} onScene={setSceneId} onSolo={openSolo} onLaunch={openBand} />
     </section>
+
+    <ConsoleEntry navigate={navigate} />
 
     <section className="studio-solo" aria-labelledby="studio-solo-title">
       <div className="home-solo-copy">
