@@ -18,7 +18,10 @@ test('inspect a monitor tap, keep the comparison while reading, then return to t
   await dialog.getByRole('button', { name: 'Oversikt', exact: true }).click();
   await expect(points.nth(1)).toHaveAttribute('aria-pressed', 'true');
   await expect(points.nth(2)).toContainText('-42 dBFS');
-  await lesson.getByText('Test deg selv · lydsjekk', { exact: true }).click();
+  const challenge = lesson.getByRole('button', { name: 'Test deg selv · lydsjekk' });
+  await expect(challenge).toHaveAttribute('aria-expanded', 'false');
+  await challenge.click();
+  await expect(challenge).toHaveAttribute('aria-expanded', 'true');
   const exercise = lesson.getByRole('group', { name: /^Gitaristen mister/ });
   await exercise.getByRole('button', { name: /Øk bare nivået/ }).click();
   await expect(lesson.getByText(/neste faderbevegelse/)).toBeVisible();

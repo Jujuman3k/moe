@@ -1,5 +1,5 @@
 import { VideoPlayer } from '../video/VideoPlayer.jsx';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { SignalDepth } from './depth/SignalDepth.jsx';
 import { signalJourney } from '../../data/signalJourney.js';
 import { useSwipe } from '../../hooks/useSwipe.js';
@@ -22,6 +22,7 @@ import { DeEsserVisualizer } from '../visualizers/DeEsserVisualizer.jsx';
 import { InsertsVisualizer } from '../visualizers/InsertsVisualizer.jsx';
 
 export const DetailPanel = ({ node, subItem, setSubItem, onClose, onTry, onConsole, onVideoTab }) => {
+  const moduleListId = useId();
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const swipeSubItem = useSwipe(() => setSubItem(null));
@@ -97,13 +98,15 @@ export const DetailPanel = ({ node, subItem, setSubItem, onClose, onTry, onConso
             {/* Sub-Chain */}
             {node.subChain && !subItem && (
               <div>
-                <h5 className="text-xs font-bold text-slate-400 uppercase mb-3 flex items-center gap-2">
-                  <Layers size={14}/> Velg modul:
-                </h5>
-                <div className="space-y-2">
+                <h3 id={moduleListId} className="text-xs font-bold text-slate-400 uppercase mb-3 flex items-center gap-2">
+                  <Layers size={14} aria-hidden="true"/> Velg prosesseringsmodul
+                </h3>
+                <div role="group" aria-labelledby={moduleListId} className="space-y-2">
                   {node.subChain.map((step, idx) => (
                     <button type="button"
-                      key={idx}
+                      key={step.label}
+                      aria-labelledby={moduleListId + '-title-' + idx}
+                      aria-describedby={moduleListId + '-desc-' + idx}
                       onClick={() => setSubItem(step)}
                       className="w-full text-left flex items-center gap-3 p-3 bg-slate-800 border border-slate-700 rounded-lg cursor-pointer hover:border-blue-500 transition-colors group"
                     >
@@ -111,8 +114,8 @@ export const DetailPanel = ({ node, subItem, setSubItem, onClose, onTry, onConso
                         {idx + 1}
                       </div>
                       <div className="flex-1">
-                        <span className="font-bold text-slate-200 text-sm block group-hover:text-blue-400">{step.label}</span>
-                        <span className="text-xs text-slate-500">{step.desc}</span>
+                        <span id={moduleListId + '-title-' + idx} className="font-bold text-slate-200 text-sm block group-hover:text-blue-400">{step.label}</span>
+                        <span id={moduleListId + '-desc-' + idx} className="text-xs text-slate-500">{step.desc}</span>
                       </div>
                       <ChevronRight size={14} className="text-slate-600"/>
                     </button>
@@ -123,12 +126,12 @@ export const DetailPanel = ({ node, subItem, setSubItem, onClose, onTry, onConso
 
 {/* Sub-Item View */}
             {subItem && (
-              <div
+              <div role="region" aria-label={`Modulverksted: ${subItem.label}`}
                 className="mt-2 bg-slate-950 border border-blue-500/30 rounded-xl p-4 animate-fade-in-up shadow-2xl"
                 {...swipeSubItem}
               >
                 <div className="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
-                  <button onClick={() => setSubItem(null)} className="flex items-center gap-1 text-xs text-blue-400 font-bold hover:text-white">
+                  <button type="button" autoFocus onClick={() => setSubItem(null)} title="Til prosesseringsmodulene" className="flex min-h-11 items-center gap-1 rounded px-2 text-sm text-blue-300 font-bold hover:text-white">
                     <ArrowLeft size={12}/> Tilbake
                   </button>
                   <span className="text-xs text-slate-500 uppercase">{subItem.label}</span>

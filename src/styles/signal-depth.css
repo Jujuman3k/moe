@@ -53,3 +53,6 @@
 .sd-challenge fieldset button span { font:600 .76rem/1 ui-monospace,monospace; color:#a8cabd; }
 .sd-answer:not(:empty) { border-left:2px solid #9cd8bc; margin-top:.55rem; padding:.2rem .65rem; }
 .sd-answer strong { color:#d1f0e1; }
+
+.sd-challenge-toggle { display:flex; align-items:center; gap:.5rem; width:100%; min-height:46px; text-align:left; color:inherit; font-size:.9rem; font-weight:650; touch-action:manipulation; }
+.sd-challenge-toggle svg:last-child { margin-left:auto; color:var(--sd-mint); }

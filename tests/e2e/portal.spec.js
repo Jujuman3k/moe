@@ -96,13 +96,16 @@ test('every signal node, processing tool and video tab remains reachable', async
     }
     if (node.subChain) {
       for (const step of node.subChain) {
-        await panel.getByRole('button', { name: new RegExp(step.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) }).first().click();
-        await expect(panel.getByRole('button', { name: 'Tilbake', exact: true })).toBeVisible();
+        const modules = panel.getByRole('group', { name: 'Velg prosesseringsmodul' });
+        await modules.getByRole('button', { name: step.label, exact: true }).click();
+        const tool = panel.getByRole('region', { name: 'Modulverksted: ' + step.label, exact: true });
+        await expect(tool).toBeVisible();
+        await expect(tool.getByRole('button', { name: 'Tilbake', exact: true })).toBeVisible();
         if (step.viz === 'inserts') {
           // Visit all plugin cards so extracted secondary visualizers are rendered.
           const labels = ['1. Dyn8', '2. De-Esser', '3. Transient Controller', '4. Multiband Compressor', '5. Hypabass'];
           for (const label of labels) {
-            await panel.getByRole('button', { name: new RegExp(label) }).click();
+            await tool.getByRole('button', { name: new RegExp('^' + label.replace('.', '\\.')) }).click();
             await expect(panel.getByRole('button', { name: 'Tilbake', exact: true })).toHaveCount(2);
             await panel.getByRole('button', { name: 'Tilbake', exact: true }).last().click();
           }
