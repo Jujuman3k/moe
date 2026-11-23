@@ -8,7 +8,7 @@
 .signal-focus-brand span { display:block; font-size:8px; font-weight:400; color:#94a3b8; margin-top:2px; }
 .signal-focus-toolbar button { width:40px; height:44px; padding:0; }
 .signal-focus-toolbar button[data-active='true'] { color:#c4b5fd; background:#7c3aed22; }
-.signal-focus .signal-workbench { min-height:0; grid-template-rows:234px minmax(0,1fr); gap:0; align-items:stretch; }
+.signal-focus .signal-workbench { min-height:0; grid-template-rows:238px minmax(0,1fr); gap:0; align-items:stretch; }
 .signal-focus .signal-preview { position:static; min-height:0; margin:0; padding:4px 8px 0; display:grid; grid-template-rows:14px 138px minmax(48px,1fr) 30px; border:0; border-bottom:1px solid #334155; border-radius:0; box-shadow:none; }
 .signal-focus .signal-preview-caption { min-height:0; padding:0 2px; font-size:8px; }
 .signal-focus .signal-map { display:grid; grid-template-rows:repeat(3,46px); }
@@ -20,8 +20,8 @@
 .signal-focus .signal-scope figcaption { font-size:9px; }
 .signal-focus .signal-scope svg { height:100%; min-height:0; }
 .signal-focus .scope-caption,.signal-focus .scope-legend { font-size:8px; }
-.signal-focus .signal-output-strip { gap:8px; padding:5px 2px; }
-.signal-focus .signal-output-strip .signal-meter span,.signal-focus .signal-output-strip .signal-meter output { font-size:9px; }
+.signal-focus .signal-output-strip { align-items:center; gap:8px; padding:2px; }
+.signal-focus .signal-output-strip .signal-meter span,.signal-focus .signal-output-strip .signal-meter output { font-size:9px; line-height:1.25; }
 .signal-focus .signal-inspector { min-height:0; padding:0 10px; display:grid; grid-template-rows:46px minmax(0,1fr); }
 .signal-focus .signal-inspector-heading { margin:0; }
 .signal-focus .signal-inspector-heading p { font-size:8px; letter-spacing:.08em; }
