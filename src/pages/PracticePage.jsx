@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, CheckCircle2, GraduationCap, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, LibraryBig, RotateCcw } from 'lucide-react';
 import { practiceScenarios } from '../data/practiceScenarios.js';
 import { practiceScenarioCount, practiceTopics } from '../data/practiceCatalog.js';
 import { filterScenarios, nextScenario, pickScenario } from '../utils/practiceLibrary.js';
@@ -9,11 +9,21 @@ import { PracticeFilters } from '../components/learning/PracticeFilters.jsx';
 import { RoutingLab } from '../components/learning/RoutingLab.jsx';
 import { ProgressBar } from '../components/ui/ProgressBar.jsx';
 
+import { SoundcheckLaunch, SoundcheckSession } from '../components/learning/Soundcheck.jsx';
+import { useSoundcheck } from '../components/learning/useSoundcheck.js';
+import '../styles/practice-studio.css';
+
 const defaultFilters = { topic: 'all', level: 'all', status: 'all', query: '' };
 
-export default function PracticePage({ learning, onExplore }) {
+export default function PracticePage({ learning, onExplore, initialScenarioId }) {
   const [filters, setFilters] = useState(defaultFilters);
-  const [activeId, setActiveId] = useState(null);
+  const linkedScenario = practiceScenarios.find(item => item.id === initialScenarioId);
+  const [activeId, setActiveId] = useState(linkedScenario?.id ?? null);
+  const [inSession, setInSession] = useState(false);
+  const session = useSoundcheck();
+  const launchRef = useRef(null);
+  const archiveRef = useRef(null);
+  const returnFocus = useRef(false);
   const [justSolvedId, setJustSolvedId] = useState(null);
   const [attempt, setAttempt] = useState(0);
   const focusNext = useRef(false);
@@ -40,6 +50,13 @@ export default function PracticePage({ learning, onExplore }) {
     setJustSolvedId(null);
     setAttempt(value => value + 1);
   };
+  // Hash search can change page and target in the same render. Focus the exact
+  // scenario after the route's general focus/scroll reset has completed.
+  useEffect(() => {
+    if (!linkedScenario) return;
+    const frame = requestAnimationFrame(() => document.getElementById('scenario-heading')?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [linkedScenario]);
   useEffect(() => {
     if (focusNext.current) {
       document.getElementById('scenario-heading')?.focus();
@@ -47,14 +64,23 @@ export default function PracticePage({ learning, onExplore }) {
     }
   }, [currentId, attempt]);
 
+  useEffect(() => {
+    if (!inSession && returnFocus.current) {
+      returnFocus.current = false;
+      launchRef.current?.focus();
+    }
+  }, [inSession]);
+
+  if (inSession && session.round) return <SoundcheckSession session={session} onSolve={learning.solveScenario} onExplore={onExplore}
+    onPause={() => { returnFocus.current = true; setInSession(false); }} />;
+
   return (
-    <div className="animate-fade-in space-y-6">
-      <header className="hero-surface grid gap-4 rounded-3xl border border-slate-800 p-5 md:gap-6 md:p-8 lg:grid-cols-[1fr_280px] lg:items-center">
-        <div><p className="eyebrow"><GraduationCap size={15} /> Fra teori til praksis</p><h1 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-4xl">Små valg. Bedre lyd.</h1><p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-400">{practiceScenarioCount} scenarioer i {practiceTopics.length} fagområder. Forstå valgene bak en god miks.</p>
-          <div className="mt-4 hidden flex-wrap gap-2 text-[10px] font-medium text-slate-400 md:flex"><span className="rounded-full border border-slate-700 px-3 py-1">3 nivåer</span><span className="rounded-full border border-slate-700 px-3 py-1">Hint og svarforklaringer</span><span className="rounded-full border border-slate-700 px-3 py-1">Lær i ditt tempo</span></div>
-        </div>
-        <div className="border-t border-slate-700/60 pt-4 md:rounded-2xl md:border md:bg-slate-950/50 md:p-5"><p className="mb-4 hidden text-3xl font-bold text-white md:block">{solved.length}<span className="ml-2 text-base font-normal text-slate-500">av {practiceScenarioCount}</span></p><ProgressBar value={solved.length} max={practiceScenarioCount} label="Oppgaver løst" /><p className="mt-3 text-[11px] text-slate-500">Lagres i denne nettleseren. Du kan alltid repetere.</p></div>
+    <div className="practice-studio animate-fade-in space-y-6">
+      <header className="sc-page-head"><div><p className="sc-kicker"><LibraryBig size={16} /> Øv selv</p><h1>Små valg. Bedre lyd.</h1></div>
+        <div className="sc-overall"><ProgressBar value={solved.length} max={practiceScenarioCount} label="Oppgaver løst" /><p>Progresjon lagres i denne nettleseren.</p></div>
       </header>
+      <SoundcheckLaunch round={session.round} launchRef={launchRef} onStart={() => { if (!session.round) session.start(); setInSession(true); }} onArchive={() => archiveRef.current?.focus()} />
+      <div className="sc-archive-heading"><h2 ref={archiveRef} tabIndex={-1}>Oppgavearkivet</h2><p>{practiceScenarioCount} situasjoner fordelt på {practiceTopics.length} fagområder. Velg hva du vil øve på.</p></div>
       <PracticeFilters filters={filters} onChange={changeFilters} onReset={() => changeFilters(defaultFilters)} solved={solved}
         canRandom={matching.some(item => item.id !== currentId)} onRandom={() => { const picked = pickScenario(matching, currentId, solved); if (picked) choose(picked.id); }} />
       <p role="status" className="text-xs text-slate-400">{matching.length} {matching.length === 1 ? 'scenario' : 'scenarioer'} i utvalget{filters.status === 'unsolved' && justSolvedId === currentId ? ' · svaret ditt er lagret, les forklaringen før du går videre' : ''}</p>

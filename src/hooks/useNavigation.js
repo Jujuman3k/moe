@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-const pageIds = new Set(['home', 'signal', 'videos', 'practice']);
+const pageIds = new Set(['home', 'signal', 'videos', 'practice', 'listen']);
 function readRoute() {
   const [page, search = ''] = window.location.hash.slice(1).split('?');
   const params = new URLSearchParams(search);
-  return { page: pageIds.has(page) ? page : 'home', nodeId: params.get('node'), videoId: params.get('video') };
+  return { page: pageIds.has(page) ? page : 'home', nodeId: params.get('node'), videoId: params.get('video'), sourceId: params.get('source'), mode: params.get('mode'), tool: params.get('tool'), scenarioId: params.get('scenario') };
 }
 
 export function useNavigation() {

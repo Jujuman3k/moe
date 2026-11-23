@@ -14,33 +14,13 @@ export const signalPathData = [
        { videoId: "l6vrcz2xoqQ", title: "Kildevalg (Source Select)", desc: "Hvordan patche innganger i dLive." }
     ],
 
-    deepDiveTitle: "Kabel-Teori",
+    deepDiveTitle: "Fra kilde til inngang",
     deepDive: [
-      {
-        name: "XLR (Han & Hun)",
-        tag: "Balansert",
-        info: "XLR-kabler har en retning: Signalet går alltid UT av Han-pluggen (pinner) og INN i Hun-pluggen (hull). De er balanserte, som betyr at de kansellerer ut støy. Derfor kan vi strekke dem 100 meter uten problemer."
-      },
-      {
-        name: "Jack (Ubalansert)",
-        tag: "Støy-felle",
-        info: "Hvorfor Jack? Det er standarden på gitarer fordi den er billig og robust. Men signalet er ubalansert. Det betyr at kabelen fungerer som en antenne. Er kabelen lenger enn 5 meter, vil du garantert få during og støy."
-      },
-      {
-        name: "DI-Boks: Problemløseren",
-        tag: "Konvertering",
-        info: "Siden Jack støyer på lange strekk, bruker vi en DI-boks. Den gjør om det ubalanserte Jack-signalet til et balansert XLR-signal som kan sendes helt til mikseren uten støy."
-      },
-      {
-        name: "Ground Lift (Løft)",
-        tag: "Brum-fjerner",
-        info: "På DI-boksen finner du ofte en knapp som heter 'Lift'. Hvis du hører en dyp during (50Hz brum) fra en PC eller Synth, trykk på denne! Den kutter jordforbindelsen og bryter 'loopen' som skaper støyen."
-      },
-      {
-        name: "Speakon",
-        tag: "Utgang / Monitor",
-        info: "Brukes for å koble forsterkere til passive høyttalere. Dette gjelder ofte scenemonitorer (wedges) og hoved-PA. Den låses fast med en vri for sikkerhet. Fører sterk strøm og må aldri blandes med mikrofonkabler."
-      }
+      { name: "XLR på scenen", tag: "Mikrofon", info: "En vanlig mikrofon har XLR-hann som utgang. Følg kabelen til den merkede mikrofoninngangen på stageboksen. En balansert forbindelse kan undertrykke støy som treffer begge signallederne." },
+      { name: "Jack: TS eller TRS?", tag: "Instrument / linje", info: "En gitar har vanligvis ubalansert TS-utgang. TRS kan føre et balansert monosignal eller et ubalansert stereosignal. Se på merkingen på utstyret: pluggformen alene forteller ikke hva som går i kabelen." },
+      { name: "Når hjelper en DI-boks?", tag: "Sceneeksempel", info: "Har du et instrument med ubalansert utgang og langt strekk til mikseren? Sett DI-boksen nær instrumentet. Da blir den ubalanserte kabelen kort, og den balanserte utgangen kan gå videre til stageboksen." },
+      { name: "Ground lift på en DI", tag: "Brum", info: "Hvis brum skyldes en jordsløyfe mellom lydapparatene, kan DI-boksens ground lift hjelpe. Bryteren virker på lydforbindelsen. Beskyttelsesjorden i strømtilførselen skal alltid være tilkoblet." },
+      { name: "speakON", tag: "Høyttalernivå", info: "Denne låsbare kontakten brukes mellom effektforsterker og passiv høyttaler. På en aktiv høyttaler er forsterkeren innebygd: fra mikseren sender du da et linjesignal til riktig inngang." }
     ]
   },
   {
@@ -75,7 +55,7 @@ export const signalPathData = [
       {
         name: "A/D Konvertering",
         tag: "Kritisk",
-        info: "Rett etter preampen gjøres de analoge strømbølgene om til digitale tall (0 og 1). Denne konverteren har et absolutt tak på 0dBFS. Hvis det analoge signalet er for kraftig når det treffer konverteren, finnes det ingen digitale verdier som kan representere det."
+        info: "A/D-konverteren måler signalspenningen mange ganger i sekundet. 0 dBFS er øverste digitale nivå. Overstyrer du inngangen, kan du senke lyden senere, men du får ikke tilbake toppene som allerede ble klippet."
       },
       {
         name: "Konsekvenser av Klipping",
@@ -85,7 +65,7 @@ export const signalPathData = [
       {
         name: "48V Phantom",
         tag: "Strøm",
-        info: "Leverer 48 volt spenning via XLR-kabelen. Påkrevd for kondensatormikrofoner og aktive DI-bokser."
+        info: "Enkelte mikrofoner og aktive DI-bokser får strøm via den balanserte mikrofonkabelen. Sjekk hva den tilkoblede modellen krever før du slår på 48 V. Noen får strøm på andre måter."
       },
       {
         name: "Pad (-20dB)",
@@ -94,8 +74,8 @@ export const signalPathData = [
       },
       {
         name: "Polaritet (Ø)",
-        tag: "Fase",
-        info: "Vender signalets fase 180 grader. Kritisk når to mikrofoner plukker opp samme kilde."
+        tag: "Summering",
+        info: "Snur fortegnet på signalet uten å flytte det i tid. Når to mikrofoner fanger samme kilde, sammenlign med og uten polaritetsvending mens du lytter til summen."
       },
       {
         name: "Gain Staging",

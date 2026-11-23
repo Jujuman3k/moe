@@ -1,61 +1,88 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Bookmark, Check, Film, Search, X } from 'lucide-react';
+import { Bookmark, Check, ChevronDown, Clapperboard, Film, ListVideo, Play, Search } from 'lucide-react';
 import { videoData } from '../data/videoData.js';
-import { allVideos, filterVideos } from '../utils/videoLibrary.js';
+import { allVideos, filterVideos, videoRecommendation } from '../utils/videoLibrary.js';
 import { VideoSearch } from '../components/video/VideoSearch.jsx';
 import { VideoCard } from '../components/video/VideoCard.jsx';
-import { VideoPlayer } from '../components/video/VideoPlayer.jsx';
-import { ProgressBar } from '../components/ui/ProgressBar.jsx';
+import { VideoLesson } from '../components/video/VideoLesson.jsx';
+import '../styles/video-library.css';
 
-export default function VideoPage({ learning, initialVideoId }) {
-  const initialVideo = allVideos.find(video => video.videoId === initialVideoId);
-  const [category, setCategory] = useState(initialVideo?.categoryId || 'dlive_course');
+export default function VideoPage({ learning, initialVideoId, onExplore }) {
+  const initial = allVideos.find(video => video.videoId === initialVideoId);
+  const { progress, toggleCompleted, toggleFavorite, rememberVideo } = learning;
+  const [category, setCategory] = useState(initial?.categoryId || 'dlive_course');
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState('all');
-  const [selectedVideo, setSelectedVideo] = useState(initialVideo || null);
-  const playerRef = useRef(null);
-  const { progress, toggleCompleted, toggleFavorite, rememberVideo } = learning;
-  const results = filterVideos({ query, category, status, ...progress });
+  const [selection, setSelection] = useState(initial ? {video: initial, autoPlay: false} : null);
+  const lessonRef = useRef(null);
+  const opener = useRef(null);
+  const searchRef = useRef(null);
+  const results = filterVideos({query, category, status, ...progress});
   const categoryVideos = category === 'all' ? allVideos : videoData[category].videos;
-  const completedCount = categoryVideos.filter(video => progress.completed.includes(video.videoId)).length;
-  const selectedIndex = selectedVideo ? allVideos.findIndex(video => video.id === selectedVideo.id) : -1;
-  const nextVideo = allVideos[selectedIndex + 1]?.categoryId === selectedVideo?.categoryId ? allVideos[selectedIndex + 1] : null;
+  const watched = categoryVideos.filter(video => progress.completed.includes(video.videoId)).length;
+  const recommendation = videoRecommendation(progress);
+  const openedFromLink = useRef(null);
+  useEffect(() => {
+    if (!initial || openedFromLink.current === initial.videoId) return;
+    openedFromLink.current = initial.videoId;
+    if (progress.lastVideoId !== initial.videoId) rememberVideo(initial.videoId);
+  }, [initial, progress.lastVideoId, rememberVideo]);
 
   useEffect(() => {
-    if (selectedVideo) playerRef.current?.scrollIntoView({ block: 'start' });
-  }, [selectedVideo]);
+    if (selection) {
+      lessonRef.current?.focus({preventScroll: true});
+      lessonRef.current?.scrollIntoView({block: 'start'});
+    }
+  }, [selection]);
 
-  const play = video => { setSelectedVideo(video); rememberVideo(video.videoId); };
-  const search = value => {
-    setQuery(value);
-    if (value.trim() && !query.trim()) setCategory('all');
+  const play = (video, trigger) => {
+    if (trigger) opener.current = trigger;
+    setSelection({video, autoPlay: true});
+    rememberVideo(video.videoId);
   };
-  const resetFilters = () => { setQuery(''); setCategory('all'); setStatus('all'); };
+  const close = () => {
+    setSelection(null);
+    requestAnimationFrame(() => {
+      if (opener.current?.isConnected) opener.current.focus();
+      else searchRef.current?.focus();
+    });
+  };
+  const search = text => {
+    if (!query.trim() && text.trim()) setCategory('all');
+    setQuery(text);
+  };
+  const reset = () => { setQuery(''); setCategory('all'); setStatus('all'); };
+  const saved = () => {
+    reset(); setStatus('favorites');
+    requestAnimationFrame(() => searchRef.current?.focus());
+  };
 
-  return (
-    <div className="animate-fade-in space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div><p className="eyebrow"><Film size={15} /> Lær i ditt tempo</p><h1 className="page-title">Videoarkivet</h1><p className="mt-3 text-sm text-slate-400">{allVideos.length} videoer. Fra første oppsett til detaljene i miksen.</p></div>
-        <div className="flex gap-4 text-xs text-slate-400"><span className="flex items-center gap-1.5"><Check size={15} className="text-teal-400" />{progress.completed.length} sett</span><span className="flex items-center gap-1.5"><Bookmark size={15} className="text-amber-300" />{progress.favorites.length} lagret</span></div>
+  return <div className="vl-page animate-fade-in">
+    <header className="vl-header">
+      <div><p className="vl-kicker"><Clapperboard size={17}/> Kursrommet</p><h1>Videoarkivet</h1><p className="vl-intro">Lær dLive fra grunnen, eller finn akkurat den teknikken du trenger på neste lydsjekk.</p>
+        <div className="vl-meta"><span><Film size={16}/>{allVideos.length} videoer</span><span><ListVideo size={16}/>{Object.keys(videoData).length} temaer</span><span><Check size={16}/>{progress.completed.length} sett</span></div>
       </div>
-      {selectedVideo && <section ref={playerRef} aria-label="Valgt video" className="scroll-mt-24 rounded-2xl border border-blue-500/30 bg-slate-900 p-3 md:p-5">
-        <div className="mb-4 flex items-center justify-between gap-3"><div><p className="mb-1 text-[10px] uppercase tracking-wider text-blue-400">Nå lærer du · {selectedVideo.categoryName}</p><h2 className="text-base font-bold text-white">{selectedVideo.title}</h2></div><button onClick={() => setSelectedVideo(null)} aria-label="Lukk video" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white"><X size={19} /></button></div>
-        <div className="mx-auto max-w-3xl"><VideoPlayer videoId={selectedVideo.videoId} title={selectedVideo.title} /></div>
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3"><button onClick={() => toggleCompleted(selectedVideo.videoId)} aria-pressed={progress.completed.includes(selectedVideo.videoId)} className="secondary-button"><Check size={16} />{progress.completed.includes(selectedVideo.videoId) ? 'Sett – fjern markering' : 'Marker video som sett'}</button>{nextVideo && <button onClick={() => play(nextVideo)} className="secondary-button">Neste i serien<ArrowRight size={16} /></button>}</div>
-        <p className="mt-3 text-xs text-slate-500">Avspilleren starter uten lyd. Slå på lyden i videoen. «Sett» markerer du selv.</p>
-      </section>}
-      <section aria-label="Søk og filtrering" className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4 md:p-5">
-        <div className="grid gap-3 md:grid-cols-[1fr_200px]"><VideoSearch query={query} onChange={search} /><div><label htmlFor="video-status" className="sr-only">Visningsfilter</label><select id="video-status" value={status} onChange={event => setStatus(event.target.value)} className="h-[52px] w-full rounded-xl border border-slate-700 bg-slate-950 px-4 text-sm text-slate-300"><option value="all">Alle videoer</option><option value="unseen">Ikke sett</option><option value="completed">Sett</option><option value="favorites">Mine favoritter</option></select></div></div>
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Videokategorier">
-          {[['all', { title: 'Alle temaer' }], ...Object.entries(videoData)].map(([key, data]) => <button key={key} onClick={() => setCategory(key)} aria-pressed={category === key} className={`min-h-11 shrink-0 rounded-lg border px-3 text-xs font-semibold transition-colors ${category === key ? 'border-blue-500 bg-blue-500/10 text-blue-200' : 'border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white'}`}>{data.title}</button>)}
-        </div>
-      </section>
-      <div className="flex flex-wrap items-end justify-between gap-5">
-        <div><h2 className="text-lg font-bold text-white">{category === 'all' ? 'Alle temaer' : videoData[category].title}</h2><p aria-live="polite" role="status" className="mt-1 text-xs text-slate-400">{results.length} {results.length === 1 ? 'video' : 'videoer'}{query.trim() ? ` for «${query.trim()}»` : ''}</p></div>
-        <div className="w-full max-w-xs"><ProgressBar value={completedCount} max={categoryVideos.length} label="Markert som sett i dette utvalget av temaer" /></div>
+      {!selection && <button type="button" className="vl-resume" onClick={event => play(recommendation.video, event.currentTarget)}>
+        <span className="vl-resume-play"><Play size={22} fill="currentColor"/></span>
+        <span><span className="vl-kicker">{recommendation.label}</span><strong>{recommendation.video.title}</strong><small>{recommendation.video.categoryName}</small></span>
+      </button>}
+    </header>
+    {selection && <VideoLesson panelRef={lessonRef} video={selection.video} autoPlay={selection.autoPlay} learning={learning} onSelect={play} onClose={close} onExplore={onExplore}/>}
+    <section aria-label="Søk og filtrering" className="vl-filter">
+      <div className="vl-filter-title"><h2>Finn en leksjon</h2><button type="button" onClick={saved} aria-pressed={status === 'favorites' && category === 'all' && !query.trim()}><Bookmark size={15}/> Mine favoritter <span>{progress.favorites.length}</span></button></div>
+      <div className="vl-inputs">
+        <VideoSearch query={query} onChange={search} inputRef={searchRef}/>
+        <label><span>Tema</span><span className="vl-select"><select aria-label="Videotema" value={category} onChange={event => setCategory(event.target.value)}><option value="all">Alle temaer</option>{Object.entries(videoData).map(([key, data]) => <option key={key} value={key}>{data.title}</option>)}</select><ChevronDown size={15}/></span></label>
+        <label><span>Visning</span><span className="vl-select"><select aria-label="Visningsfilter" value={status} onChange={event => setStatus(event.target.value)}><option value="all">Alle videoer</option><option value="unseen">Ikke sett</option><option value="completed">Sett</option><option value="favorites">Mine favoritter</option></select><ChevronDown size={15}/></span></label>
       </div>
-      {results.length ? <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">{results.map(video => <VideoCard key={video.id} video={video} completed={progress.completed.includes(video.videoId)} favorite={progress.favorites.includes(video.videoId)} onPlay={play} onToggleCompleted={toggleCompleted} onToggleFavorite={toggleFavorite} />)}</div>
-        : <div className="rounded-2xl border border-dashed border-slate-700 p-10 text-center"><Search size={30} className="mx-auto mb-4 text-slate-500" /><h3 className="font-semibold text-white">Ingen videoer i dette utvalget</h3><p className="mt-2 text-sm text-slate-400">Prøv et annet søkeord, et annet tema eller lagre en favoritt.</p><button onClick={resetFilters} className="secondary-button mx-auto mt-5">Nullstill filtre</button></div>}
-    </div>
-  );
+    </section>
+    <section className="vl-results" aria-labelledby="vl-result-heading">
+      <div className="vl-results-head">
+        <div><p className="vl-kicker">{status === 'favorites' ? 'Din samling' : 'Leksjoner'}</p><h2 id="vl-result-heading">{category === 'all' ? 'Alle temaer' : videoData[category].title}</h2><p role="status">{results.length} {results.length === 1 ? 'video' : 'videoer'}{query.trim() ? ` for «${query.trim()}»` : ''}</p></div>
+        <div className="vl-progress"><span>{watched} av {categoryVideos.length} sett</span><progress aria-label="Markert som sett i dette utvalget av temaer" value={watched} max={categoryVideos.length}/></div>
+      </div>
+      {results.length ? <div className="vl-grid">{results.map(video => <VideoCard key={video.id} video={video} completed={progress.completed.includes(video.videoId)} favorite={progress.favorites.includes(video.videoId)} onPlay={play} onToggleCompleted={toggleCompleted} onToggleFavorite={toggleFavorite}/>)}</div>
+        : <div className="vl-empty"><Search size={25}/><h3>Ingen videoer i dette utvalget</h3><p>{status === 'favorites' && !progress.favorites.length ? 'Trykk på bokmerket på en video du vil finne igjen. De lagrede leksjonene samles her.' : 'Prøv et annet søkeord, et annet tema eller vis alle videoer.'}</p><button type="button" onClick={reset}>Nullstill filtre</button></div>}
+    </section>
+  </div>;
 }

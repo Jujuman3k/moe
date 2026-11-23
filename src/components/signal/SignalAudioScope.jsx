@@ -34,6 +34,6 @@ export function SignalAudioScope({ audio, node, animate }) {
   return <figure className="signal-scope signal-audio-scope" aria-label={`Live lydbølge: ${node.label}`}>
     <figcaption><span>{node.id === 'fx_branch' ? 'Send → effektretur' : 'Lyd før / etter valgt ledd'}</span><span className="scope-legend"><i className="scope-before" /> Før <i className="scope-after" /> Etter {showWet && <><i className="scope-wet" /> FX</>}</span></figcaption>
     <svg viewBox="0 0 640 100" preserveAspectRatio="none" role="img" aria-label="Målt lydbølge fra avspillingen"><path d="M0,50 H640 M160,0 V100 M320,0 V100 M480,0 V100" stroke="#243047" fill="none" /><path ref={before} data-audio-wave="before" stroke="#64748b" strokeWidth="1.5" fill="none" /><path ref={after} data-audio-wave="after" stroke="#2dd4bf" strokeWidth="2" fill="none" />{showWet && <path ref={wet} data-audio-wave="wet" stroke="#c084fc" strokeWidth="1.5" fill="none" />}</svg>
-    <div className="scope-caption"><span>{audio.playing ? audio.listening.original ? 'Du hører Original · kurven viser kjeden' : 'Live lyd · fast bølgezoom ×4' : 'Stoppet · trykk Spill øverst'}</span><span>Peak dBFS</span></div>
+    <div className="scope-caption"><span>{audio.playing ? audio.listening.original ? 'Du hører Original · kurven viser kjeden' : 'Live lyd · fast bølgezoom ×4' : audio.status === 'loading' ? 'Laster opptak …' : audio.source ? 'Klar · trykk Spill øverst' : 'Velg lyd for å lytte'}</span><span>Peak dBFS</span></div>
   </figure>;
 }
