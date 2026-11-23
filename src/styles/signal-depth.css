@@ -48,10 +48,10 @@
 @media(prefers-reduced-motion:reduce){.sd-meter i{transition:none;}}
 
 .sd-challenge legend { color:#dceae6; font-size:.94rem; font-weight:600; padding-bottom:.5rem; }
-.sd-challenge fieldset button { display:flex; align-items:center; gap:.55rem; width:100%; min-height:44px; text-align:left; background:#162730; color:#dce8e9; border:1px solid #384f5a; border-radius:.4rem; padding:.4rem .65rem; margin:.3rem 0; }
+.sd-challenge fieldset button { touch-action:manipulation; display:flex; align-items:center; gap:.55rem; width:100%; min-height:44px; text-align:left; background:#162730; color:#dce8e9; border:1px solid #384f5a; border-radius:.4rem; padding:.4rem .65rem; margin:.3rem 0; }
 .sd-challenge fieldset button[aria-pressed=true] { border-color:#99d7c0; background:#213c39; }
 .sd-challenge fieldset button span { font:600 .76rem/1 ui-monospace,monospace; color:#a8cabd; }
-.sd-answer:not(:empty) { border-left:2px solid #9cd8bc; margin-top:.55rem; padding:.2rem .65rem; }
+.sd-answer { min-block-size:4.5em; border-left:2px solid #9cd8bc; margin-top:.55rem; padding:.2rem .65rem; }
 .sd-answer strong { color:#d1f0e1; }
 
 .sd-challenge-toggle { display:flex; align-items:center; gap:.5rem; width:100%; min-height:46px; text-align:left; color:inherit; font-size:.9rem; font-weight:650; touch-action:manipulation; }

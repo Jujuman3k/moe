@@ -8,8 +8,8 @@ export function Modal({ label, onClose, swipeHandlers, children }) {
   return (
     <dialog ref={ref} aria-label={label} onCancel={event => { event.preventDefault(); onClose(); }}
       onClick={event => { if (event.target === ref.current) onClose(); }}
-      className="m-0 mt-auto max-h-[90dvh] w-full max-w-none rounded-t-2xl border border-slate-700 bg-slate-900 p-0 text-slate-200 shadow-2xl backdrop:bg-black/70 backdrop:backdrop-blur-sm sm:mx-auto sm:max-w-2xl">
-      <div className="relative h-[85dvh] overflow-y-auto overscroll-contain p-5 pt-14 animate-slide-up" {...swipeHandlers}>
+      className="animate-slide-up overflow-hidden m-0 mt-auto max-h-[90dvh] w-full max-w-none rounded-t-2xl border border-slate-700 bg-slate-900 p-0 text-slate-200 shadow-2xl backdrop:bg-black/70 backdrop:backdrop-blur-sm sm:mx-auto sm:max-w-2xl">
+      <div className="relative h-[85dvh] overflow-y-auto overscroll-contain scroll-pt-12 p-5 pt-14" {...swipeHandlers}>
         <div aria-hidden="true" className="absolute left-1/2 top-4 h-1 w-12 -translate-x-1/2 rounded-full bg-slate-700" />
         <button onClick={onClose} aria-label="Lukk detaljer" className="absolute right-3 top-2 flex h-11 w-11 items-center justify-center rounded-full bg-slate-800 text-slate-400 hover:text-white"><X size={20} /></button>
         {children}

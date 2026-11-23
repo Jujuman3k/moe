@@ -166,13 +166,15 @@ export function SignalLab({ onConsole, initialNodeId, initialSourceId, initialMo
     requestAnimationFrame(() => fullscreenButton.current?.focus({ preventScroll: true }));
   }
 
+  // A covered graph does not need to redraw. Audio and mixer state continue.
+  const showMotion = animate && overlay !== 'depth';
   const content = <section className={`signal-lab signal-focus ${state.proMode ? 'signal-pro' : ''} ${state.proMode && node.id === 'processing' ? 'signal-pro-editing' : ''}`} aria-label="Signalveiens læringslab">
     <SignalTransport audio={audio} animate={animate} onAnimate={() => setAnimate(value => !value)} onChoose={() => setOverlay('audio')} onMissions={openMissions} missionMode={mode === 'missions'} onReset={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState, proMode: state.proMode })} fullscreen={fullscreen} onFullscreen={() => fullscreen ? closeFullscreen() : setFullscreen(true)} fullscreenButton={fullscreenButton} />
     <div className="signal-workbench">
-      {state.proMode && node.id === 'processing' ? <ProPreview state={state} signal={signal} panel={proPanel} bandIndex={bandIndex} onBandChange={setBandIndex} onChange={updateState} audio={audio} animate={animate} /> : <div className="signal-preview">
+      {state.proMode && node.id === 'processing' ? <ProPreview state={state} signal={signal} panel={proPanel} bandIndex={bandIndex} onBandChange={setBandIndex} onChange={updateState} audio={audio} animate={showMotion} /> : <div className="signal-preview">
         <div className="signal-preview-caption"><span>{audio.source ? 'LYD · MÅLTE SIGNALNIVÅER' : 'SIGNALKART · TRYKK FOR Å UTFORSKE'}</span><span>{audio.playing && <i />} {audio.source ? audio.playing ? 'Spiller' : 'Stoppet' : state.proMode ? 'Ingen lydkilde' : 'Lydløs skisse'}</span></div>
-        <SignalMap state={state} signal={signal} animate={animate} activeId={node.id} onSelectNode={selectNode} onOpenDepth={() => setOverlay('depth')} route={route} onRouteChange={setRoute} />
-        {audio.source || state.proMode ? <SignalAudioScope audio={audio} node={node} animate={animate} /> : <SignalScope state={state} signal={signal} node={node} animate={animate} />}
+        <SignalMap state={state} signal={signal} animate={showMotion} activeId={node.id} onSelectNode={selectNode} onOpenDepth={() => setOverlay('depth')} route={route} onRouteChange={setRoute} />
+        {audio.source || state.proMode ? <SignalAudioScope audio={audio} node={node} animate={showMotion} /> : <SignalScope state={state} signal={signal} node={node} animate={showMotion} />}
         <div className="signal-output-strip" aria-label="Resultat av innstillingene">
           <SignalMeter live={!audio.source} label="Main LR" level={signal.mix} clipped={signal.clipped} />
           <SignalMeter live={!audio.source} label="Monitor" level={signal.monitor} tone="blue" clipped={signal.clipped} />

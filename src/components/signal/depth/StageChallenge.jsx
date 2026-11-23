@@ -26,7 +26,7 @@ export function StageChallenge({ nodeId }) {
           )}
         </fieldset>
         <p className="sd-answer" role="status">
-          {answer !== null && <><strong>{answer === exercise.correct ? 'Godt vurdert.' : 'Se hva det påvirker.'}</strong> {exercise.options[answer][1]}</>}
+          {answer === null ? 'Velg et svar for å se hva det påvirker.' : <><strong>{answer === exercise.correct ? 'Godt vurdert.' : 'Se hva det påvirker.'}</strong> {exercise.options[answer][1]}</>}
         </p>
       </>}
     </div>
