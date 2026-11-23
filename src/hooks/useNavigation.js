@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-const pageIds = new Set(['home', 'signal', 'videos', 'practice', 'listen']);
+import { pageTitles } from '../data/portalPages.js';
 function readRoute() {
   const [page, search = ''] = window.location.hash.slice(1).split('?');
   const params = new URLSearchParams(search);
-  return { page: pageIds.has(page) ? page : 'home', nodeId: params.get('node'), videoId: params.get('video'), sourceId: params.get('source'), mode: params.get('mode'), tool: params.get('tool'), scenarioId: params.get('scenario') };
+  return { page: Object.hasOwn(pageTitles, page) ? page : 'home', nodeId: params.get('node'), videoId: params.get('video'), sourceId: params.get('source'), mode: params.get('mode'), tool: params.get('tool'), scenarioId: params.get('scenario'), faultId: params.get('fault'), sceneId: params.get('scene'), trackId: params.get('track') };
 }
 
 export function useNavigation() {

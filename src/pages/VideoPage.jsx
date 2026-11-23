@@ -4,10 +4,11 @@ import { videoData } from '../data/videoData.js';
 import { allVideos, filterVideos, videoRecommendation } from '../utils/videoLibrary.js';
 import { VideoSearch } from '../components/video/VideoSearch.jsx';
 import { VideoCard } from '../components/video/VideoCard.jsx';
+import { LearningPaths } from '../components/video/LearningPaths.jsx';
 import { VideoLesson } from '../components/video/VideoLesson.jsx';
 import '../styles/video-library.css';
 
-export default function VideoPage({ learning, initialVideoId, onExplore }) {
+export default function VideoPage({ learning, initialVideoId, onExplore, initialTrackId, navigate }) {
   const initial = allVideos.find(video => video.videoId === initialVideoId);
   const { progress, toggleCompleted, toggleFavorite, rememberVideo } = learning;
   const [category, setCategory] = useState(initial?.categoryId || 'dlive_course');
@@ -68,6 +69,7 @@ export default function VideoPage({ learning, initialVideoId, onExplore }) {
       </button>}
     </header>
     {selection && <VideoLesson panelRef={lessonRef} video={selection.video} autoPlay={selection.autoPlay} learning={learning} onSelect={play} onClose={close} onExplore={onExplore}/>}
+    {!selection && <LearningPaths trackId={initialTrackId} navigate={navigate} progress={progress}/>}
     <section aria-label="Søk og filtrering" className="vl-filter">
       <div className="vl-filter-title"><h2>Finn en leksjon</h2><button type="button" onClick={saved} aria-pressed={status === 'favorites' && category === 'all' && !query.trim()}><Bookmark size={15}/> Mine favoritter <span>{progress.favorites.length}</span></button></div>
       <div className="vl-inputs">

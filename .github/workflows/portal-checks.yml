@@ -15,7 +15,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        profile: [desktop, mobile]
+        include:
+          - { profile: desktop, engine: chromium }
+          - { profile: mobile, engine: chromium }
+          - { profile: ipad-webkit, engine: webkit }
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -28,5 +31,5 @@ jobs:
       - if: matrix.profile == 'desktop'
         run: npm run lint && npm test
       - run: npm run build
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps ${{ matrix.engine }}
       - run: npm run test:e2e -- --project=${{ matrix.profile }} --workers=2 --reporter=line

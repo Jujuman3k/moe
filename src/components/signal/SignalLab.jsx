@@ -18,9 +18,11 @@ import { SignalAudioScope } from './SignalAudioScope.jsx';
 import { useSignalAudio } from '../../hooks/useSignalAudio.js';
 import { audioLesson } from '../../data/audioSources.js';
 import { proPages } from '../../data/proAudioSettings.js';
+import { captureProMix } from '../../utils/proSnapshots.js';
 import { ProControls } from './pro/ProControls.jsx';
 import { ProPreview } from './pro/ProPreview.jsx';
 import { ProLearn } from './pro/ProLearn.jsx';
+import { NotebookEntry, ProNotebook } from './pro/ProNotebook.jsx';
 import '../../styles/signal-lab.css';
 import '../../styles/signal-focus.css';
 import '../../styles/signal-audio.css';
@@ -44,6 +46,7 @@ export function SignalLab({ onOpenNode, initialNodeId, initialSourceId, initialM
   const [proPageSelections, setProPageSelections] = useState(() => initialTool?.group ? { [initialTool.proPanel]: initialTool.group } : {});
   const [bandIndex, setBandIndex] = useState(0);
   const [lastPreset, setLastPreset] = useState(null);
+  const [memoryOrigin, setMemoryOrigin] = useState(null);
   const fullscreenButton = useRef(null);
   const freeMix = useRef(null);
   const audio = useSignalAudio(state, initialSourceId);
@@ -61,9 +64,21 @@ export function SignalLab({ onOpenNode, initialNodeId, initialSourceId, initialM
   const lesson = audio.source && !(state.proMode && node.id === 'input') ? audioLesson(audio.source, node.id, panel) : null;
 
   function updateState(patch) {
+    setMemoryOrigin(null);
     setState(previous => ({ ...previous, ...patch }));
     setFeedback(null);
     setLastPreset(null);
+  }
+  function recallMemory(mix) {
+    setMemoryOrigin(saved => saved?.source === audio.sourceId ? saved : { source: audio.sourceId, mix: captureProMix(state), original: audio.listening.original });
+    setLastPreset(null); setFeedback(null);
+    setState(previous => ({ ...previous, ...mix }));
+    audio.setListening({ original: false });
+  }
+  function restoreMemory() {
+    if (memoryOrigin?.source !== audio.sourceId) return;
+    updateState(memoryOrigin.mix);
+    audio.setListening({ original: memoryOrigin.original });
   }
   function leaveMissions() {
     const saved = freeMix.current;
@@ -84,11 +99,19 @@ export function SignalLab({ onOpenNode, initialNodeId, initialSourceId, initialM
     updateState({ pro: { ...state.pro, [section]: settings }, bypass: false });
     setLastPreset(previous);
   }
+  function openGuideStep(panelId, band) {
+    setProPanel(panelId === 'preamp' ? 'peq' : panelId);
+    if (band !== undefined) setBandIndex(band);
+    if (panelId !== 'preamp') setProPageSelections(previous => ({ ...previous, [panelId]: proPages[panelId][0]?.[0] }));
+    audio.setListening({ original: false });
+    selectNode(panelId === 'preamp' ? 'preamp' : 'processing');
+  }
   function selectNode(id) {
     setStep(signalJourney.findIndex(item => item.id === id));
     setOverlay(null);
   }
   function loadMission(index) {
+    setMemoryOrigin(null);
     audio.useSketch();
     setMode('missions');
     setMissionIndex(index);
@@ -139,8 +162,10 @@ export function SignalLab({ onOpenNode, initialNodeId, initialSourceId, initialM
 
   return <>
     {fullscreen ? <SignalFullscreen onClose={closeFullscreen}>{content}</SignalFullscreen> : content}
-    {overlay && <Modal label={overlay === 'audio' ? 'Lydvalg' : overlay === 'overview' ? 'Signaloversikt' : overlay === 'missions' ? 'Signaloppdrag' : `Lær: ${node.label}`} onClose={() => setOverlay(null)}>
-      {overlay === 'audio' && <SignalAudioDialog audio={audio} onClose={() => setOverlay(null)} onReset={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState, proMode: state.proMode })} animate={animate} onToggleAnimate={() => setAnimate(previous => !previous)} />}
+    {overlay && <Modal key={overlay} label={overlay === 'notebook' ? 'Miksminne og kildekort' : overlay === 'audio' ? 'Lydvalg' : overlay === 'overview' ? 'Signaloversikt' : overlay === 'missions' ? 'Signaloppdrag' : `Lær: ${node.label}`} onClose={() => setOverlay(null)}>
+      {overlay === 'notebook' && audio.source && <ProNotebook source={audio.source} audio={audio} state={state} onRecall={recallMemory} canRestore={memoryOrigin?.source === audio.sourceId} onRestore={restoreMemory} onJump={openGuideStep} onClose={() => setOverlay(null)} />}
+      {overlay === 'learn' && state.proMode && audio.source && <NotebookEntry onOpen={() => setOverlay('notebook')} />}
+      {overlay === 'audio' && <SignalAudioDialog notebook={state.proMode && audio.source ? <NotebookEntry onOpen={() => setOverlay('notebook')} /> : null} audio={audio} onClose={() => setOverlay(null)} onReset={() => mode === 'missions' ? loadMission(missionIndex) : updateState({ ...defaultSignalState, proMode: state.proMode })} animate={animate} onToggleAnimate={() => setAnimate(previous => !previous)} />}
       {overlay === 'overview' && <SignalOverview current={node.id} signal={signal} selectNode={selectNode} />}
       {overlay === 'learn' && (proControls ? <ProLearn panel={node.id === 'preamp' ? 'preamp' : proPanel} source={audio.source} onApply={applyProPreset} onClose={() => setOverlay(null)} onOpenAudio={() => setOverlay('audio')} /> : <div className="signal-learn"><h2>{journey.title}</h2><p>{journey.text}</p><p className="text-teal-300">Prøv: {journey.try}</p>{lesson && <div className="audio-lesson"><h3>Lytt etter · {audio.source.label}</h3><p>{lesson.text}</p>{lesson.patch && <button type="button" className="primary-button" onClick={() => { updateState(lesson.patch); setPanels(previous => ({ ...previous, [lesson.node]: lesson.panel })); selectNode(lesson.node); }}>{lesson.label}</button>}</div>}<div className="node-result"><strong>{diagnosis.title}</strong><p>{diagnosis.text}</p></div><button type="button" className="signal-detail-link" onClick={() => { audio.stop(); setOverlay(null); requestAnimationFrame(() => onOpenNode(node)); }}>Flere verktøy, teori og video →</button><SignalModelNote audio={Boolean(audio.source)} pro={state.proMode} /></div>)}
       {overlay === 'missions' && <div className="signal-mission-brief">

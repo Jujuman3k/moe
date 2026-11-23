@@ -1,0 +1,33 @@
+import { expect, test } from '@playwright/test';
+
+test('a diagnosis needs evidence, survives reload, and opens the relevant original recording', async ({ page }) => {
+  await page.goto('/#practice');
+  await page.getByRole('button',{name:'Åpne feilsøkingsbenken'}).click();
+  await expect(page).toHaveURL(/#practice\?fault=vocal-grit$/);
+  await page.getByLabel('Bytt sak').selectOption('snare-tail');
+  const title = page.getByRole('heading',{name:'Skarptromma mister halen',exact:true});
+  await expect(title).toBeFocused();
+  const probes = page.getByRole('group',{name:'Velg et kontrollpunkt'}), actions = page.getByRole('group',{name:'Mulige tiltak'});
+  const fix = actions.getByRole('button',{name:/Forleng hold/});
+  await expect(fix).toBeDisabled();
+  await expect(probes.getByRole('button',{name:/Sammenlign gate inn og ut/})).toBeDisabled();
+  await probes.getByRole('button',{name:/Sjekk signalet før processing/}).click();
+  await expect(page.getByRole('heading',{name:'Naturlig utklinging'})).toBeVisible();
+  await actions.getByRole('button',{name:/Hev høypassfilteret/}).click();
+  await expect(page.getByRole('status')).toContainText('Bunnen blir tynnere');
+  await fix.click();
+  await expect(page.getByRole('status')).toContainText('Hva bekrefter mistanken?');
+  await probes.getByRole('button',{name:/Sammenlign gate inn og ut/}).click();
+  await page.reload();
+  await expect(page.getByRole('heading',{name:'Halen kommer tilbake'})).toBeVisible();
+  await fix.click();
+  await expect(page.getByRole('heading',{name:'Feilen er lokalisert'})).toBeFocused();
+  await page.getByRole('button',{name:'Prøv gate på skarptromme'}).click();
+  await expect(page).toHaveURL(/#signal\?node=processing&source=snare&mode=pro&tool=gate$/);
+  await page.goBack();
+  await expect(page.getByRole('heading',{name:'Feilen er lokalisert'})).toBeVisible();
+  await page.getByRole('button',{name:'Nullstill saken'}).click();
+  await expect(fix).toBeDisabled();
+  await page.getByRole('button',{name:'Til Øv selv'}).click();
+  await expect(page.getByRole('heading',{name:'Oppgavearkivet'})).toBeVisible();
+});
